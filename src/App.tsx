@@ -4,6 +4,12 @@ import {
   BrowserRouter as Router, Link, Route, Switch,
 } from 'react-router-dom';
 
+import styled from 'styled-components';
+
+const H1 = styled.h1`
+  color: green;
+`;
+
 function App() {
   return (
     <Router>
@@ -20,7 +26,7 @@ function App() {
       </div>
 
       <Switch>
-        <Route path="/register" render={() => <div> Registration </div>} />
+        <Route path="/register" render={() => <div> <H1>Registration</H1> </div>} />
         <Route path="/login" render={() => <div> Login </div>} />
         <Route path="/account" render={() => <div> Account </div>} />
         <Route path="/" render={() => <div> Home</div>} />
