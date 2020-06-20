@@ -1,16 +1,27 @@
 import React from 'react';
-import { Route, RouteComponentProps } from 'react-router-dom';
+import {
+  Route, RouteComponentProps, Link, Switch,
+} from 'react-router-dom';
+import styled from 'styled-components';
 
 import { RegisterPage } from './register';
 import { LoginPage } from './login';
+import { MainPage } from './main';
+
 import {
   LogoContainer, Menu, MenuContainer, TopBar, AccountMenu,
 } from '../components';
 
+const PageContent = styled.div`
+    height: 100%;
+`;
+
 const HomePage = (props: RouteComponentProps) => (
-  <div>
+  <PageContent>
     <TopBar>
-      <LogoContainer />
+      <Link to="/">
+        <LogoContainer />
+      </Link>
       <div style={{ width: '100%' }}>
         <AccountMenu />
         <MenuContainer>
@@ -23,12 +34,16 @@ const HomePage = (props: RouteComponentProps) => (
             <li><a href="#news"> News </a></li>
           </Menu>
         </MenuContainer>
+
       </div>
 
     </TopBar>
-    <Route path="/register" render={(props) => <RegisterPage {...props} />} />
-    <Route path="/login" render={(props) => <LoginPage {...props} />} />
-  </div>
+    <Switch>
+      <Route exact path="/" render={() => <MainPage />} />
+      <Route path="/register" render={(props) => <RegisterPage {...props} />} />
+      <Route path="/login" render={(props) => <LoginPage {...props} />} />
+    </Switch>
+  </PageContent>
 
 );
 
