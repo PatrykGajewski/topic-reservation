@@ -1,14 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const LogoWrapper = styled.div``;
+const LogoPath = `${process.env.PUBLIC_URL}/assets/logo.png`;
 
-const LogoPath = process.env.PUBLIC_URL + '/assets/logo.png';
+const ResponsiveImage = styled.img`
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+`;
 
-const LogoContainer = () => (
-  <LogoWrapper>
-    <img src={LogoPath} alt="Diploma project reservation" />
-  </LogoWrapper>
+const Logo = () => (
+  <ResponsiveImage src={LogoPath} alt="Diploma project reservation" />
 );
 
-export { LogoContainer };
+export { Logo };

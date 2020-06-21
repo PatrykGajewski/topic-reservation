@@ -36,7 +36,8 @@ const FormContainer = css`
 
 const LoginFormContainer = styled.div`
    width: 30%;
-   height: 250px;
+   height: fit-content;
+   
    ${FormContainer} 
 `;
 

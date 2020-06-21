@@ -2,9 +2,11 @@ import React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 
 import Authentication from '../../authentication';
+import { TopBar } from '../components';
 
 const HomePageAuth = (props: RouteComponentProps) => (
   <div>
+    <TopBar isAuthenticated />
     <div>
       <button onClick={() => {
         Authentication.signOut(() => {});
