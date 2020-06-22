@@ -49,10 +49,15 @@ const TopBar = (props: TopBarProps) => (
     <Grid item xs={12} sm={10}>
       {props.isAuthenticated ? (
         <>
-          <Grid item><StyledLink to="" /></Grid>
-          <Grid item><Link to="" /></Grid>
-          <Grid item><Link to="" /></Grid>
-          <Grid item><Link to="" /></Grid>
+          <Grid container justify="flex-end">
+            <Grid item sm={3} xs={12}><StyledLink to="/logout">Logout</StyledLink></Grid>
+          </Grid>
+          <Grid container justify="center">
+            <Grid item sm={3} xs={8}><StyledLink to="/">Account</StyledLink></Grid>
+            <Grid item sm={3} xs={8}><StyledLink to="/owned">Owned projects</StyledLink></Grid>
+            <Grid item sm={3} xs={8}><StyledLink to="/list">Projects list</StyledLink></Grid>
+            <Grid item sm={3} xs={8}><StyledLink to="/promoters">Promoters ranking</StyledLink></Grid>
+          </Grid>
         </>
       ) : (
         <>

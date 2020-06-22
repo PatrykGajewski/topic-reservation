@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Route, RouteComponentProps, Link, Switch,
+  Route, RouteComponentProps, Switch,
 } from 'react-router-dom';
 import styled from 'styled-components';
 

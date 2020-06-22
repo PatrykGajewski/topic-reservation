@@ -14,16 +14,16 @@ export interface VerifyUserData {
 }
 
 class Authentication {
-    static isAuthenticated = false;
+    // TODO change into false
+    static isAuthenticated = true;
 
     static signIn = (callback: () => void) => {
       Authentication.isAuthenticated = true;
       setTimeout(callback(), 200); // some async action representation
     };
 
-    static signOut = (callback: () => void) => {
+    static signOut = () => {
       Authentication.isAuthenticated = false;
-      setTimeout(callback(), 200); // some async action representation
     };
 
     static verifyUser = (props: VerifyUserData) => {

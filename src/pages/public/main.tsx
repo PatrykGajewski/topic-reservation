@@ -59,7 +59,7 @@ const LightSection = styled.div`
     ${sectionStyles}
 `;
 
-const ScallableImg = styled.img`
+export const ScalableImg = styled.img`
     max-width: 100%;
     height: auto;
 `;
@@ -83,7 +83,7 @@ export const MainPage = () => (
     <LightSection>
       <Grid container spacing={1} justify="space-evenly" alignItems="center">
         <Grid item xs={5}>
-          <ScallableImg src={Whatweare} alt="What we are" />
+          <ScalableImg src={Whatweare} alt="What we are" />
         </Grid>
         <Grid item xs={6}>
           <HeaderBig> Startup project </HeaderBig>
@@ -137,7 +137,7 @@ export const MainPage = () => (
           </HeaderSmall>
         </Grid>
         <Grid item xs={5}>
-          <ScallableImg src={Vision} alt="Our vision" />
+          <ScalableImg src={Vision} alt="Our vision" />
         </Grid>
       </Grid>
     </DarkSection>
@@ -148,7 +148,7 @@ export const MainPage = () => (
     <DarkSection>
       <Grid container spacing={1} justify="space-evenly" alignItems="center">
         <Grid item xs={5}>
-          <ScallableImg src={Participation} alt="Participation" />
+          <ScalableImg src={Participation} alt="Participation" />
         </Grid>
         <Grid item xs={6}>
           <HeaderBig> Community </HeaderBig>
@@ -218,7 +218,7 @@ export const MainPage = () => (
           </StyledUl>
         </Grid>
         <Grid item xs={5}>
-          <ScallableImg src={News} alt="News" />
+          <ScalableImg src={News} alt="News" />
         </Grid>
       </Grid>
     </DarkSection>
