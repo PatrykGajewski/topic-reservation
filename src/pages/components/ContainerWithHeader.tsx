@@ -1,38 +1,57 @@
 import React, { ElementType } from 'react';
-import styled from "styled-components";
+import styled from 'styled-components';
 
 interface ContainerWithHeaderProps {
   header: string,
   children: any,
+  smallPadding?: boolean,
+  lightBorder?: boolean,
+  fitContent?: boolean,
 }
 
-const Container = styled.div`
+interface ContainerProps {
+  smallPadding: boolean,
+  lightBorder: boolean,
+  fitContent: boolean,
+}
+
+const Container = styled.div<ContainerProps>`
   position: relative;
-  width: calc(100% - 20px);
+  width: ${(props) => (props.fitContent ? 'fit-content' : 'calc(100% - 20px)')};
   margin: 30px 10px 20px 10px;
   box-sizing: border-box;
-  padding: 20px;
+  padding: ${(props) => (props.smallPadding ? '20px 10px 5px 10px' : '20px')};
   border-radius: 4px;
-  border: 1px solid grey;
+  border: 1px solid ${(props) => (props.lightBorder ? '#80808070' : 'grey')};
   background: white;
 `;
 
-const Header = styled.div`
+interface HeaderProps {
+  lightBorder: boolean
+}
+
+const Header = styled.div<HeaderProps>`
   position: absolute;
   top: 0;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 5px 15px;
   max-height: 30px;
-  border: 1px solid grey;
+  border: 1px solid ${(props) => (props.lightBorder ? '#80808070' : 'grey')};
   background: white;
   border-radius: 8px;
   
 `;
 
 const ContainerWithHeader = (props: ContainerWithHeaderProps) => (
-  <Container>
-    <Header>
+  <Container
+    smallPadding={props.smallPadding || false}
+    lightBorder={props.lightBorder || false}
+    fitContent={props.fitContent || false}
+  >
+    <Header
+      lightBorder={props.lightBorder || false}
+    >
       {props.header}
     </Header>
     {props.children}
