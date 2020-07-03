@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import { useDispatch } from 'react-redux';
 
 import Authentication, { LoginFormValues } from '../../authentication';
 import LoginForm from './components/loginForm';
-import { SIZES } from "../components/constants";
+import { SIZES } from '../components/constants';
 import BackgroundURL from '../../img/loginBg.jpg';
-
+import { FetchUserData } from '../../store/actions';
+import { UserModel } from '../../models';
 
 const ContainerBase = css`
   display: flex;
@@ -56,15 +58,17 @@ const ErrorWrapper = styled.div`
 const LoginPage = (props: RouteComponentProps) => {
   const [authenticationError, setAuthenticationError] = useState(false);
 
-  const userAuthenticationSuccess = () => {
+  const dispatch = useDispatch();
+  const userAuthenticationSuccess = (user: UserModel) => {
     setAuthenticationError(false);
+    dispatch({ ...new FetchUserData(user) });
     props.history.push('/');
   };
 
   const authenticateUser = (userData: LoginFormValues) => {
     Authentication.verifyUser({
       user: userData,
-      success: () => userAuthenticationSuccess(),
+      success: (user: UserModel) => userAuthenticationSuccess(user),
       error: () => setAuthenticationError(true),
     });
   };

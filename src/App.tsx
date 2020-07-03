@@ -2,9 +2,15 @@ import React from 'react';
 import {
   BrowserRouter as Router, Route, withRouter,
 } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+
 import Authentication from './authentication';
 import { HomePage } from './pages/public';
 import { HomePageAuth } from './pages/private';
+import rootReducer from "./store/rootReducer";
+
+const store = createStore(rootReducer);
 
 const MainApp = withRouter(() => (
   <>
@@ -19,7 +25,9 @@ const MainApp = withRouter(() => (
 function App() {
   return (
     <Router>
-      <MainApp />
+      <Provider store={store}>
+        <MainApp />
+      </Provider>
     </Router>
   );
 }

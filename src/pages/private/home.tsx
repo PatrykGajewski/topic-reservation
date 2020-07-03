@@ -6,6 +6,7 @@ import { LogoutPage } from './logoutPage';
 import { AccountPage } from './account';
 import { OwnedProjectsPage } from './owned';
 import { ProjectListPage } from './list';
+import { AccountPageWrapper } from './dataFetchers';
 
 const HomePageAuth = (props: RouteComponentProps) => (
   <div>
@@ -127,83 +128,83 @@ const HomePageAuth = (props: RouteComponentProps) => (
           <ProjectListPage
             projects={[
               {
-                "id": "1",
-                "topic": "Wpływ środowiska na człowieka",
-                "status": {
-                  "selected": false,
-                  "completed": false,
+                id: '1',
+                topic: 'Wpływ środowiska na człowieka',
+                status: {
+                  selected: false,
+                  completed: false,
                 },
-                "owner": {
-                  "id": "",
-                  "firstName": "",
-                  "lastName": ""
+                owner: {
+                  id: '',
+                  firstName: '',
+                  lastName: '',
                 },
-                "promoter":{
-                  "firstName": "Dominik",
-                  "lastName": "Żmijewski",
-                  "highestTitle": "Doctor"
+                promoter: {
+                  firstName: 'Dominik',
+                  lastName: 'Żmijewski',
+                  highestTitle: 'Doctor',
                 },
-                "university":     {
-                  "id": "1",
-                  "name": {
-                    "full": "Politechnika Krakowska",
-                    "shortcut": "PK"
-                  }
+                university: {
+                  id: '1',
+                  name: {
+                    full: 'Politechnika Krakowska',
+                    shortcut: 'PK',
+                  },
                 },
-                "addedToPlatformDate": "20-08-2020"
+                addedToPlatformDate: '20-08-2020',
               },
               {
-                "id": "2",
-                "topic": "Wpływ człowieka na środowisko",
-                "status": {
-                  "selected": true,
-                  "completed": true
+                id: '2',
+                topic: 'Wpływ człowieka na środowisko',
+                status: {
+                  selected: true,
+                  completed: true,
                 },
-                "owner": {
-                  "id": "1",
-                  "firstName": "Tomasz",
-                  "lastName": "Nowak"
+                owner: {
+                  id: '1',
+                  firstName: 'Tomasz',
+                  lastName: 'Nowak',
                 },
-                "promoter":{
-                  "firstName": "Tadeusz",
-                  "lastName": "Nowakowski",
-                  "highestTitle": "Profesor"
+                promoter: {
+                  firstName: 'Tadeusz',
+                  lastName: 'Nowakowski',
+                  highestTitle: 'Profesor',
                 },
-                "university":     {
-                  "id": "2",
-                  "name": {
-                    "full": "Akademia Górniczo Hutnicza",
-                    "shortcut": "AGH"
-                  }
+                university: {
+                  id: '2',
+                  name: {
+                    full: 'Akademia Górniczo Hutnicza',
+                    shortcut: 'AGH',
+                  },
                 },
-                "addedToPlatformDate": "20-08-2018"
+                addedToPlatformDate: '20-08-2018',
               },
               {
-                "id": "3",
-                "topic": "Wpływ leków na zdrowie człowieka",
-                "status": {
-                  "selected": true,
-                  "completed": true,
+                id: '3',
+                topic: 'Wpływ leków na zdrowie człowieka',
+                status: {
+                  selected: true,
+                  completed: true,
                 },
-                "owner": {
-                  "id": "1",
-                  "firstName": "Przymysław",
-                  "lastName": "Gruszczyński"
+                owner: {
+                  id: '1',
+                  firstName: 'Przymysław',
+                  lastName: 'Gruszczyński',
                 },
-                "promoter":{
-                  "firstName": "Michał",
-                  "lastName": "Tomaśko",
-                  "highestTitle": "Magister"
+                promoter: {
+                  firstName: 'Michał',
+                  lastName: 'Tomaśko',
+                  highestTitle: 'Magister',
                 },
-                "university":     {
-                  "id": "2",
-                  "name": {
-                    "full": "Akademia Górniczo Hutnicza",
-                    "shortcut": "AGH"
-                  }
+                university: {
+                  id: '2',
+                  name: {
+                    full: 'Akademia Górniczo Hutnicza',
+                    shortcut: 'AGH',
+                  },
                 },
-                "addedToPlatformDate": "20-08-2018"
-              }
+                addedToPlatformDate: '20-08-2018',
+              },
             ]}
             filters={[]}
             searchString=""
@@ -215,75 +216,7 @@ const HomePageAuth = (props: RouteComponentProps) => (
         exact
         path="/"
         render={() => (
-          <AccountPage
-            personalData={{
-              firstName: 'Patryk',
-              lastName: 'Gajewski',
-              birthDate: '10-08-2020',
-              address: 'Lipnica Dolna 154',
-              phoneNumber: '567-647-908',
-            }}
-            accountData={{
-              email: 'elita564-2000@tlen.pl',
-              creationDate: '10-12-2018',
-              expirationDate: '10-12-2022',
-            }}
-            educationData={{
-              finishedUniversities: [{
-                name: {
-                  full: 'Politechnika Krakowska im. Tadeusza Kościuszki',
-                  shortcut: 'PK',
-                },
-                faculty: {
-                  full: 'Wydział Inżynierii Lądowej',
-                  shortcut: 'WIiT',
-                },
-                direction: {
-                  full: 'Gospodarka przestrzenna',
-                  shortcut: null,
-                },
-                location: {
-                  city: 'Kraków',
-                  country: 'Polska',
-                  province: 'Małopolska',
-                  zip: '31-155',
-                  street: 'Warszawska',
-                  streetNumber: '24',
-                },
-                startDate: '01-10-2018',
-                endDate: '10-08-2022',
-              }],
-              actualUniversities: [
-                {
-                  name: {
-                    full: 'Politechnika Krakowska im. Tadeusza Kościuszki',
-                    shortcut: 'PK',
-                  },
-                  faculty: {
-                    full: 'Wydział Informatyki i Telekomunikacji',
-                    shortcut: 'WIiT',
-                  },
-                  direction: {
-                    full: 'Informatyka stosowana',
-                    shortcut: null,
-                  },
-                  location: {
-                    city: 'Kraków',
-                    country: 'Polska',
-                    province: 'Małopolska',
-                    zip: '31-155',
-                    street: 'Warszawska',
-                    streetNumber: '24',
-                  },
-                  startDate: '01-10-2022',
-                  endDate: null,
-                },
-              ],
-            }}
-            photoData={{
-              link: null,
-            }}
-          />
+          <AccountPageWrapper />
         )}
       />
     </Switch>

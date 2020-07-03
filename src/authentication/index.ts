@@ -1,6 +1,5 @@
-import axios, { AxiosResponse } from 'axios';
-
-import { BACKEND_API_URL } from './constants';
+import { API } from "../API";
+import {UserModel} from "../models";
 
 export interface LoginFormValues {
     email: string;
@@ -9,17 +8,17 @@ export interface LoginFormValues {
 
 export interface VerifyUserData {
     user: LoginFormValues,
-    success: () => void,
+    success: (user: UserModel) => void,
     error: () => void,
 }
 
 class Authentication {
     // TODO change into false
-    static isAuthenticated = true;
+    static isAuthenticated = false;
 
     static signIn = (callback: () => void) => {
       Authentication.isAuthenticated = true;
-      setTimeout(callback(), 200); // some async action representation
+      callback();
     };
 
     static signOut = () => {
@@ -27,10 +26,11 @@ class Authentication {
     };
 
     static verifyUser = (props: VerifyUserData) => {
-      axios.get(`${BACKEND_API_URL}/users?email=${props.user.email}&password=${props.user.password}`).then(
+      API.verifyUser(props.user.email, props.user.password).then(
         (res: any) => {
           if (res.data.length) {
-            Authentication.signIn(props.success);
+            Authentication.signIn(() => props.success(res.data[0]));
+            console.log(res);
           }
           props.error();
         },

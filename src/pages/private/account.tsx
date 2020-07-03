@@ -54,9 +54,9 @@ interface AccountPageProps {
   personalData: {
     firstName: string,
     lastName: string,
-    birthDate: string | null,
-    address: string | null,
-    phoneNumber: string | null,
+    birthDate: string,
+    address: string,
+    phoneNumber: string,
   },
   accountData: {
     email: string,
