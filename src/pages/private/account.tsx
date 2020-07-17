@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Grid } from '@material-ui/core';
 import FaceIcon from '@material-ui/icons/Face';
 import styled from 'styled-components';
 
-import { ContainerWithHeader, ContainerWithHeaderRow } from '../components';
+import { ContainerWithHeader, ContainerWithHeaderRow, Popup } from '../components';
 import { ScalableImg } from '../public';
 import BirdsBg from '../../img/birdsBg.png';
+import { UserAddress } from '../../models';
+import { UserPersonalForm, UserPersonalValues } from './forms';
 
 const ContentWrapper = styled.div`
   background-image: url(${BirdsBg});
@@ -55,7 +57,7 @@ interface AccountPageProps {
     firstName: string,
     lastName: string,
     birthDate: string,
-    address: string,
+    address: UserAddress | null,
     phoneNumber: string,
   },
   accountData: {
@@ -73,6 +75,21 @@ interface AccountPageProps {
 }
 
 const AccountPage = (props: AccountPageProps) => {
+  const [personalEditing, setPersonalEditing] = useState(false);
+  const [accountEditing, setAccountEditing] = useState(false);
+  const [educationEditing, setEducationEditing] = useState(false);
+
+  const handlePersonalSubmit = (values: UserPersonalValues) => {
+    // api call here
+    setPersonalEditing(false);
+  };
+  const handleAccountSubmit = () => {
+    setAccountEditing(false);
+  };
+  const handleEducationEditing = () => {
+    setEducationEditing(false);
+  };
+
   const {
     firstName, lastName, birthDate, address, phoneNumber,
   } = props.personalData;
@@ -104,21 +121,42 @@ const AccountPage = (props: AccountPageProps) => {
         </Grid>
         <Grid item sm={9}>
 
-          <ContainerWithHeader header="Personal">
+          <ContainerWithHeader
+            header="Personal"
+            editable
+            handleEdit={() => setPersonalEditing(true)}
+          >
             <ContainerWithHeaderRow header="Firstname" content={firstName || '-'} />
             <ContainerWithHeaderRow header="Lastname" content={lastName || '-'} />
             <ContainerWithHeaderRow header="Date of birth" content={birthDate || '-'} />
-            <ContainerWithHeaderRow header="Address" content={address || '-'} />
+            {address !== null && (
+              <>
+                <ContainerWithHeaderRow header="Country" content={address.country ? address.country.name : '-'} />
+                <ContainerWithHeaderRow header="Region" content={address.state ? address.state.name : '-'} />
+                <ContainerWithHeaderRow header="City" content={address.city ? address.city.name : '-'} />
+                <ContainerWithHeaderRow header="Post code" content={address.zip ? address.zip : '-'} />
+                <ContainerWithHeaderRow header="Street number" content={address.streetName ? address.streetName : '-'} />
+                <ContainerWithHeaderRow header="Building number" content={address.buildingNumber ? address.buildingNumber : '-'} />
+              </>
+            )}
             <ContainerWithHeaderRow header="Phone number" content={phoneNumber || '-'} />
           </ContainerWithHeader>
 
-          <ContainerWithHeader header="Account">
+          <ContainerWithHeader
+            header="Account"
+            editable
+            handleEdit={() => setAccountEditing(true)}
+          >
             <ContainerWithHeaderRow header="Email" content={email} />
             <ContainerWithHeaderRow header="Creation date" content={creationDate} />
             <ContainerWithHeaderRow header="Expiration date" content={expirationDate} />
           </ContainerWithHeader>
 
-          <ContainerWithHeader header="Education">
+          <ContainerWithHeader
+            header="Education"
+            editable
+            handleEdit={() => setEducationEditing(true)}
+          >
             {finishedUniversities.map((university: University) => (
               <>
                 <ContainerWithHeaderRow header="Name" content={university.name.full} />
@@ -139,8 +177,42 @@ const AccountPage = (props: AccountPageProps) => {
           </ContainerWithHeader>
         </Grid>
       </Grid>
-    </ContentWrapper>
+      {personalEditing && (
+        <Popup
+          handleSubmit={() => {}}
+          handleClose={() => setPersonalEditing(false)}
+          header="Personal data"
+        >
+          <div>
+            <UserPersonalForm
+              values={{
+                firstName,
+                lastName,
+                birthDate,
+                country: address?.country?.id || null,
+                state: address?.state?.id || null,
+                city: address?.city?.id || null,
+                zip: address?.zip || '',
+                streetName: address?.streetName || '',
+                buildingNumber: address?.buildingNumber || '',
+              }}
+              onSubmit={handlePersonalSubmit}
+            />
+          </div>
+        </Popup>
 
+      )}
+      {accountEditing && (
+        <div>
+          Account editing
+        </div>
+      )}
+      {educationEditing && (
+        <div>
+          Education editing
+        </div>
+      )}
+    </ContentWrapper>
   );
 };
 

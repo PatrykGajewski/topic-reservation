@@ -1,3 +1,5 @@
+import { ICountry, IState, ICity } from "country-state-city";
+
 enum AcademicTitleFull {
   // licencjat
   BACHELERS = "Bacheler's Degree",
@@ -59,25 +61,16 @@ enum UserRole {
   STUDENT = 'STUDENT',
 }
 
-interface Address {
-  country: {
-    name: string,
-    a2Code: string,
-  },
-  region: {
-    id: string,
-    name: string,
-  },
-  city: {
-    id: string,
-    name: string,
-  },
+export interface Address {
+  country: ICountry | null,
+  state: IState | null,
+  city: ICity | null,
   zip: string,
   streetName: string,
-  buildingNumber: number,
+  buildingNumber: string,
 }
 
-interface UserAddress extends Address {
+export interface UserAddress extends Address {
   flatNumber?: number,
 }
 

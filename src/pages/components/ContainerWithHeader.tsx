@@ -7,6 +7,8 @@ interface ContainerWithHeaderProps {
   smallPadding?: boolean,
   lightBorder?: boolean,
   fitContent?: boolean,
+  editable?: boolean,
+  handleEdit?: () => void,
 }
 
 interface ContainerProps {
@@ -40,7 +42,29 @@ const Header = styled.div<HeaderProps>`
   border: 1px solid ${(props) => (props.lightBorder ? '#80808070' : 'grey')};
   background: white;
   border-radius: 8px;
+`;
+
+const EditButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #ffc671;
+  width: 60px;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 0px 0px 0px 8px;
+  cursor: pointer;
+  transition: all .2s;
+  border: none;
+  outline: none;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
   
+  &:hover {
+    background: #f8ba5d;
+  }
 `;
 
 const ContainerWithHeader = (props: ContainerWithHeaderProps) => (
@@ -54,6 +78,13 @@ const ContainerWithHeader = (props: ContainerWithHeaderProps) => (
     >
       {props.header}
     </Header>
+    {props.editable && (
+      <EditButton
+        onClick={props.handleEdit}
+      >
+        Edit
+      </EditButton>
+    )}
     {props.children}
   </Container>
 );

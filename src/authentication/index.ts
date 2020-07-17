@@ -13,7 +13,6 @@ export interface VerifyUserData {
 }
 
 class Authentication {
-    // TODO change into false
     static isAuthenticated = false;
 
     static signIn = (callback: () => void) => {
