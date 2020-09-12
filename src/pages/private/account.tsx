@@ -74,6 +74,23 @@ interface AccountPageProps {
   }
 }
 
+const emptyUserAddress: UserAddress = {
+  country: '',
+  region: '',
+  city: '',
+  zip: '',
+  streetName: '',
+  buildingNumber: '',
+  flatNumber: '',
+};
+
+const createAddressData = (address: UserAddress | null): UserAddress => {
+  if (address) {
+    return address;
+  }
+  return emptyUserAddress;
+};
+
 const AccountPage = (props: AccountPageProps) => {
   const [personalEditing, setPersonalEditing] = useState(false);
   const [accountEditing, setAccountEditing] = useState(false);
@@ -81,6 +98,7 @@ const AccountPage = (props: AccountPageProps) => {
 
   const handlePersonalSubmit = (values: UserPersonalValues) => {
     // api call here
+    console.log(values);
     setPersonalEditing(false);
   };
   const handleAccountSubmit = () => {
@@ -131,9 +149,9 @@ const AccountPage = (props: AccountPageProps) => {
             <ContainerWithHeaderRow header="Date of birth" content={birthDate || '-'} />
             {address !== null && (
               <>
-                <ContainerWithHeaderRow header="Country" content={address.country ? address.country.name : '-'} />
-                <ContainerWithHeaderRow header="Region" content={address.state ? address.state.name : '-'} />
-                <ContainerWithHeaderRow header="City" content={address.city ? address.city.name : '-'} />
+                <ContainerWithHeaderRow header="Country" content={address.country ? address.country : '-'} />
+                <ContainerWithHeaderRow header="Region" content={address.region ? address.region : '-'} />
+                <ContainerWithHeaderRow header="City" content={address.city ? address.city : '-'} />
                 <ContainerWithHeaderRow header="Post code" content={address.zip ? address.zip : '-'} />
                 <ContainerWithHeaderRow header="Street number" content={address.streetName ? address.streetName : '-'} />
                 <ContainerWithHeaderRow header="Building number" content={address.buildingNumber ? address.buildingNumber : '-'} />
@@ -179,7 +197,6 @@ const AccountPage = (props: AccountPageProps) => {
       </Grid>
       {personalEditing && (
         <Popup
-          handleSubmit={() => {}}
           handleClose={() => setPersonalEditing(false)}
           header="Personal data"
         >
@@ -189,14 +206,10 @@ const AccountPage = (props: AccountPageProps) => {
                 firstName,
                 lastName,
                 birthDate,
-                country: address?.country?.id || null,
-                state: address?.state?.id || null,
-                city: address?.city?.id || null,
-                zip: address?.zip || '',
-                streetName: address?.streetName || '',
-                buildingNumber: address?.buildingNumber || '',
+                ...createAddressData(address),
               }}
               onSubmit={handlePersonalSubmit}
+              handleClose={() => setPersonalEditing(false)}
             />
           </div>
         </Popup>

@@ -11,13 +11,11 @@ const AccountPageWrapper = () => {
       firstName: state.user.firstName,
       lastName: state.user.lastName || '-',
       birthDate: state.user.birthDate || '-',
-      // TODO complete addressData -> adjust personalDataDisplay component
-      address: state.user.address || null,
+      address: state.user.address,
       phoneNumber: state.user.phoneNumber || '-',
     },
   }));
 
-  //TODO complete other information than personal
   return (
     <AccountPage
       personalData={stateData.personalData}

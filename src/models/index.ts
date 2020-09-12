@@ -1,5 +1,3 @@
-import { ICountry, IState, ICity } from "country-state-city";
-
 enum AcademicTitleFull {
   // licencjat
   BACHELERS = "Bacheler's Degree",
@@ -62,16 +60,16 @@ enum UserRole {
 }
 
 export interface Address {
-  country: ICountry | null,
-  state: IState | null,
-  city: ICity | null,
+  country: string,
+  region: string,
+  city: string,
   zip: string,
   streetName: string,
   buildingNumber: string,
 }
 
 export interface UserAddress extends Address {
-  flatNumber?: number,
+  flatNumber: string,
 }
 
 interface DepartmentSubject {
@@ -108,7 +106,6 @@ interface FinishedUniversity extends ActualUniversity {
 export interface UserModel {
   id: string,
   email: string,
-  // TODO add role during registration process
   roles: UserRole[],
   firstName: string,
   lastName: string | null,

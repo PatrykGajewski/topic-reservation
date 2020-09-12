@@ -5,7 +5,6 @@ import { Grid } from '@material-ui/core';
 interface PopupProps {
   children: any,
   header: string,
-  handleSubmit: () => void;
   handleClose: () => void;
 }
 
@@ -71,13 +70,13 @@ interface FooterButtonProps {
   children: string,
 }
 
-const Footer = styled.div`
+export const Footer = styled.div`
   width: fit-content;
   margin-left: auto;
   margin-right: 0;
 `;
 
-const FooterButton = styled.button<FooterButtonProps>`
+export const FooterButton = styled.button<FooterButtonProps>`
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: 400;
   outline: none;
@@ -114,19 +113,6 @@ const Popup = (props: PopupProps) => (
         </Grid>
       </Grid>
       {props.children}
-      <Footer>
-        <FooterButton
-          onClick={props.handleClose}
-        >
-          Close
-        </FooterButton>
-        <FooterButton
-          primary
-          onClick={props.handleSubmit}
-        >
-          Submit
-        </FooterButton>
-      </Footer>
     </StyledPopup>
   </StyledPopupMask>
 );
