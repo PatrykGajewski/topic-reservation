@@ -292,14 +292,14 @@ const ProjectListPage = () => {
                     <TableCell>{project.topic}</TableCell>
                     <TableCell>{project.type}</TableCell>
                     <TableCell>{`
-                  ${project.promoter.highestTitle.shortTitle}
+                  ${project.promoter.highestTitle.name.short}
                   ${project.promoter.firstName}
                   ${project.promoter.lastName}
                   `}
                     </TableCell>
                     <TableCell>{project.university.name.short}</TableCell>
                     <TableCell>{statusSelector(project.status.selected, project.status.completed)}</TableCell>
-                    <TableCell>{project.status.selected ? ` ${project.owner.highestTitle.shortTitle} ${project.owner.firstName} ${project.owner.lastName}` : '-'}</TableCell>
+                    <TableCell>{project.status.selected ? ` ${project.owner.highestTitle.name.short} ${project.owner.firstName} ${project.owner.lastName}` : '-'}</TableCell>
                     <TableCell>{project.addedDate}</TableCell>
                     <TableCell>{project.country}</TableCell>
                     <TableCell>{

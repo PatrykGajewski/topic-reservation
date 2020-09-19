@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
 import Rating from '@material-ui/lab/Rating';
+import { useDispatch, useSelector } from 'react-redux';
+import Loader from 'react-loader-spinner';
 import { ContainerWithHeader, ContainerWithHeaderRow } from '../components';
+import { API } from '../../API';
+import { ProjectsDataFetched, ProjectsDataFetching, ProjectsDataFetchingError } from '../../store/actions';
+import { StateModel } from '../../store/state.model';
 
 const ProjectsContainer = styled.div`
   position: relative;
@@ -47,8 +52,30 @@ const ProjectWrapper = styled.div`
     left: -55px;
     transform: translateY(-50%);
     border-radius: 50%;
-    background: white;
+    background: ${(props) => props.color};
   }
+`;
+
+const GuideContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+`;
+
+const StatusItem = styled.div`
+  width: 50%;
+  height: 25px;
+  margin-bottom: 12px;
+`;
+
+const StatusIcon = styled.div`
+  display: inline-block;
+  margin-right: 10px;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  background-color: ${(props) => props.color};
 `;
 
 const TagWrapper = styled.div`
@@ -62,118 +89,136 @@ const TagWrapper = styled.div`
   margin: 5px;
 `;
 
-interface Tag {
-  id: string,
-  desc: string,
-}
-
-interface OwnedProject {
-  topic: string,
-  promoter: {
-    id: string,
-    firstName: string,
-    lastName: string,
-    highestTitle: {
-      id: string,
-      fullTitle: string,
-      shortcut: string,
+const fetchData = (userId: string) => async (dispatch: any) => {
+  try {
+    dispatch({ ...new ProjectsDataFetching() });
+    const { data, error } = await API.get(`/projects?ownerId=${userId}`);
+    if (error) {
+      console.error(error);
+      dispatch({ ...new ProjectsDataFetchingError(error.message) });
+    } else {
+      dispatch({ ...new ProjectsDataFetched(data) });
     }
-  },
-  university: {
-    id: string,
-    full: string,
-    shortcut: string,
-  },
-  tags: Tag[],
-  startDate: string,
-  endDate: string,
-  projectRating: {
-    id: string,
-    total: number,
-    value: number,
+  } catch (error) {
+    console.error(error);
+    dispatch({ ...new ProjectsDataFetchingError(error.message) });
   }
-  projectType: {
-    degree: string,
-  }
-}
+};
 
-interface OwnedProjectsProps {
-  projects: OwnedProject[],
-}
-const OwnedProjectsPage = (props: OwnedProjectsProps) => (
-  <ProjectsContainer>
-    {props.projects.map((project) => (
-      <ProjectWrapper>
-        <ContainerWithHeader
-          header={project.projectType.degree}
-        >
-          <Grid container>
-            <Grid item xs={6}>
-              <ContainerWithHeaderRow
-                header="Topic"
-                content={project.topic}
-              />
-              <ContainerWithHeaderRow
-                header="Promoter"
-                content={`
-                    ${project.promoter.highestTitle.shortcut}
+const OwnedProjectsPage = () => {
+  const dispatch = useDispatch();
+  const stateData = useSelector((state: StateModel) => ({
+    loading: state.loading,
+    success: state.success,
+    error: state.error,
+    projects: state.projects,
+    user: state.user,
+  }));
+
+  useEffect(() => {
+    fetchData(stateData.user.id)(dispatch);
+  }, []);
+
+  return (
+    <>
+      {stateData.error && (
+        <div>Error message: {stateData.error}</div>
+      )}
+      {stateData.loading && (
+        <Loader
+          type="Puff"
+          color="#00BFFF"
+          height={100}
+          width={100}
+          timeout={3000} // 3 secs
+        />
+      )}
+      {stateData.success && (
+        <>
+          <GuideContainer>
+            <p>Project icon color meaning</p>
+            <StatusItem>
+              <StatusIcon color="blue" />Taken project
+            </StatusItem>
+            <StatusItem>
+              <StatusIcon color="green" />Finished project
+            </StatusItem>
+          </GuideContainer>
+          <ProjectsContainer>
+            {stateData.projects.map((project) => (
+              <ProjectWrapper
+                color={project.status.completed ? 'green' : 'blue'}
+              >
+                <ContainerWithHeader
+                  header={project.type}
+                >
+                  <Grid container>
+                    <Grid item xs={6}>
+                      <ContainerWithHeaderRow
+                        header="Topic"
+                        content={project.topic}
+                      />
+                      <ContainerWithHeaderRow
+                        header="Promoter"
+                        content={`
+                    ${project.promoter.highestTitle.name.short}
                     ${project.promoter.firstName}
                     ${project.promoter.lastName}                  
                   `}
-              />
-              <ContainerWithHeaderRow
-                header="University"
-                content={project.university.full}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <ContainerWithHeaderRow
-                header="TakenDate"
-                content={project.startDate}
-              />
-              <ContainerWithHeaderRow
-                header="TakenDate"
-                content={project.endDate}
-              />
-              <ContainerWithHeader
-                header="Rating"
-                smallPadding
-                lightBorder
-                fitContent
-              >
-                <Grid container spacing={2} justify="center">
-                  <Grid item>
-                    <Rating
-                      value={project.projectRating.value}
-                      disabled
-                    />
+                      />
+                      <ContainerWithHeaderRow
+                        header="University"
+                        content={project.university.name.full}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <ContainerWithHeaderRow
+                        header="Added date"
+                        content={project.addedDate}
+                      />
+                      <ContainerWithHeader
+                        header="Rating"
+                        smallPadding
+                        lightBorder
+                        fitContent
+                      >
+                        <Grid container spacing={2} justify="center">
+                          <Grid item>
+                            <Rating
+                              value={project.rating.value}
+                              disabled
+                            />
+                          </Grid>
+                          <Grid item>
+                          Voices: {project.rating.votes}
+                          </Grid>
+                          <Grid item>
+                          Rating: {project.rating.value}
+                          </Grid>
+                        </Grid>
+                      </ContainerWithHeader>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <ContainerWithHeader
+                        header="Tags"
+                        smallPadding
+                        lightBorder
+                      >
+                        {project.tags.map((tag) => (
+                          <TagWrapper>{tag.label}</TagWrapper>
+                        ))}
+                      </ContainerWithHeader>
+                    </Grid>
                   </Grid>
-                  <Grid item>
-                    Voices: {project.projectRating.total}
-                  </Grid>
-                  <Grid item>
-                    Rating: {project.projectRating.value}
-                  </Grid>
-                </Grid>
-              </ContainerWithHeader>
-            </Grid>
-            <Grid item xs={12}>
-              <ContainerWithHeader
-                header="Tags"
-                smallPadding
-                lightBorder
-              >
-                {project.tags.map((tag) => (
-                  <TagWrapper>{tag.desc}</TagWrapper>
-                ))}
-              </ContainerWithHeader>
-            </Grid>
-          </Grid>
-        </ContainerWithHeader>
-      </ProjectWrapper>
-    ))}
-  </ProjectsContainer>
-);
+                </ContainerWithHeader>
+              </ProjectWrapper>
+            ))}
+          </ProjectsContainer>
+        </>
+      )}
+    </>
+  );
+};
 
 export {
   OwnedProjectsPage,
