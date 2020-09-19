@@ -116,4 +116,53 @@ export interface UserModel {
   phoneNumber: string | null,
   finishedUniversities: FinishedUniversity[],
   actualUniversities: ActualUniversity[],
+  highestTitle: HighestTitleModel,
+}
+
+export interface TagModel {
+  id: string,
+  label: string,
+}
+
+export interface HighestTitleModel {
+  fullTitle: string,
+  shortTitle: string,
+}
+
+export interface ProjectOwnerModel {
+  id: string,
+  firstName: string,
+  lastName: string,
+  highestTitle: HighestTitleModel,
+}
+
+export interface ProjectModel {
+  id: string,
+  type: string,
+  topic: string,
+  country: string,
+  promoter: {
+    id: string,
+    firstName: string,
+    lastName: string,
+    highestTitle: HighestTitleModel
+  },
+  // NOTE ownerId is duplicated but it is necessary to use (projects?universities=) path
+  universityId: string,
+  university: {
+    id: string,
+    name: {
+      full: string,
+      short: string,
+    }
+  },
+  tags: TagModel[],
+  addedDate: string,
+  status: {
+    selected: boolean,
+    completed: boolean
+  },
+  // NOTE ownerId is duplicated but it is necessary to use (projects?ownerId=) path
+  ownerId: string,
+  owner: ProjectOwnerModel,
 }

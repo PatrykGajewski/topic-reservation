@@ -14,7 +14,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { FormElementsGroup } from '../components';
 
 import { UserPersonalValidation } from './validationSchema';
-import { Footer, FooterButton} from "../../components";
+import { Footer, FooterButton } from '../../components';
 
 export interface UserPersonalValues {
   firstName: string,
@@ -55,7 +55,7 @@ const UserPersonalForm = (props: UserPersonalProps) => (
             value={values.firstName}
             onChange={(e) => setFieldValue('firstName', e.currentTarget.value)}
           />
-          {/* TODO remove errors console log*/}
+          {/* TODO remove errors console log */}
           {console.log(errors)}
           <TextField
             variant="filled"

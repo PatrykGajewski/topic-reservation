@@ -1,4 +1,4 @@
-import { StateModel } from "./state.model";
+import { StateModel } from './state.model';
 
 const initialState: StateModel = {
   user: {
@@ -14,7 +14,15 @@ const initialState: StateModel = {
     phoneNumber: null,
     finishedUniversities: [],
     actualUniversities: [],
+    highestTitle: {
+      fullTitle: '',
+      shortTitle: '',
+    },
   },
+  projects: [],
+  loading: false,
+  success: false,
+  error: '',
 };
 
 export default initialState;

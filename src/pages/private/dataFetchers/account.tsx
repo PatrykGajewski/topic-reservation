@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-/* import Loader from 'react-loader-spinner'; */
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { StateModel } from '../../../store/state.model';
 
 import { AccountPage } from '../account';
@@ -14,10 +13,18 @@ const AccountPageWrapper = () => {
       address: state.user.address,
       phoneNumber: state.user.phoneNumber || '-',
     },
+    id: state.user.id,
+    success: state.success,
+    error: state.error,
+    loading: state.loading,
   }));
 
   return (
     <AccountPage
+      success={stateData.success}
+      error={stateData.error}
+      loading={stateData.loading}
+      id={stateData.id}
       personalData={stateData.personalData}
       accountData={{
         email: 'elita564-2000@tlen.pl',

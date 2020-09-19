@@ -1,5 +1,5 @@
-import { API } from "../API";
-import {UserModel} from "../models";
+import { API } from '../API';
+import { UserModel } from '../models';
 
 export interface LoginFormValues {
     email: string;
@@ -11,6 +11,10 @@ export interface VerifyUserData {
     success: (user: UserModel) => void,
     error: () => void,
 }
+
+const verifyUser = (email: string, password: string) => (
+  API.get(`/users?email=${email}&password=${password}`)
+);
 
 class Authentication {
     static isAuthenticated = false;
@@ -25,7 +29,7 @@ class Authentication {
     };
 
     static verifyUser = (props: VerifyUserData) => {
-      API.verifyUser(props.user.email, props.user.password).then(
+      verifyUser(props.user.email, props.user.password).then(
         (res: any) => {
           if (res.data.length) {
             Authentication.signIn(() => props.success(res.data[0]));
