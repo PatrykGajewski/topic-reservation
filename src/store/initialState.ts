@@ -15,8 +15,11 @@ const initialState: StateModel = {
     finishedUniversities: [],
     actualUniversities: [],
     highestTitle: {
-      fullTitle: '',
-      shortTitle: '',
+      id: '',
+      name: {
+        short: '',
+        full: '',
+      },
     },
   },
   projects: [],

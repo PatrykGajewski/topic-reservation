@@ -125,15 +125,24 @@ export interface TagModel {
 }
 
 export interface HighestTitleModel {
-  fullTitle: string,
-  shortTitle: string,
+  id: string,
+  name: {
+    full: string,
+    short: string,
+  }
 }
+
 
 export interface ProjectOwnerModel {
   id: string,
   firstName: string,
   lastName: string,
   highestTitle: HighestTitleModel,
+}
+
+export interface ProjectRatingModel {
+  votes: number,
+  value: number,
 }
 
 export interface ProjectModel {
@@ -165,4 +174,5 @@ export interface ProjectModel {
   // NOTE ownerId is duplicated but it is necessary to use (projects?ownerId=) path
   ownerId: string,
   owner: ProjectOwnerModel,
+  rating: ProjectRatingModel,
 }
