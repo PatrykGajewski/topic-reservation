@@ -1,6 +1,6 @@
-import { StateModel } from './state.model';
+import { AppState } from './appState';
 
-const initialState: StateModel = {
+const initialState: AppState = {
   user: {
     id: '',
     email: '',
@@ -13,7 +13,7 @@ const initialState: StateModel = {
     address: null,
     phoneNumber: null,
     finishedUniversities: [],
-    actualUniversities: [],
+    currentUniversities: [],
     highestTitle: {
       id: '',
       name: {
@@ -23,6 +23,7 @@ const initialState: StateModel = {
     },
   },
   projects: [],
+  universities: [],
   loading: false,
   success: false,
   error: '',

@@ -7,7 +7,7 @@ import Loader from 'react-loader-spinner';
 import { ContainerWithHeader, ContainerWithHeaderRow } from '../components';
 import { API } from '../../API';
 import { ProjectsDataFetched, ProjectsDataFetching, ProjectsDataFetchingError } from '../../store/actions';
-import { StateModel } from '../../store/state.model';
+import { AppState } from '../../store/appState';
 
 const ProjectsContainer = styled.div`
   position: relative;
@@ -107,7 +107,7 @@ const fetchData = (userId: string) => async (dispatch: any) => {
 
 const OwnedProjectsPage = () => {
   const dispatch = useDispatch();
-  const stateData = useSelector((state: StateModel) => ({
+  const stateData = useSelector((state: AppState) => ({
     loading: state.loading,
     success: state.success,
     error: state.error,

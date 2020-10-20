@@ -1,20 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Grid, Table, TableBody, TableHead, TableCell, TableRow,
-  Button, TextField,
-} from '@material-ui/core';
-import { CountryDropdown } from 'react-country-region-selector';
-import Select, { ValueType } from 'react-select';
+import React, {useEffect, useState} from 'react';
+import {Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField,} from '@material-ui/core';
+import {CountryDropdown} from 'react-country-region-selector';
+import Select, {ValueType} from 'react-select';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import { API } from '../../API';
-import {
-  ProjectsDataFetching,
-  ProjectsDataFetchingError,
-  ProjectsDataFetched,
-} from '../../store/actions';
-import { StateModel } from '../../store/state.model';
-import { ProjectModel, ProjectOwnerModel } from '../../models';
+import {useDispatch, useSelector} from 'react-redux';
+import {API} from '../../API';
+import {ProjectsDataFetched, ProjectsDataFetching, ProjectsDataFetchingError,} from '../../store/actions';
+import {AppState} from '../../store/appState';
+import {ProjectOwnerModel} from "../../models/project/project-owner.model";
+import {OwnedProject} from "../../models/project/owned-project.model";
+import {SelectOption} from "../../models/forms/select-option.model";
 
 const ContentContainer = styled.div`
   padding: 20px;
@@ -52,11 +47,6 @@ interface University {
     full: string,
     short: string
   }
-}
-
-interface SelectOption {
-  label: string,
-  value: string,
 }
 
 const fetchUniversitiesList = async () => {
@@ -150,7 +140,7 @@ const initialState = {
 
 const ProjectListPage = () => {
   const dispatch = useDispatch();
-  const stateData = useSelector((state: StateModel) => ({
+  const stateData = useSelector((state: AppState) => ({
     loading: state.loading,
     success: state.success,
     error: state.error,
@@ -287,7 +277,7 @@ const ProjectListPage = () => {
             </TableHead>
             <TableBody>
               {
-                stateData.projects.map((project: ProjectModel) => (
+                stateData.projects.map((project: OwnedProject) => (
                   <TableRow>
                     <TableCell>{project.topic}</TableCell>
                     <TableCell>{project.type}</TableCell>

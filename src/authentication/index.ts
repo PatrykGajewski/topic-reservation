@@ -1,5 +1,5 @@
 import { API } from '../API';
-import { UserModel } from '../models';
+import {UserModel} from "../models/user/user.model";
 
 export interface LoginFormValues {
     email: string;

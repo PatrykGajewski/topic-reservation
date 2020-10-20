@@ -11,10 +11,10 @@ import {
 // NOTE For material-ui-pickers v3 use v1.x version of @date-io adapters.
 // npm i @date-io/date-fns@1.x date-fns
 import DateFnsUtils from '@date-io/date-fns';
-import { FormElementsGroup } from '../components';
+import { FormElementsGroup } from '../../components';
 
 import { UserPersonalValidation } from './validationSchema';
-import { Footer, FooterButton } from '../../components';
+import { Footer, FooterButton } from '../../../components';
 
 export interface UserPersonalValues {
   firstName: string,
@@ -30,14 +30,14 @@ export interface UserPersonalValues {
 }
 
 interface UserPersonalProps {
-    values: UserPersonalValues,
+    initialValues: UserPersonalValues,
     onSubmit: (values: UserPersonalValues) => void,
     handleClose: () => void,
 }
 
 const UserPersonalForm = (props: UserPersonalProps) => (
   <Formik
-    initialValues={props.values}
+    initialValues={props.initialValues}
     onSubmit={props.onSubmit}
     validationSchema={UserPersonalValidation}
   >

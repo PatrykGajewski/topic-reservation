@@ -3,7 +3,7 @@ import { Switch, RouteComponentProps, Route } from 'react-router-dom';
 
 import { TopBar } from '../components';
 import { LogoutPage } from './logoutPage';
-import { AccountPage } from './account';
+import { AccountPage } from './account/AccountPage';
 import { OwnedProjectsPage } from './owned';
 import { ProjectListPage } from './list';
 import { AccountPageWrapper } from './dataFetchers';
