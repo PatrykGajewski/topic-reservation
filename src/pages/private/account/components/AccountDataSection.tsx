@@ -1,13 +1,15 @@
 import React from 'react';
 import { ContainerWithHeader, ContainerWithHeaderRow } from 'pages/components';
+import { UserRole } from 'models/user';
 
-export interface AccountSectionDataShape {
+export interface AccountSectionData {
   email: string,
-  creationDate: Date | null;
+  creationDate: string;
+  userRoles: UserRole[]
 }
 
 interface Props {
-  data: AccountSectionDataShape
+  data: AccountSectionData
 }
 
 export const AccountDataSection = (props: Props) => (
@@ -15,6 +17,7 @@ export const AccountDataSection = (props: Props) => (
     header="Account"
   >
     <ContainerWithHeaderRow header="Email" content={props.data.email} />
-    <ContainerWithHeaderRow header="Creation date" content={props.data.creationDate ? props.data.creationDate.toLocaleDateString() : null} />
+    <ContainerWithHeaderRow header="Creation date" content={props.data.creationDate} />
+    {/* TODO create account type based on userRoles*/}
   </ContainerWithHeader>
 );

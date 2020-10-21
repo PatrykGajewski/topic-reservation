@@ -1,6 +1,7 @@
-import { EducationSectionDataShape } from '../components';
+import { EducationSectionData } from '../components';
+import { EducationStateData } from '../AccountPage';
 
-export const createEducationData = ():EducationSectionDataShape => ({
-  finishedUniversities: [],
-  currentUniversities: [],
+export const createEducationData = (data: EducationStateData):EducationSectionData => ({
+  finishedUniversities: data.finishedUniversities,
+  currentUniversities: data.currentUniversities,
 });

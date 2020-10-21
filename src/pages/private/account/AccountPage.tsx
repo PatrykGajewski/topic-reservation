@@ -4,10 +4,12 @@ import FaceIcon from '@material-ui/icons/Face';
 
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'react-loader-spinner';
+import { UserAddress, UserGender, UserRole } from 'models/user';
+import { CurrentUniversity, FinishedUniversity } from 'models/university';
 import { Popup } from '../../components';
 import { ScalableImg } from '../../public';
 import {
-  CurrentUniversityForm, FinishedUniversityForm, UserPersonalForm, UserPersonalValues,
+  CurrentUniversityForm, FinishedUniversityForm, UserPersonalForm, PersonalSectionValues,
 } from './forms';
 
 import { ContentWrapper, PhotoWrapper } from './css';
@@ -20,36 +22,95 @@ import {
   getUserData,
   updatePersonalData,
 } from './helpers';
-import { AccountDataSection, EducationDataSection, PersonalDataSection } from './components';
+import {
+  AccountDataSection,
+  AccountSectionData,
+  EducationDataSection,
+  EducationSectionData,
+  PersonalDataSection,
+  PersonalSectionData,
+} from './components';
 
 import { ViewState } from '../models';
-import { StateModel } from '/store/appState';
+import { AppState } from 'store/appState';
+
+interface ViewData {
+  personalData: PersonalSectionData,
+  accountData: AccountSectionData,
+  educationData: EducationSectionData
+}
+
+export interface PersonalStateData {
+  firstName: string,
+  lastName: string | null,
+  birthDate: string | null,
+  address: UserAddress | null,
+  phoneNumber: string | null,
+  gender: UserGender,
+}
+
+export interface AccountStateData {
+  accountId: string,
+  email: string,
+  roles: UserRole[],
+  creationDate: string,
+  icon: {
+    link: string,
+    added: boolean,
+  }
+}
+
+export interface EducationStateData {
+  finishedUniversities: FinishedUniversity[],
+  currentUniversities: CurrentUniversity[],
+}
+
+export interface PageStateData {
+  success: boolean,
+  loading: boolean,
+  error: any,
+}
+
+interface StateData {
+  personalData: PersonalStateData,
+  accountData: AccountStateData,
+  educationData: EducationStateData,
+  pageData: PageStateData,
+}
 
 const AccountPage = () => {
   const dispatch = useDispatch();
-  const stateData = useSelector((state: StateModel) => ({
+  const stateData: StateData = useSelector((state: AppState):StateData => ({
     personalData: {
       firstName: state.user.firstName,
       lastName: state.user.lastName,
       birthDate: state.user.birthDate,
       address: state.user.address,
       phoneNumber: state.user.phoneNumber,
+      gender: state.user.gender,
     },
     accountData: {
+      accountId: state.user.id,
       email: state.user.email,
       creationDate: state.user.accountCreationDate,
-      iconAdded: state.user.icon.uploaded,
-      iconLink: state.user.icon.link,
+      icon: state.user.icon,
+      roles: state.user.roles,
     },
     educationData: {
       finishedUniversities: state.user.finishedUniversities,
       currentUniversities: state.user.currentUniversities,
     },
-    id: state.user.id,
-    success: state.success,
-    error: state.error,
-    loading: state.loading,
+    pageData: {
+      success: state.success,
+      error: state.error,
+      loading: state.loading,
+    },
   }));
+  const [viewData, setViewData] = useState<ViewData>({
+    personalData: createPersonalData(stateData.personalData),
+    accountData: createAccountData(stateData.accountData),
+    educationData: createEducationData(stateData.educationData),
+  });
   const [viewState, setViewState] = useState<ViewState>(ViewState.LOADING);
   const [personalEditing, setPersonalEditing] = useState<boolean>(false);
   const [finishedUniversityEditing, setFinishedUniversityEditing] = useState<boolean>(false);
@@ -72,6 +133,17 @@ const AccountPage = () => {
     setViewState(ViewState.OK);
   }, []);
 
+  // TODO verify what is wrong with below effect
+/*
+  useEffect(() => {
+    setViewData({
+      accountData: createAccountData(stateData.accountData),
+      personalData: createPersonalData(stateData.personalData),
+      educationData: createEducationData(stateData.educationData),
+    });
+  }, [stateData.personalData, stateData.accountData, stateData.educationData]);
+*/
+
   const handlePersonalEditOpen = () => {
     setPersonalEditing(true);
   };
@@ -80,7 +152,7 @@ const AccountPage = () => {
     setPersonalEditing(false);
   };
 
-  const handlePersonalSubmit = (values: UserPersonalValues) => {
+  const handlePersonalSubmit = (values: PersonalSectionValues) => {
     const dataShape = {
       firstName: values.firstName,
       lastName: values.lastName,
@@ -95,8 +167,8 @@ const AccountPage = () => {
         flatNumber: values.flatNumber,
       },
     };
-    updatePersonalData(dataShape, stateData.id).then(() => {
-      getUserData(stateData.id)(dispatch);
+    updatePersonalData(dataShape, stateData.accountData.accountId).then(() => {
+      getUserData(stateData.accountData.accountId)(dispatch);
     });
     setPersonalEditing(false);
   };
@@ -148,9 +220,9 @@ const AccountPage = () => {
           <Grid container>
             <Grid item sm={3}>
               <PhotoWrapper>
-                {stateData.accountData.iconAdded ? (
+                {stateData.accountData.icon.added ? (
                   <ScalableImg
-                    src={stateData.accountData.iconLink}
+                    src={stateData.accountData.icon.link}
                     alt="User icon"
                   />
                 ) : (
@@ -162,15 +234,15 @@ const AccountPage = () => {
 
               <PersonalDataSection
                 handleEdit={handlePersonalEditOpen}
-                data={createPersonalData()}
+                data={viewData.personalData}
               />
 
               <AccountDataSection
-                data={createAccountData()}
+                data={viewData.accountData}
               />
 
               <EducationDataSection
-                data={createEducationData()}
+                data={viewData.educationData}
                 onFinishedUniversityEditOpen={handleFinishedUniversityEditOpen}
                 onCurrentUniversityEditOpen={handleCurrentUniversityEditOpen}
               />
@@ -184,7 +256,7 @@ const AccountPage = () => {
             >
               <div>
                 <UserPersonalForm
-                  initialValues={createPersonalDataEditValues()}
+                  initialValues={createPersonalDataEditValues(stateData.personalData)}
                   onSubmit={handlePersonalSubmit}
                   handleClose={handlePersonalEditClose}
                 />

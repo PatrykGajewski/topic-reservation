@@ -1,44 +1,15 @@
 import React from 'react';
 import { ContainerWithHeader, ContainerWithHeaderRow } from 'pages/components';
 import { CurrentUniversityValues, FinishedUniversityValues } from '../models';
+import { FinishedUniversity, CurrentUniversity} from "models/university";
 
-interface CurrentUniversity {
-  id: string,
-  name: {
-    full: string,
-    shortcut: string,
-  },
-  department: {
-    id: string,
-    full: string,
-    shortcut: string,
-  },
-  direction: {
-    full: string,
-    shortcut: string,
-  },
-  location: {
-    country: string,
-  },
-  startDate: string,
-}
-
-interface FinishedUniversity extends CurrentUniversity {
-  degree: {
-    id: string,
-    full: string,
-    shortcut: string,
-  }
-  endDate: string,
-}
-
-export interface EducationSectionDataShape {
+export interface EducationSectionData {
   finishedUniversities: FinishedUniversity[],
   currentUniversities: CurrentUniversity[]
 }
 
 interface Props {
-  data: EducationSectionDataShape
+  data: EducationSectionData
   onFinishedUniversityEditOpen: (data: FinishedUniversityValues) => void,
   onCurrentUniversityEditOpen: (data: CurrentUniversityValues) => void,
 }
@@ -59,9 +30,9 @@ export const EducationDataSection = (props: Props) => (
         > Edit
         </button>
         <ContainerWithHeaderRow header="Name" content={university.name.full} />
-        <ContainerWithHeaderRow header="Department" content={university.department.full} />
-        <ContainerWithHeaderRow header="Obtained title" content={university.department.full} />
-        <ContainerWithHeaderRow header="Country" content={university.location.country} />
+        <ContainerWithHeaderRow header="Department" content={university.department.name.full} />
+        <ContainerWithHeaderRow header="Obtained title" content={university.department.name.full} />
+        <ContainerWithHeaderRow header="Country" content={university.location.country.name} />
         <ContainerWithHeaderRow header="Start Date" content={university.endDate} />
         <ContainerWithHeaderRow header="End Date" content={university.endDate} />
       </div>
@@ -77,8 +48,8 @@ export const EducationDataSection = (props: Props) => (
         > Edit
         </button>
         <ContainerWithHeaderRow header="Name" content={university.name.full} />
-        <ContainerWithHeaderRow header="Department" content={university.department.full} />
-        <ContainerWithHeaderRow header="Country" content={university.location.country} />
+        <ContainerWithHeaderRow header="Department" content={university.department.name.full} />
+        <ContainerWithHeaderRow header="Country" content={university.location.country.name} />
         <ContainerWithHeaderRow header="Start date" content={university.startDate} />
       </div>
     ))}

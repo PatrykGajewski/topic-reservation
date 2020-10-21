@@ -11,12 +11,26 @@ import {
 // NOTE For material-ui-pickers v3 use v1.x version of @date-io adapters.
 // npm i @date-io/date-fns@1.x date-fns
 import DateFnsUtils from '@date-io/date-fns';
+import Select, { ValueType } from 'react-select';
+import { SelectOption } from 'models/forms';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import { makeStyles } from '@material-ui/core/styles';
+import { genderOptions } from './config';
 import { FormElementsGroup } from '../../components';
 
 import { UserPersonalValidation } from './validationSchema';
 import { Footer, FooterButton } from '../../../components';
+import { SimpleSelect } from '../../../components/forms';
 
-export interface UserPersonalValues {
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    minWidth: 120,
+  },
+}));
+
+export interface PersonalSectionValues {
   firstName: string,
   lastName: string,
   birthDate: string,
@@ -27,11 +41,12 @@ export interface UserPersonalValues {
   streetName: string,
   buildingNumber: string,
   flatNumber: string,
+  gender: string,
 }
 
 interface UserPersonalProps {
-    initialValues: UserPersonalValues,
-    onSubmit: (values: UserPersonalValues) => void,
+    initialValues: PersonalSectionValues,
+    onSubmit: (values: PersonalSectionValues) => void,
     handleClose: () => void,
 }
 
@@ -55,8 +70,9 @@ const UserPersonalForm = (props: UserPersonalProps) => (
             value={values.firstName}
             onChange={(e) => setFieldValue('firstName', e.currentTarget.value)}
           />
-          {/* TODO remove errors console log */}
+          {/* TODO remove console log */}
           {console.log(errors)}
+          {console.log(values)}
           <TextField
             variant="filled"
             name="lastName"
@@ -67,7 +83,16 @@ const UserPersonalForm = (props: UserPersonalProps) => (
             onChange={(e) => setFieldValue('lastName', e.currentTarget.value)}
           />
         </FormElementsGroup>
-
+        <SimpleSelect
+          options={genderOptions}
+          // @ts-ignore
+          selectedOption={genderOptions.find((option) => option.value === values.gender)}
+          handleChange={(value: string) => setFieldValue('gender', value)}
+          id="gender"
+          label="Select gender"
+          labelId="genderLabel"
+        />
+        <ErrorMessage name="gender" />
         <FormElementsGroup>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker

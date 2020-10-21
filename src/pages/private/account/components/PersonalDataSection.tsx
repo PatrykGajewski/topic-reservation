@@ -1,18 +1,19 @@
 import React from 'react';
 import { ContainerWithHeader, ContainerWithHeaderRow } from 'pages/components';
-import { UserAddress } from 'models/user';
+import { UserAddress, UserGender } from 'models/user';
 
-export interface PersonalSectionDataShape {
+export interface PersonalSectionData {
   firstName: string,
   lastName: string,
-  birthDate: Date | null,
+  birthDate: string,
   address: UserAddress,
   phoneNumber: string
+  gender: UserGender,
 }
 
 interface Props {
   handleEdit: () => void,
-  data: PersonalSectionDataShape
+  data: PersonalSectionData
 }
 
 export const PersonalDataSection = (props: Props) => (
@@ -24,9 +25,11 @@ export const PersonalDataSection = (props: Props) => (
     <ContainerWithHeaderRow header="Firstname" content={props.data.firstName} />
     <ContainerWithHeaderRow header="Lastname" content={props.data.lastName} />
 
+    <ContainerWithHeaderRow header="Gender" content={props.data.gender} />
+
     <ContainerWithHeaderRow
       header="Date of birth"
-      content={props.data.birthDate ? props.data.birthDate.toLocaleDateString() : null}
+      content={props.data.birthDate}
     />
 
     <ContainerWithHeaderRow header="Country" content={props.data.address.country} />

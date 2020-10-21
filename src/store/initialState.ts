@@ -1,4 +1,5 @@
 import { AppState } from './appState';
+import { UserGender } from '../models/user';
 
 const initialState: AppState = {
   user: {
@@ -9,7 +10,11 @@ const initialState: AppState = {
     lastName: null,
     birthDate: null,
     accountCreationDate: '',
-    accountExpirationDate: '',
+    gender: UserGender.MALE,
+    icon: {
+      link: '',
+      added: false,
+    },
     address: null,
     phoneNumber: null,
     finishedUniversities: [],
@@ -23,6 +28,7 @@ const initialState: AppState = {
     },
   },
   projects: [],
+  degrees: [],
   universities: [],
   loading: false,
   success: false,

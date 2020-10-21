@@ -1,7 +1,12 @@
-import {CurrentUniversity} from "./current-university.model";
-import {UniversityDegree} from "./university-degree.model";
+import { CurrentUniversity } from "./current-university.model";
 
 export interface FinishedUniversity extends CurrentUniversity {
+  degree: {
+    id: string,
+    name: {
+      full: string,
+      short: string,
+    }
+  }
   endDate: string,
-  academicTitle: UniversityDegree
 }
