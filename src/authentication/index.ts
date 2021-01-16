@@ -1,5 +1,5 @@
 import { API } from '../API';
-import {UserModel} from "../models/user/user.model";
+import { UserModel } from '../models/user';
 
 export interface LoginFormValues {
     email: string;
@@ -13,7 +13,10 @@ export interface VerifyUserData {
 }
 
 const verifyUser = (email: string, password: string) => (
-  API.get(`/users?email=${email}&password=${password}`)
+  API.post('/users/login', {
+    email,
+    password,
+  })
 );
 
 class Authentication {
@@ -31,11 +34,8 @@ class Authentication {
     static verifyUser = (props: VerifyUserData) => {
       verifyUser(props.user.email, props.user.password).then(
         (res: any) => {
-          if (res.data.length) {
-            Authentication.signIn(() => props.success(res.data[0]));
-            console.log(res);
-          }
-          props.error();
+          Authentication.signIn(() => props.success(res.data[0]));
+          console.log(res);
         },
       ).catch((err) => {
         props.error();
