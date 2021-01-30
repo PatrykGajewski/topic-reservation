@@ -70,9 +70,6 @@ const UserPersonalForm = (props: UserPersonalProps) => (
             value={values.firstName}
             onChange={(e) => setFieldValue('firstName', e.currentTarget.value)}
           />
-          {/* TODO remove console log */}
-          {console.log(errors)}
-          {console.log(values)}
           <TextField
             variant="filled"
             name="lastName"
@@ -85,8 +82,7 @@ const UserPersonalForm = (props: UserPersonalProps) => (
         </FormElementsGroup>
         <SimpleSelect
           options={genderOptions}
-          // @ts-ignore
-          selectedOption={genderOptions.find((option) => option.value === values.gender)}
+          selectedOption={genderOptions.find((option) => option.value === values.gender) as SelectOption}
           handleChange={(value: string) => setFieldValue('gender', value)}
           id="gender"
           label="Select gender"
