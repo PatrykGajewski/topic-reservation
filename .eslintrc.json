@@ -26,6 +26,8 @@
         ],
         "react/jsx-props-no-spreading": "off",
         "import/no-default-export": "off",
+        // no errors relatex with export from the file
+        "import/prefer-default-export": "off",
         "jsx-a11y/click-events-have-key-events": "off",
         "import/extensions": ["error", "ignorePackages", {
             "js": "never",
@@ -40,7 +42,9 @@
         "react/jsx-one-expression-per-line": "off",
         "no-underscore-dangle": "off",
         "camelcase": "off",
-        "react/jsx-filename-extension": 0
+        "react/jsx-filename-extension": "off",
+        // you can use props.someValue instead of  syntach const { someValue } = props;
+        "react/destructuring-assignment": "off"
     },
     "settings": {
         "import/extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs"]

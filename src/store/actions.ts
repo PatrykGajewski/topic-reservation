@@ -1,4 +1,5 @@
-import { UserModel, ProjectModel } from '../models';
+import {UserModel} from "../models/user";
+import {ProjectModel} from "../models/project";
 
 export enum ACTION_TYPES {
   'USER_DATA_FETCHING' = 'USER_DATA_FETCHING',

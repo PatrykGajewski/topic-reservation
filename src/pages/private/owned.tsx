@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
-import { Grid } from '@material-ui/core';
+import React, {useEffect} from 'react';
+import {Grid} from '@material-ui/core';
 import styled from 'styled-components';
 import Rating from '@material-ui/lab/Rating';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Loader from 'react-loader-spinner';
-import { ContainerWithHeader, ContainerWithHeaderRow } from '../components';
-import { API } from '../../API';
-import { ProjectsDataFetched, ProjectsDataFetching, ProjectsDataFetchingError } from '../../store/actions';
-import { StateModel } from '../../store/state.model';
+import {ContainerWithHeader, ContainerWithHeaderRow} from '../components';
+import {API} from '../../API';
+import {ProjectsDataFetched, ProjectsDataFetching, ProjectsDataFetchingError} from '../../store/actions';
+import {AppState} from '../../store/appState';
+import {ProjectStatus} from "../../models/project";
 
 const ProjectsContainer = styled.div`
   position: relative;
@@ -89,15 +90,23 @@ const TagWrapper = styled.div`
   margin: 5px;
 `;
 
+const StyledContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const fetchData = (userId: string) => async (dispatch: any) => {
   try {
     dispatch({ ...new ProjectsDataFetching() });
-    const { data, error } = await API.get(`/projects?ownerId=${userId}`);
+    const { data, error } = await API.get('/projects/userProjects');
     if (error) {
       console.error(error);
       dispatch({ ...new ProjectsDataFetchingError(error.message) });
     } else {
-      dispatch({ ...new ProjectsDataFetched(data) });
+      dispatch({ ...new ProjectsDataFetched(data.data) });
     }
   } catch (error) {
     console.error(error);
@@ -107,7 +116,7 @@ const fetchData = (userId: string) => async (dispatch: any) => {
 
 const OwnedProjectsPage = () => {
   const dispatch = useDispatch();
-  const stateData = useSelector((state: StateModel) => ({
+  const stateData = useSelector((state: AppState) => ({
     loading: state.loading,
     success: state.success,
     error: state.error,
@@ -125,13 +134,16 @@ const OwnedProjectsPage = () => {
         <div>Error message: {stateData.error}</div>
       )}
       {stateData.loading && (
-        <Loader
-          type="Puff"
-          color="#00BFFF"
-          height={100}
-          width={100}
-          timeout={3000} // 3 secs
-        />
+        <StyledContainer>
+          <Loader
+            type="Puff"
+            color="#00BFFF"
+            height={100}
+            width={100}
+            timeout={3000} // 3 secs
+          />
+        </StyledContainer>
+
       )}
       {stateData.success && (
         <>
@@ -147,7 +159,7 @@ const OwnedProjectsPage = () => {
           <ProjectsContainer>
             {stateData.projects.map((project) => (
               <ProjectWrapper
-                color={project.status.completed ? 'green' : 'blue'}
+                color={project.status === ProjectStatus.FINISHED ? 'green' : 'blue'}
               >
                 <ContainerWithHeader
                   header={project.type}
@@ -161,42 +173,43 @@ const OwnedProjectsPage = () => {
                       <ContainerWithHeaderRow
                         header="Promoter"
                         content={`
-                    ${project.promoter.highestTitle.name.short}
                     ${project.promoter.firstName}
                     ${project.promoter.lastName}                  
                   `}
                       />
                       <ContainerWithHeaderRow
                         header="University"
-                        content={project.university.name.full}
+                        content={project.university.namePL.full}
                       />
                     </Grid>
                     <Grid item xs={6}>
                       <ContainerWithHeaderRow
                         header="Added date"
-                        content={project.addedDate}
+                        content={new Date(project.createdAt).toLocaleDateString()}
                       />
-                      <ContainerWithHeader
-                        header="Rating"
-                        smallPadding
-                        lightBorder
-                        fitContent
-                      >
-                        <Grid container spacing={2} justify="center">
-                          <Grid item>
-                            <Rating
-                              value={project.rating.value}
-                              disabled
-                            />
+                      {project.status === ProjectStatus.FINISHED && (
+                        <ContainerWithHeader
+                          header="Rating"
+                          smallPadding
+                          lightBorder
+                          fitContent
+                        >
+                          <Grid container spacing={2} justify="center">
+                            <Grid item>
+                              <Rating
+                                value={project.rating.value}
+                                disabled
+                              />
+                            </Grid>
+                            <Grid item>
+                              Voices: {project.rating.votes}
+                            </Grid>
+                            <Grid item>
+                              Rating: {project.rating.value}
+                            </Grid>
                           </Grid>
-                          <Grid item>
-                          Voices: {project.rating.votes}
-                          </Grid>
-                          <Grid item>
-                          Rating: {project.rating.value}
-                          </Grid>
-                        </Grid>
-                      </ContainerWithHeader>
+                        </ContainerWithHeader>
+                      )}
                     </Grid>
                     <Grid item xs={12}>
                       <ContainerWithHeader
@@ -205,7 +218,7 @@ const OwnedProjectsPage = () => {
                         lightBorder
                       >
                         {project.tags.map((tag) => (
-                          <TagWrapper>{tag.label}</TagWrapper>
+                          <TagWrapper>{tag.labelPL}</TagWrapper>
                         ))}
                       </ContainerWithHeader>
                     </Grid>

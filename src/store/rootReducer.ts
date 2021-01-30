@@ -1,8 +1,8 @@
 import { ACTION_TYPES, ActionTypes } from './actions';
-import { StateModel } from './state.model';
+import { AppState } from './appState';
 import initialState from './initialState';
 
-const rootReducer = (state = initialState, action: ActionTypes): StateModel => {
+const rootReducer = (state = initialState, action: ActionTypes): AppState => {
   switch (action.type) {
   case ACTION_TYPES.USER_DATA_FETCHING:
   case ACTION_TYPES.PROJECTS_DATA_FETCHING:

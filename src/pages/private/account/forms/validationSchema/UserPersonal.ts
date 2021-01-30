@@ -20,6 +20,8 @@ const UserPersonalValidation = Yup.object().shape({
   buildingNumber: Yup.string()
     .required(),
   flatNumber: Yup.string(),
+  gender: Yup.string()
+    .required(),
 });
 
 // eslint-disable-next-line import/prefer-default-export

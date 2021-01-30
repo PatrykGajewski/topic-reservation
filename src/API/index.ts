@@ -1,6 +1,11 @@
 import axios, { AxiosResponse } from 'axios';
 
-const BACKEND_API_URL = 'http://localhost:3000';
+require('dotenv').config();
+
+// NOTE that each env variable should start with REACT_APP_ prefix
+// other named variables except NODE_ENV will be ignored
+// NOTE after env variable change you should launch app one more time (process.env)
+const BACKEND_API_URL = process.env.REACT_APP_API_URL;
 
 // eslint-disable-next-line import/prefer-default-export
 export class API {

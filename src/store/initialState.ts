@@ -1,28 +1,24 @@
-import { StateModel } from './state.model';
+import { AppState } from './appState';
+import { UserGender } from '../models/user';
 
-const initialState: StateModel = {
+const initialState: AppState = {
   user: {
     id: '',
     email: '',
     roles: [],
     firstName: '',
-    lastName: null,
+    lastName: '',
     birthDate: null,
-    accountCreationDate: '',
-    accountExpirationDate: '',
+    createdAt: '',
+    updatedAt: '',
+    gender: UserGender.FEMALE,
+    profilePhotoId: null,
     address: null,
     phoneNumber: null,
-    finishedUniversities: [],
-    actualUniversities: [],
-    highestTitle: {
-      id: '',
-      name: {
-        short: '',
-        full: '',
-      },
-    },
   },
   projects: [],
+  degrees: [],
+  universities: [],
   loading: false,
   success: false,
   error: '',

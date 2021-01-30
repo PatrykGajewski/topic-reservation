@@ -6,7 +6,6 @@ import { LogoutPage } from './logoutPage';
 import { AccountPage } from './account';
 import { OwnedProjectsPage } from './owned';
 import { ProjectListPage } from './list';
-import { AccountPageWrapper } from './dataFetchers';
 
 const HomePageAuth = (props: RouteComponentProps) => (
   <div>
@@ -30,7 +29,7 @@ const HomePageAuth = (props: RouteComponentProps) => (
         exact
         path="/"
         render={() => (
-          <AccountPageWrapper />
+          <AccountPage />
         )}
       />
     </Switch>
