@@ -1,39 +1,14 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Formik, Form } from 'formik';
-import styled from 'styled-components';
-
+import { Formik, Form, ErrorMessage } from 'formik';
 import { Button, TextField } from '@material-ui/core';
 
-import axios from 'axios';
-
-// TODO move api calls from here
-
-import { ValidationError } from 'yup';
 import { FieldWrapper } from './loginForm';
-import { BACKEND_API_URL } from '../../../authentication/constants';
 
-const verifyEmailDuplication = (email: string) => (
-  new Promise((resolve, reject) => (axios.get(`${BACKEND_API_URL}/users?login=${email}`).then(
-    (res) => {
-      switch (res.status) {
-      case 304:
-        resolve(true);
-        break;
-      case 200:
-        reject(new ValidationError('Something went wrong', { error: true }, 'email'));
-        break;
-      default:
-        reject(new ValidationError('Something went wrong', { error: true }, 'email'));
-        break;
-      }
-    },
-  ).catch(
-    (err) => {
-      reject(new ValidationError('Something went wrong', { error: true }, 'email'));
-    },
-  )))
-);
+import { UserGender } from '../../../models/user';
+import { SimpleSelect } from '../../components/forms';
+import { genderOptions } from '../../private/account/forms/config';
+import { SelectOption } from '../../../models/forms';
 
 const FieldsLength = {
   firstName: {
@@ -57,18 +32,11 @@ const RegisterValidationSchema = Yup.object().shape({
     .required('First Name is required'),
   lastName: Yup.string()
     .min(FieldsLength.lastName.min, `Please enter at least ${FieldsLength.lastName.min} characters`)
-    .max(FieldsLength.lastName.max, `Field is limited to ${FieldsLength.lastName.max}`),
+    .max(FieldsLength.lastName.max, `Field is limited to ${FieldsLength.lastName.max}`)
+    .required('Last Name is required'),
   email: Yup.string()
     .email('Please enter correct email address')
     .required('Email is required field'),
-  /*      .test(
-      'checkDuplicateEmail',
-      'The email address has been taken',
-        //@ ts-ignore
-          function(email) {
-            return verifyEmailDuplication(email);
-          }
-    ), */
   password: Yup.string()
     .min(FieldsLength.password.min, `Please enter at least ${FieldsLength.password.min} characters`)
     .max(FieldsLength.password.max, `Password is limited to ${FieldsLength.password.max} characters`)
@@ -92,28 +60,22 @@ export interface RegisterFormValues {
     email: string;
     password: string;
     passwordConfirmation: string;
+    gender: UserGender
 }
 
 interface RegisterFormProps {
     onSubmit: (values: RegisterFormValues) => void
+    initialValues: RegisterFormValues,
 }
 
 const RegisterForm = (props: RegisterFormProps) => (
   <Formik
-    initialValues={
-      {
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        passwordConfirmation: '',
-      }
-    }
+    initialValues={props.initialValues}
     onSubmit={(values) => props.onSubmit(values)}
     validationSchema={RegisterValidationSchema}
   >
     {({
-      handleChange, values, errors, touched,
+      handleChange, values, errors, touched, setFieldValue,
     }) => (
       <Form>
         <FieldWrapper>
@@ -139,6 +101,17 @@ const RegisterForm = (props: RegisterFormProps) => (
             value={values.lastName}
             onChange={handleChange}
           />
+        </FieldWrapper>
+        <FieldWrapper>
+          <SimpleSelect
+            options={genderOptions}
+            selectedOption={genderOptions.find((option) => option.value === values.gender) as SelectOption}
+            handleChange={(value: string) => setFieldValue('gender', value)}
+            id="gender"
+            label="Select gender"
+            labelId="genderLabel"
+          />
+          <ErrorMessage name="gender" />
         </FieldWrapper>
         <FieldWrapper>
           <TextField

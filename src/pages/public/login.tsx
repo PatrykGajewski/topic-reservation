@@ -8,7 +8,7 @@ import LoginForm from './components/loginForm';
 import { SIZES } from '../components/constants';
 import BackgroundURL from '../../img/loginBg.jpg';
 import { UserDataFetched } from '../../store/actions';
-import {UserModel} from "../../models/user/user.model";
+import {UserModel} from "../../models/user";
 
 const ContainerBase = css`
   display: flex;
@@ -19,6 +19,7 @@ const ContainerBase = css`
 
 export const Container = styled.div`
   ${ContainerBase}
+  height: calc(100% - 120px);
 `;
 
 const ContentContainer = styled.div`
