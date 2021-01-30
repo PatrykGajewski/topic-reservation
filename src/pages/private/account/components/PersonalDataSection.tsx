@@ -27,10 +27,7 @@ export const PersonalDataSection = (props: Props) => (
 
     <ContainerWithHeaderRow header="Gender" content={props.data.gender} />
 
-    <ContainerWithHeaderRow
-      header="Date of birth"
-      content={props.data.birthDate}
-    />
+    <ContainerWithHeaderRow header="Date of birth" content={props.data.birthDate} />
 
     <ContainerWithHeaderRow header="Country" content={props.data.address.country} />
     <ContainerWithHeaderRow header="Region" content={props.data.address.region} />

@@ -12,8 +12,8 @@ export interface VerifyUserData {
     error: () => void,
 }
 
-const verifyUser = (email: string, password: string) => (
-  API.post('/users/login', {
+const authenticateUser = (email: string, password: string) => (
+  API.post('/auth/login', {
     email,
     password,
   })
@@ -32,9 +32,9 @@ class Authentication {
     };
 
     static verifyUser = (props: VerifyUserData) => {
-      verifyUser(props.user.email, props.user.password).then(
+      authenticateUser(props.user.email, props.user.password).then(
         (res: any) => {
-          Authentication.signIn(() => props.success(res.data[0]));
+          Authentication.signIn(() => props.success(res.data.data));
           console.log(res);
         },
       ).catch((err) => {

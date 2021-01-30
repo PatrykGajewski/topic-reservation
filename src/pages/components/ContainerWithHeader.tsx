@@ -108,6 +108,7 @@ const ContainerWithHeaderRow = (props: ContainerWithHeaderRowProps) => (
 );
 
 export {
+  Row,
   ContainerWithHeader,
   ContainerWithHeaderRow,
 };

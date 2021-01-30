@@ -36,7 +36,7 @@ const FormContainer = css`
    box-sizing: border-box;
 `;
 
-const LoginFormContainer = styled.div`
+export const LoginFormContainer = styled.div`
    width: 30%;
    height: fit-content;
    
@@ -50,7 +50,7 @@ export const RegisterFormContainer = styled.div`
   ${FormContainer}
 `;
 
-const ErrorWrapper = styled.div`
+export const ErrorWrapper = styled.div`
   margin-top: 20px;
   background: yellow;
 `;

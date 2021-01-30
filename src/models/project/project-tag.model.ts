@@ -1,4 +1,5 @@
 export interface ProjectTag {
   id: string,
-  label: string,
+  labelEN: string,
+  labelPL: string,
 }

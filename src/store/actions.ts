@@ -1,5 +1,5 @@
-import {UserModel} from "../models/user/user.model";
-import {OwnedProject} from "../models/project/owned-project.model";
+import {UserModel} from "../models/user";
+import {ProjectModel} from "../models/project";
 
 export enum ACTION_TYPES {
   'USER_DATA_FETCHING' = 'USER_DATA_FETCHING',
@@ -54,9 +54,9 @@ export class ProjectsDataFetchingError {
 export class ProjectsDataFetched {
   type = ACTION_TYPES.PROJECTS_DATA_FETCHED;
 
-  payload: OwnedProject[];
+  payload: ProjectModel[];
 
-  constructor(data: OwnedProject[]) {
+  constructor(data: ProjectModel[]) {
     this.payload = data;
   }
 }

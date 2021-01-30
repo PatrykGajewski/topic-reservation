@@ -1,5 +1,5 @@
 import { UserModel } from '../models/user';
-import { OwnedProject } from '../models/project';
+import { ProjectModel } from '../models/project';
 import { University, UniversityDegree } from '../models/university';
 
 export interface AppState {
@@ -9,5 +9,5 @@ export interface AppState {
   error: any,
   universities: University[],
   degrees: UniversityDegree[],
-  projects: OwnedProject[],
+  projects: ProjectModel[],
 }

@@ -8,7 +8,7 @@ import { createStore } from 'redux';
 import Authentication from './authentication';
 import { HomePage } from './pages/public';
 import { HomePageAuth } from './pages/private';
-import rootReducer from "./store/rootReducer";
+import rootReducer from './store/rootReducer';
 
 const store = createStore(rootReducer);
 

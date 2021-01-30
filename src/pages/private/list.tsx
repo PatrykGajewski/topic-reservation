@@ -7,9 +7,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {API} from '../../API';
 import {ProjectsDataFetched, ProjectsDataFetching, ProjectsDataFetchingError,} from '../../store/actions';
 import {AppState} from '../../store/appState';
-import {ProjectOwnerModel} from "../../models/project/project-owner.model";
-import {OwnedProject} from "../../models/project/owned-project.model";
-import {SelectOption} from "../../models/forms/select-option.model";
+import {ProjectOwnerModel} from "../../models/project";
+import {ProjectModel} from "../../models/project";
+import {SelectOption} from "../../models/forms";
 
 const ContentContainer = styled.div`
   padding: 20px;
@@ -91,12 +91,13 @@ const fetchData = (country: string, university: string, searchString: string) =>
   try {
     dispatch({ ...new ProjectsDataFetching() });
 
-    const { data, error } = await API.get(pathCreator(country, university, searchString));
+    //const { data, error } = await API.get(pathCreator(country, university, searchString));
+    const { data, error } = await API.get('/projects');
 
     if (error) {
       dispatch({ ...new ProjectsDataFetchingError(error.message) });
     } else {
-      dispatch({ ...new ProjectsDataFetched(data) });
+      dispatch({ ...new ProjectsDataFetched(data.data) });
     }
   } catch (err) {
     console.error(err);
@@ -104,17 +105,9 @@ const fetchData = (country: string, university: string, searchString: string) =>
   }
 };
 
-const reserveProject = async (projectId: string, owner: ProjectOwnerModel) => {
+const reserveProject = async (projectId: string) => {
   try {
-    // NOTE ownerId is duplicated but it is necessary to use (projects?ownerId=) path
-    const { data, error } = await API.patch(`/projects/${projectId}`, {
-      owner,
-      status: {
-        selected: true,
-        completed: false,
-      },
-      ownerId: owner.id,
-    });
+    const { data, error } = await API.patch(`/projects/reserve/${projectId}`, {});
 
     if (error) {
       console.error(error);
@@ -184,12 +177,7 @@ const ProjectListPage = () => {
   };
 
   const handleReserveProject = (projectId: string) => {
-    reserveProject(projectId, {
-      id: stateData.user.id,
-      firstName: stateData.user.firstName,
-      lastName: stateData.user.lastName ? stateData.user.lastName : '',
-      highestTitle: stateData.user.highestTitle,
-    })
+    reserveProject(projectId)
       .then(() => {
         fetchData(country, university.value, searchString)(dispatch);
       });
@@ -269,39 +257,32 @@ const ProjectListPage = () => {
                 <TableCell>Promoter</TableCell>
                 <TableCell>University</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell>Owner</TableCell>
                 <TableCell>Add date</TableCell>
-                <TableCell>Country</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {
-                stateData.projects.map((project: OwnedProject) => (
+                stateData.projects.map((project: ProjectModel) => (
                   <TableRow>
                     <TableCell>{project.topic}</TableCell>
                     <TableCell>{project.type}</TableCell>
                     <TableCell>{`
-                  ${project.promoter.highestTitle.name.short}
                   ${project.promoter.firstName}
                   ${project.promoter.lastName}
                   `}
                     </TableCell>
-                    <TableCell>{project.university.name.short}</TableCell>
-                    <TableCell>{statusSelector(project.status.selected, project.status.completed)}</TableCell>
-                    <TableCell>{project.status.selected ? ` ${project.owner.highestTitle.name.short} ${project.owner.firstName} ${project.owner.lastName}` : '-'}</TableCell>
-                    <TableCell>{project.addedDate}</TableCell>
-                    <TableCell>{project.country}</TableCell>
-                    <TableCell>{
-                      project.owner.id === '' && (
-                        <Button
-                          onClick={() => handleReserveProject(project.id)}
-                          variant="outlined"
-                          color="primary"
-                        >Reserve
-                        </Button>
-                      )
-                    }
+                    <TableCell>{project.university.namePL.short}</TableCell>
+                    <TableCell>{project.status}</TableCell>
+                    <TableCell>{new Date(project.createdAt).toLocaleDateString()}</TableCell>
+
+                    <TableCell>
+                      <Button
+                        onClick={() => handleReserveProject(project.id)}
+                        variant="outlined"
+                        color="primary"
+                      >Reserve
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))
