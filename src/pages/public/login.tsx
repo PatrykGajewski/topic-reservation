@@ -52,8 +52,10 @@ export const RegisterFormContainer = styled.div`
 `;
 
 export const ErrorWrapper = styled.div`
-  margin-top: 20px;
   background: yellow;
+  padding: 1px;
+  border-radius: 4px;
+  margin: 10px;
 `;
 
 const LoginPage = (props: RouteComponentProps) => {

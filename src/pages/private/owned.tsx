@@ -1,14 +1,15 @@
-import React, {useEffect} from 'react';
-import {Grid} from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
 import Rating from '@material-ui/lab/Rating';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'react-loader-spinner';
-import {ContainerWithHeader, ContainerWithHeaderRow} from '../components';
-import {API} from '../../API';
-import {ProjectsDataFetched, ProjectsDataFetching, ProjectsDataFetchingError} from '../../store/actions';
-import {AppState} from '../../store/appState';
-import {ProjectStatus} from "../../models/project";
+import { ContainerWithHeader, ContainerWithHeaderRow } from '../components';
+import { API } from '../../API';
+import { ProjectsDataFetched, ProjectsDataFetching, ProjectsDataFetchingError } from '../../store/actions';
+import { AppState } from '../../store/appState';
+import { ProjectStatus } from '../../models/project';
+import { ContentWrapper } from "./account/css";
 
 const ProjectsContainer = styled.div`
   position: relative;
@@ -146,7 +147,7 @@ const OwnedProjectsPage = () => {
 
       )}
       {stateData.success && (
-        <>
+        <ContentWrapper>
           <GuideContainer>
             <p>Project icon color meaning</p>
             <StatusItem>
@@ -227,7 +228,7 @@ const OwnedProjectsPage = () => {
               </ProjectWrapper>
             ))}
           </ProjectsContainer>
-        </>
+        </ContentWrapper>
       )}
     </>
   );

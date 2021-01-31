@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { isEmpty } from 'lodash';
 
 import Loader from 'react-loader-spinner';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
+
 import RegisterForm, { RegisterFormValues } from './components/registerForm';
 import { Container, RegisterFormContainer, ErrorWrapper } from './login';
 import { API } from '../../API';
 import { ViewState } from '../private/models';
-
 import { UserGender } from '../../models/user';
 
 const StyledContainer = styled.div`
@@ -43,12 +43,9 @@ const RegisterPage = (props: RouteComponentProps) => {
       gender: values.gender,
     }).then(
       (res) => {
-        if (!isEmpty(res) && res.status === 200) {
+        if (res.status === 200) {
+          toast.success(res.data.message);
           props.history.push('/login');
-        } else {
-          setError(true);
-          setErrorMessages(res.body.data);
-          setViewState(ViewState.OK);
         }
       },
     ).catch(
@@ -72,7 +69,8 @@ const RegisterPage = (props: RouteComponentProps) => {
             errorMessages.map((err, index) => (
               <ErrorWrapper
                 key={index}
-              > {err.msg} </ErrorWrapper>
+              > {err.msg}
+              </ErrorWrapper>
             ))
           )}
         </RegisterFormContainer>

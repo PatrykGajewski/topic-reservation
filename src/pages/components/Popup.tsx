@@ -1,11 +1,25 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Grid } from '@material-ui/core';
+import styled, { css, keyframes } from 'styled-components';
+import CloseIcon from '@material-ui/icons/Close';
+
+export enum ButtonType {
+  PRIMARY = 'PRIMARY',
+  SECONDARY = 'SECONDARY',
+  DANGER = 'DANGER'
+}
+
+interface ButtonConfig {
+  label: string
+  disabled: boolean,
+  onClick: () => void,
+  buttonType: ButtonType
+}
 
 interface PopupProps {
   children: any,
   header: string,
   handleClose: () => void;
+  buttonsConfig: ButtonConfig[];
 }
 
 const StyledPopupMask = styled.div`
@@ -22,41 +36,77 @@ interface StyledPopupProps {
 }
 
 const StyledPopup = styled.div<StyledPopupProps>`
-    background: #e0e0e0;
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    border-radius: 12px;
-    max-height: calc(100% - 40px);
-    padding: 20px;
+  background: white;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  border-radius: 12px;
+  height: calc(100% - 40px);
+  overflow-y: hidden;
+`;
+
+const turnAnimation = keyframes`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
 `;
 
 const CloseButton = styled.button`
-  margin-right: 0;
-  margin-left: auto;
   display: block;
-  height: 35px;
-  width: 35px;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  height: 36px;
+  width: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 50%;
   border: none;
   outline: none;
-  line-height: 35px;
-  text-align: center;
   cursor: pointer;
-  box-shadow: 2px -2px 8px #55555580;
-  font-family: 'Source Sans Pro', sans-serif;
-  font-weight: 700;
   transition: all .2s;
-  font-size: 16px;
   
   &:hover {
-    background: #f0c2c24f;
+    box-shadow: 0px 0px 8px 2px #3f3f3f3d;
+    animation-name:${turnAnimation};
+    animation-duration: 0.4s;
   }
 `;
 
-const PopupHeader = styled.span`
+const popupChildrenStyle = css`
+  padding: 16px 28px;
+`;
+
+const StyledHeader = styled.div`
+  ${popupChildrenStyle}
+  display: flex;
+  position: relative;
+  align-items: center;
+  padding-right: 60px;
+  height: 64px;
+  box-sizing: border-box;
+  box-shadow: #474747 0px 5px 12px -12px;
+`;
+
+const StyledContent = styled.div`
+  padding: 28px;
+  height: calc(100% - 184px);
+  overflow-y: scroll;
+`;
+
+const StyledFooter = styled.div`
+  ${popupChildrenStyle}
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 64px;
+  box-sizing: border-box;
+  box-shadow: #474747 0px -5px 12px -12px;
+`;
+
+const StyledHeaderText = styled.span`
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: 700;
   font-size: 18px;
@@ -66,53 +116,67 @@ const PopupHeader = styled.span`
 `;
 
 interface FooterButtonProps {
-  primary?: boolean
+  buttonType: ButtonType
   children: string,
 }
 
-export const Footer = styled.div`
-  width: fit-content;
-  margin-left: auto;
-  margin-right: 0;
-`;
-
-export const FooterButton = styled.button<FooterButtonProps>`
+const FooterButton = styled.button<FooterButtonProps>`
   font-family: 'Source Sans Pro', sans-serif;
-  font-weight: 400;
+  font-weight: 600;
   outline: none;
   border: none;
-  border: grey;
-  padding: 8px 24px;
-  border-radius: 30px;
-  font-size: 18px;
+  padding: 10px 36px;
+  border-radius: 4px;
+  font-size: 16px;
   cursor: pointer;
   transition: all .2s;
-  box-shadow: 1px 1px 3px #55555580;
-  margin-left: 15px;
-  background: ${(props) => (props.primary ? '#ffc671' : '#ffffff80')};
+  margin-left: 18px;
+  background: ${(props) => {
+    switch (props.buttonType) {
+    case ButtonType.DANGER:
+      return 'red';
+    case ButtonType.PRIMARY:
+      return '#3da8d9e6';
+    case ButtonType.SECONDARY:
+      return '#c5c5c580';
+    default:
+      return '#3da8d9e6';
+    }
+  }};
   
   &:hover {
-    background: ${(props) => (props.primary ? '#f8ba5d' : '#ffffff99')};
+    box-shadow: 0px 0px 6px #55555580;
   }
 `;
 
 const Popup = (props: PopupProps) => (
   <StyledPopupMask>
     <StyledPopup>
-      <Grid container>
-        <Grid item xs={10}>
-          <PopupHeader>
-            {props.header}
-          </PopupHeader>
-        </Grid>
-        <Grid item xs={2}>
-          <CloseButton
-            onClick={props.handleClose}
-          >X
-          </CloseButton>
-        </Grid>
-      </Grid>
-      {props.children}
+      <StyledHeader>
+        <StyledHeaderText>
+          {props.header}
+        </StyledHeaderText>
+        <CloseButton
+          onClick={props.handleClose}
+        >
+          <CloseIcon />
+        </CloseButton>
+      </StyledHeader>
+      <StyledContent>
+        {props.children}
+      </StyledContent>
+      <StyledFooter>
+        {props.buttonsConfig.map((button: ButtonConfig, index: number) => (
+          <FooterButton
+            key={index}
+            disabled={button.disabled}
+            buttonType={button.buttonType}
+            onClick={button.onClick}
+          >
+            {button.label}
+          </FooterButton>
+        ))}
+      </StyledFooter>
     </StyledPopup>
   </StyledPopupMask>
 );

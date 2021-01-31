@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField,} from '@material-ui/core';
-import {CountryDropdown} from 'react-country-region-selector';
 import Select, {ValueType} from 'react-select';
 import styled from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
 import {API} from '../../API';
 import {ProjectsDataFetched, ProjectsDataFetching, ProjectsDataFetchingError,} from '../../store/actions';
 import {AppState} from '../../store/appState';
-import {ProjectOwnerModel} from "../../models/project";
+
 import {ProjectModel} from "../../models/project";
 import {SelectOption} from "../../models/forms";
+import { ContentWrapper } from "./account/css";
 
-const ContentContainer = styled.div`
+const ContentContainer = styled(ContentWrapper)`
   padding: 20px;
 `;
 
@@ -194,16 +194,6 @@ const ProjectListPage = () => {
           <FiltersContainer>
             <p>Filters section</p>
             <FiltersWrapper>
-              <FilterWrapper>
-                <label htmlFor="country">
-                  Select country
-                </label>
-                <CountryDropdown
-                  name="country"
-                  value={country}
-                  onChange={(val: string) => setCountry(val)}
-                />
-              </FilterWrapper>
               {universities.length > 0 && (
                 <FilterWrapper>
                   <label htmlFor="university">

@@ -5,11 +5,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { SelectOption } from 'models/forms';
+import styled from 'styled-components';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+    width: '100%',
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
@@ -25,6 +25,11 @@ interface Props {
   labelId: string,
 }
 
+const StyledInputLabel = styled(InputLabel)`
+  background: white;
+  border-radius: 4px;
+`;
+
 export const SimpleSelect = (props: Props) => {
   const classes = useStyles();
 
@@ -34,8 +39,8 @@ export const SimpleSelect = (props: Props) => {
 
   return (
     <div>
-      <FormControl variant="filled" className={classes.formControl}>
-        <InputLabel id={props.labelId}>{props.label}</InputLabel>
+      <FormControl variant="outlined" className={classes.formControl}>
+        <StyledInputLabel variant="outlined" id={props.labelId}>{props.label}</StyledInputLabel>
         <Select
           labelId={props.labelId}
           id={props.id}

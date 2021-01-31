@@ -1,14 +1,13 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Formik, Form, ErrorMessage } from 'formik';
+import { Formik, Form } from 'formik';
 import { Button, TextField } from '@material-ui/core';
-
-import { FieldWrapper } from './loginForm';
 
 import { UserGender } from '../../../models/user';
 import { SimpleSelect } from '../../components/forms';
 import { genderOptions } from '../../private/account/forms/config';
 import { SelectOption } from '../../../models/forms';
+import styled from "styled-components";
 
 const FieldsLength = {
   firstName: {
@@ -68,6 +67,24 @@ interface RegisterFormProps {
     initialValues: RegisterFormValues,
 }
 
+export const FieldsRow = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+`;
+
+export const FieldWrapper = styled.div`
+  min-width: 50%;
+  padding: 0 12px;
+  box-sizing: border-box;
+`;
+
+const ButtonWrapper = styled.div`
+  width: 100%;
+  padding: 0 12px;
+  box-sizing: border-box;
+`;
+
 const RegisterForm = (props: RegisterFormProps) => (
   <Formik
     initialValues={props.initialValues}
@@ -78,89 +95,95 @@ const RegisterForm = (props: RegisterFormProps) => (
       handleChange, values, errors, touched, setFieldValue,
     }) => (
       <Form>
-        <FieldWrapper>
-          <TextField
-            name="firstName"
-            variant="filled"
-            helperText={touched.firstName && errors.firstName}
-            error={touched.firstName && Boolean(errors.firstName)}
-            label="First Name"
+        <FieldsRow>
+          <FieldWrapper>
+            <TextField
+              name="firstName"
+              variant="outlined"
+              helperText={touched.firstName && errors.firstName}
+              error={touched.firstName && Boolean(errors.firstName)}
+              label="First Name"
+              value={values.firstName}
+              onChange={handleChange}
+              fullWidth
+            />
+          </FieldWrapper>
+          <FieldWrapper>
+            <TextField
+              name="lastName"
+              variant="outlined"
+              helperText={touched.lastName && errors.lastName}
+              error={touched.lastName && Boolean(errors.lastName)}
+              label="Last Name"
+              fullWidth
+              value={values.lastName}
+              onChange={handleChange}
+            />
+          </FieldWrapper>
+        </FieldsRow>
+        <FieldsRow>
+          <FieldWrapper>
+            <SimpleSelect
+              options={genderOptions}
+              selectedOption={genderOptions.find((option) => option.value === values.gender) as SelectOption}
+              handleChange={(value: string) => setFieldValue('gender', value)}
+              id="gender"
+              label="Select gender"
+              labelId="genderLabel"
+            />
+          </FieldWrapper>
+          <FieldWrapper>
+            <TextField
+              type="email"
+              name="email"
+              variant="outlined"
+              helperText={touched.email && errors.email}
+              error={touched.email && Boolean(errors.email)}
+              label="Email"
+              fullWidth
+              value={values.email}
+              onChange={handleChange}
+            />
+          </FieldWrapper>
+        </FieldsRow>
+        <FieldsRow>
+          <FieldWrapper>
+            <TextField
+              type="password"
+              name="password"
+              variant="outlined"
+              helperText={touched.password && errors.password}
+              error={touched.password && Boolean(errors.password)}
+              label="Password"
+              fullWidth
+              value={values.password}
+              onChange={handleChange}
+            />
+          </FieldWrapper>
+          <FieldWrapper>
+            <TextField
+              type="password"
+              name="passwordConfirmation"
+              variant="outlined"
+              helperText={touched.passwordConfirmation && errors.passwordConfirmation}
+              error={touched.passwordConfirmation && Boolean(errors.passwordConfirmation)}
+              label="Password Confirmation"
+              fullWidth
+              value={values.passwordConfirmation}
+              onChange={handleChange}
+            />
+          </FieldWrapper>
+        </FieldsRow>
+        <ButtonWrapper>
+          <Button
+            type="submit"
+            variant="outlined"
+            color="primary"
             fullWidth
-            value={values.firstName}
-            onChange={handleChange}
-          />
-        </FieldWrapper>
-        <FieldWrapper>
-          <TextField
-            name="lastName"
-            variant="filled"
-            helperText={touched.lastName && errors.lastName}
-            error={touched.lastName && Boolean(errors.lastName)}
-            label="Last Name"
-            fullWidth
-            value={values.lastName}
-            onChange={handleChange}
-          />
-        </FieldWrapper>
-        <FieldWrapper>
-          <SimpleSelect
-            options={genderOptions}
-            selectedOption={genderOptions.find((option) => option.value === values.gender) as SelectOption}
-            handleChange={(value: string) => setFieldValue('gender', value)}
-            id="gender"
-            label="Select gender"
-            labelId="genderLabel"
-          />
-          <ErrorMessage name="gender" />
-        </FieldWrapper>
-        <FieldWrapper>
-          <TextField
-            type="email"
-            name="email"
-            variant="filled"
-            helperText={touched.email && errors.email}
-            error={touched.email && Boolean(errors.email)}
-            label="Email"
-            fullWidth
-            value={values.email}
-            onChange={handleChange}
-          />
-        </FieldWrapper>
-        <FieldWrapper>
-          <TextField
-            type="password"
-            name="password"
-            variant="filled"
-            helperText={touched.password && errors.password}
-            error={touched.password && Boolean(errors.password)}
-            label="Password"
-            fullWidth
-            value={values.password}
-            onChange={handleChange}
-          />
-        </FieldWrapper>
-        <FieldWrapper>
-          <TextField
-            type="password"
-            name="passwordConfirmation"
-            variant="filled"
-            helperText={touched.passwordConfirmation && errors.passwordConfirmation}
-            error={touched.passwordConfirmation && Boolean(errors.passwordConfirmation)}
-            label="Password Confirmation"
-            fullWidth
-            value={values.passwordConfirmation}
-            onChange={handleChange}
-          />
-        </FieldWrapper>
-
-        <Button
-          type="submit"
-          variant="outlined"
-          color="primary"
-          fullWidth
-        >
-                    Register
-        </Button>
+          >
+            Register
+          </Button>
+        </ButtonWrapper>
       </Form>
     )}
   </Formik>

@@ -1,18 +1,16 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import { Grid } from '@material-ui/core';
+import React, {ChangeEvent, useEffect, useState} from 'react';
+import {Grid} from '@material-ui/core';
 import FaceIcon from '@material-ui/icons/Face';
 
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Loader from 'react-loader-spinner';
-import {
-  UserAddress, UserGender, UserModel, UserRole,
-} from 'models/user';
-import { AppState } from 'store/appState';
-import { Popup } from '../../components';
-import { ErrorWrapper, LoginFormContainer, ScalableImg } from '../../public';
-import { PersonalSectionValues, UserPersonalForm } from './forms';
+import {UserAddress, UserGender, UserModel, UserRole,} from 'models/user';
+import {AppState} from 'store/appState';
+import {ButtonType, Popup} from '../../components';
+import {ErrorWrapper, LoginFormContainer, ScalableImg} from '../../public';
+import {PersonalSectionValues, UserPersonalForm} from './forms';
 
-import { ContentWrapper, PhotoWrapper } from './css';
+import {ContentWrapper, PhotoWrapper, PopupContentWrapper} from './css';
 
 import {
   createAccountData,
@@ -22,14 +20,12 @@ import {
   updatePersonalData,
 } from './helpers';
 
-import {
-  AccountDataSection, AccountSectionData, PersonalDataSection, PersonalSectionData,
-} from './components';
+import {AccountDataSection, AccountSectionData, PersonalDataSection, PersonalSectionData,} from './components';
 
-import { ViewState } from '../models';
-import { API } from '../../../API';
+import {ViewState} from '../models';
+import {API} from '../../../API';
 import LoginForm from '../../public/components/loginForm';
-import { UserDataFetched } from '../../../store/actions';
+import {UserDataFetched} from '../../../store/actions';
 
 interface ViewData {
   personalData: PersonalSectionData,
@@ -151,7 +147,6 @@ const AccountPage = () => {
       birthDate: values.birthDate,
       address: {
         country: values.country,
-        region: values.region,
         city: values.city,
         zip: values.zip,
         streetName: values.streetName,
@@ -268,29 +263,51 @@ const AccountPage = () => {
             <Popup
               handleClose={handlePersonalEditClose}
               header="Personal data"
+              buttonsConfig={[
+                {
+                  label: 'Cancel',
+                  disabled: false,
+                  onClick: handlePersonalEditClose,
+                  buttonType: ButtonType.SECONDARY,
+                },
+                {
+                  label: 'Submit',
+                  disabled: false,
+                  onClick: () => {},
+                  buttonType: ButtonType.PRIMARY,
+                },
+              ]}
             >
-              <div>
-                <UserPersonalForm
-                  initialValues={createPersonalDataEditValues(stateData.personalData)}
-                  onSubmit={handlePersonalSubmit}
-                  handleClose={handlePersonalEditClose}
-                />
-              </div>
+              <UserPersonalForm
+                initialValues={createPersonalDataEditValues(stateData.personalData)}
+                onSubmit={handlePersonalSubmit}
+                handleClose={handlePersonalEditClose}
+              />
             </Popup>
           )}
           {accountConfirmModalOpen && (
             <Popup
-              header="Log into your university email"
+              header="Log into your university email account"
               handleClose={() => setAccountConfirmModalOpen((prev) => !prev)}
+              buttonsConfig={[
+                {
+                  label: 'Cancel',
+                  disabled: false,
+                  onClick: handlePersonalEditClose,
+                  buttonType: ButtonType.SECONDARY,
+                }
+              ]}
             >
-              <LoginFormContainer>
-                <LoginForm
-                  onSubmit={handleAccountConfirmation}
-                />
-                {accountConfirmationError && (
-                  <ErrorWrapper> It seems that login or password is incorrect </ErrorWrapper>
-                )}
-              </LoginFormContainer>
+              <PopupContentWrapper>
+                <LoginFormContainer>
+                  <LoginForm
+                    onSubmit={handleAccountConfirmation}
+                  />
+                  {accountConfirmationError && (
+                    <ErrorWrapper> It seems that login or password is incorrect </ErrorWrapper>
+                  )}
+                </LoginFormContainer>
+              </PopupContentWrapper>
             </Popup>
           )}
         </ContentWrapper>

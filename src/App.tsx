@@ -4,6 +4,9 @@ import {
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+import { ToastContainer } from 'react-toastify';
+// react-toaster styles
+import 'react-toastify/dist/ReactToastify.css';
 
 import Authentication from './authentication';
 import { HomePage } from './pages/public';
@@ -26,6 +29,12 @@ function App() {
   return (
     <Router>
       <Provider store={store}>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          closeOnClick
+        />
         <MainApp />
       </Provider>
     </Router>

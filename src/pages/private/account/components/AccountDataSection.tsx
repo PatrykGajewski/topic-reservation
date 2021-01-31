@@ -1,6 +1,8 @@
 import React from 'react';
 import { ContainerWithHeader, ContainerWithHeaderRow, Row } from 'pages/components';
 import { UserRole } from 'models/user';
+import { Button } from '@material-ui/core';
+import styled from 'styled-components';
 
 export interface AccountSectionData {
   email: string,
@@ -31,41 +33,49 @@ const displayUserRole = (userRole: UserRole): string => {
   }
 };
 
-export const AccountDataSection = (props: Props) => (
-  <ContainerWithHeader
-    header="Account"
-  >
-    <ContainerWithHeaderRow header="Email" content={props.data.email} />
-    <ContainerWithHeaderRow header="Creation date" content={props.data.creationDate} />
-    <ContainerWithHeaderRow header="Update date" content={props.data.updateDate} />
-    <Row>
-      <span>Account roles:</span>
-      <ul>
-        {props.data.userRoles.map((role: UserRole, index: number) => {
-          if (role === UserRole.REGISTERED_USER) {
-            if (props.data.userRoles.length > 1) {
-              return (
-                <li
-                  key={index}
-                >{displayUserRole(role)}
-                </li>
-              );
-            }
-            return (
-              <li
-                key={index}
-              >{displayUserRole(role)} <button onClick={props.handleConfirmUser}>Confirm your account</button>
-              </li>
-            );
-          }
-          return (
+const StyledStatusContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const AccountDataSection = (props: Props) => {
+  const userConfirmed: boolean = props.data.userRoles.length > 1;
+
+  return (
+    <ContainerWithHeader
+      header="Account"
+    >
+      {userConfirmed ? (
+        <>
+          <ContainerWithHeaderRow header="Status" content="Confirmed" />
+          <ContainerWithHeaderRow header="Confirmation mail" content={props.data.email} />
+        </>
+      ) : (
+        <StyledStatusContainer>
+          <ContainerWithHeaderRow header="Status" content="Unconfirmed" />
+          <Button
+            type="submit"
+            variant="outlined"
+            color="primary"
+            onClick={props.handleConfirmUser}
+          >Confirm your account
+          </Button>
+        </StyledStatusContainer>
+      )}
+      <ContainerWithHeaderRow header="Creation date" content={props.data.creationDate} />
+      <ContainerWithHeaderRow header="Update date" content={props.data.updateDate} />
+      <Row>
+        <span>Account roles:</span>
+        <ul>
+          {props.data.userRoles.map((role: UserRole, index: number) => (
             <li
               key={index}
             >{displayUserRole(role)}
             </li>
-          );
-        })}
-      </ul>
-    </Row>
-  </ContainerWithHeader>
-);
+          ))}
+        </ul>
+      </Row>
+    </ContainerWithHeader>
+  );
+};
