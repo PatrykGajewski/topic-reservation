@@ -7,7 +7,6 @@ export const createPersonalData = (data: PersonalStateData): PersonalSectionData
   birthDate: data.birthDate ? new Date(data.birthDate).toLocaleDateString() : '',
   address: {
     country: (data.address && data.address.country) || '',
-    region: (data.address && data.address.region) || '',
     city: (data.address && data.address.city) || '',
     zip: (data.address && data.address.zip) || '',
     streetName: (data.address && data.address.streetName) || '',

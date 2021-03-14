@@ -9,8 +9,6 @@ const UserPersonalValidation = Yup.object().shape({
     .required(),
   country: Yup.string()
     .required(),
-  region: Yup.string()
-    .required(),
   city: Yup.string()
     .required(),
   zip: Yup.string()

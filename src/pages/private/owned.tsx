@@ -9,7 +9,7 @@ import { API } from '../../API';
 import { ProjectsDataFetched, ProjectsDataFetching, ProjectsDataFetchingError } from '../../store/actions';
 import { AppState } from '../../store/appState';
 import { ProjectStatus } from '../../models/project';
-import { ContentWrapper } from "./account/css";
+import { ContentWrapper } from "./account/styles";
 
 const ProjectsContainer = styled.div`
   position: relative;

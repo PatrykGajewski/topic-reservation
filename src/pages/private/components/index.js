@@ -1,1 +1,1 @@
-export { FormElementsGroup } from './FormElementsGroup';
+export * from './ImagesBox';

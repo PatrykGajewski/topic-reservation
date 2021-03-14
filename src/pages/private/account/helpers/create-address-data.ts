@@ -2,7 +2,6 @@ import { UserAddress } from 'models/user';
 
 const emptyUserAddress: UserAddress = {
   country: '',
-  region: '',
   city: '',
   zip: '',
   streetName: '',

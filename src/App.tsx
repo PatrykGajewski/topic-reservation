@@ -9,20 +9,20 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Authentication from './authentication';
-import { HomePage } from './pages/public';
+import { HomePage, PageContent } from './pages/public';
 import { HomePageAuth } from './pages/private';
 import rootReducer from './store/rootReducer';
 
 const store = createStore(rootReducer);
 
 const MainApp = withRouter(() => (
-  <>
+  <PageContent>
     {Authentication.isAuthenticated ? (
       <Route path="/" render={(props) => <HomePageAuth {...props} />} />
     ) : (
       <Route path="/" render={(props) => <HomePage {...props} />} />
     )}
-  </>
+  </PageContent>
 ));
 
 function App() {

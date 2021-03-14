@@ -7,9 +7,9 @@ import styled from 'styled-components';
 import { RegisterPage } from './register';
 import { LoginPage } from './login';
 import { MainPage } from './main';
-import {TopBar} from '../components';
+import { TopBar } from '../components';
 
-const PageContent = styled.div`
+export const PageContent = styled.div`
     height: 100%;
 `;
 

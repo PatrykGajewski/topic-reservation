@@ -1,16 +1,27 @@
-import React, {ChangeEvent, useEffect, useState} from 'react';
-import {Grid} from '@material-ui/core';
+import React, {
+  ChangeEvent, useEffect, useRef, useState,
+} from 'react';
+import { Grid } from '@material-ui/core';
 import FaceIcon from '@material-ui/icons/Face';
+import SettingsIcon from '@material-ui/icons/Settings';
 
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'react-loader-spinner';
-import {UserAddress, UserGender, UserModel, UserRole,} from 'models/user';
-import {AppState} from 'store/appState';
-import {ButtonType, Popup} from '../../components';
-import {ErrorWrapper, LoginFormContainer, ScalableImg} from '../../public';
-import {PersonalSectionValues, UserPersonalForm} from './forms';
+import {
+  UserAddress, UserGender, UserModel, UserRole,
+} from 'models/user';
+import { AppState } from 'store/appState';
+import { toast } from 'react-toastify';
+import { FormikProps } from 'formik';
+import { ButtonType, Popup } from '../../components';
+import { ErrorWrapper, LoginFormContainer } from '../../public';
+import { PersonalSectionValues, UserPersonalForm } from './forms';
 
-import {ContentWrapper, PhotoWrapper, PopupContentWrapper} from './css';
+import {
+  ContentWrapper, StyledPhotoWrapper, PopupContentWrapper, StyledPhotoForm, StyledIconButton,
+  StyledImagePreviewContainer,
+} from './styles';
+import { ImageBox } from '../components';
 
 import {
   createAccountData,
@@ -20,12 +31,14 @@ import {
   updatePersonalData,
 } from './helpers';
 
-import {AccountDataSection, AccountSectionData, PersonalDataSection, PersonalSectionData,} from './components';
+import {
+  AccountDataSection, AccountSectionData, PersonalDataSection, PersonalSectionData,
+} from './components';
 
-import {ViewState} from '../models';
-import {API} from '../../../API';
+import { ViewState } from '../models';
+import { APISecured } from '../../../API';
 import LoginForm from '../../public/components/loginForm';
-import {UserDataFetched} from '../../../store/actions';
+import { UpdateUserData, UserDataFetched } from '../../../store/actions';
 
 interface ViewData {
   personalData: PersonalSectionData,
@@ -98,6 +111,8 @@ const AccountPage = () => {
     },
     user: state.user,
   }));
+
+
   const [viewData, setViewData] = useState<ViewData>({
     personalData: createPersonalData(stateData.personalData),
     accountData: createAccountData(stateData.accountData),
@@ -105,13 +120,15 @@ const AccountPage = () => {
   const [viewState, setViewState] = useState<ViewState>(ViewState.LOADING);
   const [personalEditing, setPersonalEditing] = useState<boolean>(false);
   const [accountConfirmModalOpen, setAccountConfirmModalOpen] = useState<boolean>(false);
-  const [accountConfirmationError, setAccountConfirmationError] = useState(false);
-  const [photoToUpload, setPhotoToUpload] = useState<File | null>(null);
+  const [accountConfirmationError, setAccountConfirmationError] = useState<boolean>(false);
+  const [photoSelectionModalOpen, setPhotoSelectionModalOpen] = useState<boolean>(false);
 
+  const [photoToUpload, setPhotoToUpload] = useState<File | null>(null);
   const [profilePhoto, setProfilePhoto] = useState<{data: string, contentType: string} | null>(null);
+  const personalSubmitBtnRef = useRef<HTMLButtonElement | null>(null);
 
   const fetchProfilePhoto = () => {
-    API.get(`/images/${stateData.accountData.profilePhotoId}`)
+    APISecured.get(`/static/avatars/${stateData.accountData.profilePhotoId}`)
       .then((res) => {
         setProfilePhoto(res.data);
       })
@@ -123,7 +140,7 @@ const AccountPage = () => {
   useEffect(() => {
     setViewState(ViewState.OK);
     fetchProfilePhoto();
-  }, []);
+  }, [stateData.accountData.profilePhotoId]);
 
   useEffect(() => {
     setViewData({
@@ -145,6 +162,7 @@ const AccountPage = () => {
       firstName: values.firstName,
       lastName: values.lastName,
       birthDate: values.birthDate,
+      gender: values.gender,
       address: {
         country: values.country,
         city: values.city,
@@ -154,11 +172,15 @@ const AccountPage = () => {
         flatNumber: values.flatNumber,
       },
     };
+
     updatePersonalData(dataShape, stateData.accountData.userId)
-      .then(() => {
-        getUserData(stateData.accountData.userId)(dispatch);
+      .then((user: UserModel) => {
+        dispatch({ ...new UpdateUserData(user) });
+        toast.success('User personal data updated');
+        setPersonalEditing(false);
+      }).catch((err) => {
+        toast.error('Error during personal data update');
       });
-    setPersonalEditing(false);
   };
 
   const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -170,9 +192,7 @@ const AccountPage = () => {
     }
   };
 
-  const handleFileUpload = (e: any) => {
-    e.preventDefault();
-
+  const handleFileUpload = () => {
     if (photoToUpload) {
       // NOTE this is required step because multer pck take field name with image
       const form = new FormData();
@@ -181,13 +201,28 @@ const AccountPage = () => {
       form.append('size', photoToUpload.size.toString());
       form.append('type', photoToUpload.type);
 
-      API.post('/images/uploadImage', form)
-        .then((res: any) => {
+      APISecured.post('/static/avatars', form)
+        .then((res: {data: { data: string, contentType: string, imageId: string} }) => {
+          dispatch({
+            ...new UpdateUserData({
+              ...stateData.user,
+              profilePhotoId: res.data.imageId,
+            }),
+          });
+          setProfilePhoto({ data: res.data.data, contentType: res.data.contentType });
+          setPhotoSelectionModalOpen((prev) => !prev);
+          toast.success('Cover photo update success');
         })
         .catch((e: any) => {
-          console.error(e);
+          setPhotoSelectionModalOpen((prev) => !prev);
+          toast.error('Cover photo update failure');
         });
     }
+  };
+
+  const cancelFileUpload = () => {
+    setPhotoToUpload(null);
+    setPhotoSelectionModalOpen(false);
   };
 
   const handleAccountConfirmation = () => {
@@ -225,28 +260,19 @@ const AccountPage = () => {
         <ContentWrapper>
           <Grid container>
             <Grid item sm={3}>
-              <PhotoWrapper>
+              <StyledPhotoWrapper>
                 {profilePhoto !== null ? (
-                  <ScalableImg
+                  <ImageBox
                     src={`data:${profilePhoto.contentType};base64,${profilePhoto.data}`}
                     alt="User icon"
                   />
                 ) : (
-                  <>
-                    <FaceIcon />
-                    <form>
-                      <label htmlFor="photoInput">Upload image</label>
-                      <input
-                        name="photoInput"
-                        type="file"
-                        onChange={onFileUploadChange}
-                        accept=".jpg, .jpeg, .png, .bmp"
-                      />
-                      <button type="submit" onClick={handleFileUpload}>Submit</button>
-                    </form>
-                  </>
+                  <FaceIcon />
                 )}
-              </PhotoWrapper>
+                <StyledIconButton onClick={() => setPhotoSelectionModalOpen((prev) => !prev)}>
+                  <SettingsIcon />
+                </StyledIconButton>
+              </StyledPhotoWrapper>
             </Grid>
             <Grid item sm={9}>
               <PersonalDataSection
@@ -259,6 +285,43 @@ const AccountPage = () => {
               />
             </Grid>
           </Grid>
+          {photoSelectionModalOpen && (
+            <Popup
+              header="Upload cover photo"
+              handleClose={cancelFileUpload}
+              buttonsConfig={[
+                {
+                  label: 'Cancel',
+                  disabled: false,
+                  onClick: cancelFileUpload,
+                  buttonType: ButtonType.SECONDARY,
+                },
+                {
+                  label: 'Upload',
+                  disabled: photoToUpload === null,
+                  onClick: handleFileUpload,
+                  buttonType: ButtonType.PRIMARY,
+                },
+              ]}
+            >
+              <StyledPhotoForm>
+                {photoToUpload && (
+                  <StyledImagePreviewContainer>
+                    <ImageBox
+                      src={URL.createObjectURL(photoToUpload)}
+                      alt="cover photo preview"
+                    />
+                  </StyledImagePreviewContainer>
+                )}
+                <input
+                  name="photoInput"
+                  type="file"
+                  onChange={onFileUploadChange}
+                  accept=".jpg, .jpeg, .png, .bmp"
+                />
+              </StyledPhotoForm>
+            </Popup>
+          )}
           {personalEditing && (
             <Popup
               handleClose={handlePersonalEditClose}
@@ -273,7 +336,11 @@ const AccountPage = () => {
                 {
                   label: 'Submit',
                   disabled: false,
-                  onClick: () => {},
+                  onClick: () => {
+                    if (personalSubmitBtnRef.current !== null) {
+                      personalSubmitBtnRef.current.click();
+                    }
+                  },
                   buttonType: ButtonType.PRIMARY,
                 },
               ]}
@@ -282,6 +349,7 @@ const AccountPage = () => {
                 initialValues={createPersonalDataEditValues(stateData.personalData)}
                 onSubmit={handlePersonalSubmit}
                 handleClose={handlePersonalEditClose}
+                submitBtnRef={personalSubmitBtnRef}
               />
             </Popup>
           )}
@@ -295,7 +363,7 @@ const AccountPage = () => {
                   disabled: false,
                   onClick: handlePersonalEditClose,
                   buttonType: ButtonType.SECONDARY,
-                }
+                },
               ]}
             >
               <PopupContentWrapper>

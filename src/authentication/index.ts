@@ -1,4 +1,4 @@
-import { API } from '../API';
+import { APISecured } from '../API';
 import { UserModel } from '../models/user';
 
 export interface LoginFormValues {
@@ -13,7 +13,7 @@ export interface VerifyUserData {
 }
 
 const authenticateUser = (email: string, password: string) => (
-  API.post('/auth/login', {
+  APISecured.post('/auth/login', {
     email,
     password,
   })
@@ -35,7 +35,6 @@ class Authentication {
       authenticateUser(props.user.email, props.user.password).then(
         (res: any) => {
           Authentication.signIn(() => props.success(res.data.data));
-          console.log(res);
         },
       ).catch((err) => {
         props.error();

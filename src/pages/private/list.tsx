@@ -9,7 +9,7 @@ import {AppState} from '../../store/appState';
 
 import {ProjectModel} from "../../models/project";
 import {SelectOption} from "../../models/forms";
-import { ContentWrapper } from "./account/css";
+import { ContentWrapper } from "./account/styles";
 
 const ContentContainer = styled(ContentWrapper)`
   padding: 20px;

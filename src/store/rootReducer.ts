@@ -28,6 +28,11 @@ const rootReducer = (state = initialState, action: ActionTypes): AppState => {
       success: true,
       user: action.payload,
     };
+  case ACTION_TYPES.USER_DATA_UPDATE:
+    return {
+      ...state,
+      user: action.payload,
+    };
   case ACTION_TYPES.PROJECTS_DATA_FETCHED:
     return {
       ...state,

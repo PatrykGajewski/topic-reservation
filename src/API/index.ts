@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 require('dotenv').config();
 
@@ -23,5 +23,30 @@ export class API {
 
   static patch = (path: string, data: any): Promise<any> => (
     axios.patch(`${BACKEND_API_URL}${path}`, data)
+  )
+}
+
+const securedAPIConfig: AxiosRequestConfig = {
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+};
+
+export class APISecured {
+  static get = (path: string): Promise<any> => (
+    axios.get(`${BACKEND_API_URL}${path}`, securedAPIConfig)
+  );
+
+  static post = (path: string, data: any): Promise<any> => (
+    axios.post(`${BACKEND_API_URL}${path}`, data, securedAPIConfig)
+  );
+
+  static put = (path: string, data: any): Promise<any> => (
+    axios.put(`${BACKEND_API_URL}${path}`, data, securedAPIConfig)
+  );
+
+  static patch = (path: string, data: any): Promise<any> => (
+    axios.patch(`${BACKEND_API_URL}${path}`, data, securedAPIConfig)
   )
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import { Formik, Form, ErrorMessage } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import {
@@ -32,14 +32,15 @@ interface UserPersonalProps {
     initialValues: PersonalSectionValues,
     onSubmit: (values: PersonalSectionValues) => void,
     handleClose: () => void,
+    submitBtnRef: RefObject<HTMLButtonElement>,
 }
 
 export const countryOptions: SelectOption[] = [{
   label: 'Polska',
-  value: 'Polska',
+  value: 'PL',
 }, {
   label: 'Anglia',
-  value: 'Anglia',
+  value: 'EN',
 }];
 
 const UserPersonalForm = (props: UserPersonalProps) => (
@@ -186,9 +187,15 @@ const UserPersonalForm = (props: UserPersonalProps) => (
             />
           </FieldWrapper>
         </FieldsRow>
+        <button
+          type="submit"
+          ref={props.submitBtnRef}
+          style={{
+            opacity: 0,
+          }}
+        />
       </Form>
     )}
-
   </Formik>
 );
 

@@ -1,10 +1,12 @@
-import {UserModel} from "../models/user";
-import {ProjectModel} from "../models/project";
+import { UserModel } from '../models/user';
+import { ProjectModel } from '../models/project';
 
 export enum ACTION_TYPES {
   'USER_DATA_FETCHING' = 'USER_DATA_FETCHING',
   'USER_DATA_FETCHING_ERROR' = 'USER_DATA_FETCHING_ERROR',
   'USER_DATA_FETCHED' = 'USER_DATA_FETCHED',
+
+  'USER_DATA_UPDATE' = ' USER_DATA_UPDATE',
 
   'PROJECTS_DATA_FETCHING' = 'PROJECTS_DATA_FETCHING',
   'PROJECTS_DATA_FETCHING_ERROR' = 'PROJECTS_DATA_FETCHING_ERROR',
@@ -34,6 +36,16 @@ export class UserDataFetchingError {
 
   constructor(message: string) {
     this.payload = message;
+  }
+}
+
+export class UpdateUserData {
+  type = ACTION_TYPES.USER_DATA_UPDATE;
+
+  payload: UserModel;
+
+  constructor(user: UserModel) {
+    this.payload = user;
   }
 }
 
