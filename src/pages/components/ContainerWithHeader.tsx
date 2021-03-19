@@ -7,6 +7,7 @@ interface ContainerWithHeaderProps {
   smallPadding?: boolean,
   lightBorder?: boolean,
   fitContent?: boolean,
+  noMargin?: boolean,
   editable?: boolean,
   handleEdit?: () => void,
 }
@@ -15,12 +16,13 @@ interface ContainerProps {
   smallPadding: boolean,
   lightBorder: boolean,
   fitContent: boolean,
+  noMargin: boolean,
 }
 
 const Container = styled.div<ContainerProps>`
   position: relative;
-  width: ${(props) => (props.fitContent ? 'fit-content' : 'calc(100% - 20px)')};
-  margin: 30px 10px 20px 10px;
+  width: ${(props) => (props.fitContent ? 'fit-content' : '100%')};
+  ${(props) => (props.noMargin ? null : 'margin: 30px 10px 20px 10px;')}
   box-sizing: border-box;
   padding: ${(props) => (props.smallPadding ? '20px 10px 5px 10px' : '20px')};
   border-radius: 4px;
@@ -72,6 +74,7 @@ const ContainerWithHeader = (props: ContainerWithHeaderProps) => (
     smallPadding={props.smallPadding || false}
     lightBorder={props.lightBorder || false}
     fitContent={props.fitContent || false}
+    noMargin={props.noMargin || false}
   >
     <Header
       lightBorder={props.lightBorder || false}

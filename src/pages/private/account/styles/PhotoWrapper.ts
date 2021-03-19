@@ -53,13 +53,17 @@ const animationHoverStyles = css`
   animation-delay: 0.1s;
 `;
 
-const StyledIconButton = styled.button<{animated?: boolean}>`
+const positionedStyles = css`
   position: absolute;
+  top: 3px;
+  right: 3px;
+`;
+
+const StyledIconButton = styled.button<{animated?: boolean, positioned?: boolean}>`
+  ${(props) => props.positioned ? positionedStyles : null}
   border: none;
   outline: none;
   color: #ffc671;
-  top: 3px;
-  right: 3px;
   display: flex;
   align-items: center;
   justify-content: center;

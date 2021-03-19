@@ -3,7 +3,7 @@ import {Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, TextFiel
 import Select, {ValueType} from 'react-select';
 import styled from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
-import {API} from '../../API';
+import {API, APISecured} from '../../API';
 import {ProjectsDataFetched, ProjectsDataFetching, ProjectsDataFetchingError,} from '../../store/actions';
 import {AppState} from '../../store/appState';
 
@@ -51,7 +51,7 @@ interface University {
 
 const fetchUniversitiesList = async () => {
   try {
-    const { data, error } = await API.get('/universities');
+    const { data, error } = await APISecured.get('/universities');
 
     if (error) {
       return Promise.reject(error.message);
@@ -92,7 +92,7 @@ const fetchData = (country: string, university: string, searchString: string) =>
     dispatch({ ...new ProjectsDataFetching() });
 
     //const { data, error } = await API.get(pathCreator(country, university, searchString));
-    const { data, error } = await API.get('/projects');
+    const { data, error } = await APISecured.get('/projects');
 
     if (error) {
       dispatch({ ...new ProjectsDataFetchingError(error.message) });
@@ -107,7 +107,7 @@ const fetchData = (country: string, university: string, searchString: string) =>
 
 const reserveProject = async (projectId: string) => {
   try {
-    const { data, error } = await API.patch(`/projects/reserve/${projectId}`, {});
+    const { data, error } = await APISecured.patch(`/projects/reserve/${projectId}`, {});
 
     if (error) {
       console.error(error);

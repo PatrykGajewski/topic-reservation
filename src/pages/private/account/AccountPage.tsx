@@ -12,7 +12,6 @@ import {
 } from 'models/user';
 import { AppState } from 'store/appState';
 import { toast } from 'react-toastify';
-import { FormikProps } from 'formik';
 import { ButtonType, Popup } from '../../components';
 import { ErrorWrapper, LoginFormContainer } from '../../public';
 import { PersonalSectionValues, UserPersonalForm } from './forms';
@@ -27,7 +26,6 @@ import {
   createAccountData,
   createPersonalData,
   createPersonalDataEditValues,
-  getUserData,
   updatePersonalData,
 } from './helpers';
 
@@ -269,20 +267,24 @@ const AccountPage = () => {
                 ) : (
                   <FaceIcon />
                 )}
-                <StyledIconButton onClick={() => setPhotoSelectionModalOpen((prev) => !prev)}>
+                <StyledIconButton onClick={() => setPhotoSelectionModalOpen((prev) => !prev)} positioned>
                   <SettingsIcon />
                 </StyledIconButton>
               </StyledPhotoWrapper>
             </Grid>
             <Grid item sm={9}>
-              <PersonalDataSection
-                handleEdit={handlePersonalEditOpen}
-                data={viewData.personalData}
-              />
-              <AccountDataSection
-                data={viewData.accountData}
-                handleConfirmUser={() => setAccountConfirmModalOpen((prev) => !prev)}
-              />
+              <div style={{
+                margin: '30px 50px',
+              }}>
+                <PersonalDataSection
+                  handleEdit={handlePersonalEditOpen}
+                  data={viewData.personalData}
+                />
+                <AccountDataSection
+                  data={viewData.accountData}
+                  handleConfirmUser={() => setAccountConfirmModalOpen((prev) => !prev)}
+                />
+              </div>
             </Grid>
           </Grid>
           {photoSelectionModalOpen && (

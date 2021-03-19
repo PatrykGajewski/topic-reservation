@@ -56,7 +56,7 @@ export interface ProjectModel {
   }
   tags: ProjectTag[],
   status: ProjectStatus,
-  owner: ProjectOwnerModel,
+  owners: ProjectOwnerModel[],
   rating: ProjectRating,
   createdAt: string,
   updatedAt: string,

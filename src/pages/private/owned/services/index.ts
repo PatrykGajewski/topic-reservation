@@ -17,7 +17,7 @@ export const _fetchProjects = async (): Promise<ProjectModel[]> => {
 
 export const _updateProject = async (projectId: string, updates: any): Promise<ProjectModel> => {
   try {
-    const { data, error } = await APISecured.post(`/projects/${projectId}`, updates);
+    const { data, error } = await APISecured.put(`/projects/${projectId}`, updates);
     if (error) {
       console.log(error);
       return Promise.reject(error);

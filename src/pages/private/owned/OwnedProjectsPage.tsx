@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'react-loader-spinner';
 import { toast } from 'react-toastify';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import {
   ButtonType, ContainerWithHeader, ContainerWithHeaderRow, Popup,
 } from '../../components';
@@ -13,11 +14,12 @@ import { AppState } from '../../../store/appState';
 import { ProjectModel, ProjectStatus } from '../../../models/project';
 import { ContentWrapper, StyledIconButton } from '../account/styles';
 import {
+  ButtonsContainer,
+  HighlightedText,
   ProjectsContainer,
   ProjectWrapper,
   StyledContainer,
   TagWrapper,
-  ButtonsContainer,
 } from './styles';
 import { _fetchProjects, _updateProject } from './services';
 import {
@@ -30,16 +32,18 @@ import {
 const mapProjectStatusToColor = (status: ProjectStatus): string => {
   switch (status) {
   case ProjectStatus.FINISHED:
-    return '#01b2016b';
+    return '#08bc0852';
   case ProjectStatus.RESERVED:
-    return '#ffc7007d';
+    return '#ffc70054';
   default:
-    return 'white';
+    return '#0783d973';
   }
 };
 
 const OwnedProjectsPage = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+  const [editModelOpen, setEditModalOpen] = useState<boolean>(false);
+  // NOTE below project might be deleted or edited
   const [editedProject, setEditedProject] = useState<ProjectModel | null>(null);
   const dispatch = useDispatch();
   const stateData = useSelector((state: AppState) => ({
@@ -61,26 +65,24 @@ const OwnedProjectsPage = () => {
       });
   };
 
-  const updateProject = async (projectId: string, updates: any) => {
-    _updateProject(projectId, updates)
-      .then((updatedProject: ProjectModel) => {
-        const updatedProjectsList: ProjectModel[] = cloneDeep(stateData.projects);
-        const updatedProjectIndex: number = updatedProjectsList.map((project: ProjectModel) => project.id).indexOf(projectId);
-        if (updatedProjectIndex !== -1) {
-          updatedProjectsList[updatedProjectIndex] = updatedProject;
-          dispatch({ ...new UpdateProjectsList(updatedProjectsList) });
-          toast.success('Project has been updated');
-          return Promise.resolve();
-        } else {
-          toast.error("Can't find element to update");
-          return Promise.reject();
-        }
-      })
-      .catch((err) => {
-        toast.error("Can't update project");
-        return Promise.reject();
-      });
-  };
+  const updateProject = async (projectId: string, updates: any): Promise<any> => (
+    new Promise(((resolve, reject) => {
+      _updateProject(projectId, updates)
+        .then((updatedProject: ProjectModel) => {
+          const updatedProjectsList: ProjectModel[] = cloneDeep(stateData.projects);
+          const updatedProjectIndex: number = updatedProjectsList.map((project: ProjectModel) => project.id).indexOf(projectId);
+          if (updatedProjectIndex !== -1) {
+            updatedProjectsList[updatedProjectIndex] = updatedProject;
+            dispatch({ ...new UpdateProjectsList(updatedProjectsList) });
+            resolve();
+          }
+          reject(new Error('Cannot find updated element'));
+        })
+        .catch((err) => {
+          reject(new Error(err));
+        });
+    }))
+  );
 
   useEffect(() => {
     fetchProjects();
@@ -91,15 +93,25 @@ const OwnedProjectsPage = () => {
     setEditedProject(project);
   };
 
+  const handleEdit = (project: ProjectModel) => {
+    setEditModalOpen((prev) => !prev);
+    setEditedProject(project);
+  };
+
   const deleteOwnership = () => {
     if (editedProject !== null) {
       updateProject(editedProject.id, {
-        some: 'update',
+        owners: editedProject.owners.filter((owner) => owner.id !== stateData.user.id),
       }).then(() => {
+        toast.success('Project ownerships deleted');
+      }).catch((e) => {
+        toast.error('Cannot delete ownership');
+      }).finally(() => {
         setDeleteModalOpen((prev) => !prev);
       });
     } else {
       console.log('Cannot find edited project');
+      setDeleteModalOpen((prev) => !prev);
     }
   };
 
@@ -128,6 +140,7 @@ const OwnedProjectsPage = () => {
                 bgColor={mapProjectStatusToColor(project.status)}
               >
                 <ContainerWithHeader
+                  noMargin
                   header={project.type}
                 >
                   <Grid container>
@@ -178,7 +191,7 @@ const OwnedProjectsPage = () => {
                           </ContainerWithHeader>
                         )}
                       </Grid>
-                      {project.tags.length && (
+                      {project.tags.length > 0 && (
                         <Grid item xs={12}>
                           <ContainerWithHeader
                             header="Tags"
@@ -192,13 +205,18 @@ const OwnedProjectsPage = () => {
                         </Grid>
                       )}
                     </Grid>
-                    <Grid item xs={1}>
-                      <ButtonsContainer>
-                        <StyledIconButton onClick={() => handleDeleteOwnership(project)}>
-                          <DeleteIcon />
-                        </StyledIconButton>
-                      </ButtonsContainer>
-                    </Grid>
+                    {project.status !== ProjectStatus.FINISHED && (
+                      <Grid item xs={1}>
+                        <ButtonsContainer>
+                          <StyledIconButton onClick={() => handleDeleteOwnership(project)}>
+                            <DeleteIcon />
+                          </StyledIconButton>
+                          <StyledIconButton onClick={() => handleEdit(project)}>
+                            <EditIcon />
+                          </StyledIconButton>
+                        </ButtonsContainer>
+                      </Grid>
+                    )}
                   </Grid>
                 </ContainerWithHeader>
               </ProjectWrapper>
@@ -223,7 +241,33 @@ const OwnedProjectsPage = () => {
                 },
               ]}
             >
-              <div>{`Are you sure you want delete ownership from project that topic is: ${editedProject.topic}?`}</div>
+              <div>Are you sure you want delete ownership from project that topic is:
+                <HighlightedText>{`${editedProject.topic}`}</HighlightedText>?
+              </div>
+            </Popup>
+          )}
+          {editModelOpen && editedProject && (
+            <Popup
+              header="Edit project"
+              handleClose={() => setEditModalOpen((prev) => !prev)}
+              buttonsConfig={[
+                {
+                  label: 'Cancel',
+                  disabled: false,
+                  onClick: () => setEditModalOpen((prev) => !prev),
+                  buttonType: ButtonType.SECONDARY,
+                },
+                {
+                  label: 'Save',
+                  disabled: false,
+                  onClick: () => setEditModalOpen((prev) => !prev),
+                  buttonType: ButtonType.PRIMARY,
+                },
+              ]}
+            >
+              <div>
+                form here
+              </div>
             </Popup>
           )}
         </ContentWrapper>
