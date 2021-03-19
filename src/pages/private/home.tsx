@@ -4,7 +4,7 @@ import { Switch, RouteComponentProps, Route } from 'react-router-dom';
 import { TopBar } from '../components';
 import { LogoutPage } from './logoutPage';
 import { AccountPage } from './account';
-import { OwnedProjectsPage } from './owned';
+import { OwnedProjectsPage } from './owned/OwnedProjectsPage';
 import { ProjectListPage } from './list';
 import { PageContent } from '../public';
 

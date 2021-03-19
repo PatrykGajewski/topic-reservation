@@ -10,7 +10,8 @@ export enum ACTION_TYPES {
 
   'PROJECTS_DATA_FETCHING' = 'PROJECTS_DATA_FETCHING',
   'PROJECTS_DATA_FETCHING_ERROR' = 'PROJECTS_DATA_FETCHING_ERROR',
-  'PROJECTS_DATA_FETCHED' = 'PROJECTS_DATA_FETCHED'
+  'PROJECTS_DATA_FETCHED' = 'PROJECTS_DATA_FETCHED',
+  'PROJECTS_DATA_UPDATE' = 'PROJECTS_DATA_UPDATE'
 }
 
 export type ActionTypes = UserDataFetched;
@@ -65,6 +66,16 @@ export class ProjectsDataFetchingError {
 
 export class ProjectsDataFetched {
   type = ACTION_TYPES.PROJECTS_DATA_FETCHED;
+
+  payload: ProjectModel[];
+
+  constructor(data: ProjectModel[]) {
+    this.payload = data;
+  }
+}
+
+export class UpdateProjectsList {
+  type = ACTION_TYPES.PROJECTS_DATA_UPDATE;
 
   payload: ProjectModel[];
 

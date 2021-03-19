@@ -1,9 +1,15 @@
-import { ACTION_TYPES, ActionTypes } from './actions';
+import { ACTION_TYPES, ActionTypes, UpdateProjectsList } from './actions';
 import { AppState } from './appState';
 import initialState from './initialState';
 
 const rootReducer = (state = initialState, action: ActionTypes): AppState => {
   switch (action.type) {
+  case ACTION_TYPES.PROJECTS_DATA_UPDATE:
+    return {
+      ...state,
+      // @ts-ignore
+      projects: action.payload,
+    };
   case ACTION_TYPES.USER_DATA_FETCHING:
   case ACTION_TYPES.PROJECTS_DATA_FETCHING:
     return {
@@ -28,6 +34,7 @@ const rootReducer = (state = initialState, action: ActionTypes): AppState => {
       success: true,
       user: action.payload,
     };
+
   case ACTION_TYPES.USER_DATA_UPDATE:
     return {
       ...state,

@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 const StyledPhotoWrapper = styled.div`
   position: relative;
@@ -43,7 +43,17 @@ const simpleRotateAnimationFrom180 = keyframes`
  100% { transform: rotate(0deg)} 
 `;
 
-const StyledIconButton = styled.button`
+const animationStyles = css`
+  animation: ${simpleRotateAnimationFrom180} 0.35s ease-in;
+  animation-delay: 0.1s;
+`;
+
+const animationHoverStyles = css`
+  animation: ${simpleRotateAnimationTo180} 0.35s ease-out;
+  animation-delay: 0.1s;
+`;
+
+const StyledIconButton = styled.button<{animated?: boolean}>`
   position: absolute;
   border: none;
   outline: none;
@@ -58,19 +68,17 @@ const StyledIconButton = styled.button`
   transition: all 0.2s;
   width: 30px;
   height: 30px;
-  animation: ${simpleRotateAnimationFrom180} 0.35s ease-in;
-  animation-delay: 0.1s;
+  ${(props) => (props.animated ? animationStyles : null)}
   
   svg {
     font-size: 20px;
   }
   
   &:hover {
-    animation: ${simpleRotateAnimationTo180} 0.35s ease-out;
-    animation-delay: 0.1s;
     box-shadow: inset 0 0 2px #8080806b;
     color: #f8ba5d;
     cursor: pointer;
+    ${(props) => (props.animated ? animationHoverStyles : null)}
   }
 `;
 
@@ -78,5 +86,5 @@ export {
   StyledPhotoWrapper,
   StyledPhotoForm,
   StyledIconButton,
-  StyledImagePreviewContainer
+  StyledImagePreviewContainer,
 };
