@@ -1,14 +1,15 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const ProjectsContainer = styled.div`
-  margin: 50px 30px;
+  padding: 50px 30px;
 `;
 
-export const ProjectWrapper = styled.div<{ bgColor: string}>`
-  background-color: ${(props) => props.bgColor};
+export const ProjectWrapper = styled.div<{ borderColor: string}>`
+  border: solid 8px ${(props) => props.borderColor};
   margin-bottom: 30px;
   padding: 8px;
   border-radius: 8px;
+  background: white;
 `;
 
 export const ButtonsContainer = styled.div`
@@ -39,7 +40,7 @@ export const TagWrapper = styled.div`
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: 700;
   background: yellow;
-  width: fit-content
+  width: fit-content;
   box-sizing: border-box;
   padding: 2px 5px;
   margin: 5px;
@@ -52,3 +53,7 @@ export const StyledContainer = styled.div`
   justify-content: center;
 `;
 
+export const TableContainer = styled.div`
+  background: white;
+  margin: 30px 0;
+`;

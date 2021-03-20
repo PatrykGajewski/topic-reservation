@@ -10,9 +10,24 @@ export enum ProjectType {
   OVERVIEW_WORK = 'OVERVIEW_WORK',
 }
 
+export const mapProjectTypeToText = (projectType: ProjectType): string => {
+  switch (projectType) {
+  case ProjectType.CONSTRUCTION_WORK:
+    return 'Praca konstrukcyjna';
+  case ProjectType.OVERVIEW_WORK:
+    return 'Praca analityczna';
+  case ProjectType.RESEARCH_WORK:
+    return 'Praca badawcza';
+  case ProjectType.TECHNOLOGICAL_WORK:
+    return 'Praca techniczna';
+  default:
+    return '';
+  }
+};
+
 export enum ProjectStatus {
   CREATED = 'CREATED',
-  PUBLISHED = 'PUBLISHED',
+  AVAILABLE = 'AVAILABLE',
   RESERVED = 'RESERVED',
   FINISHED = 'FINISHED'
 }

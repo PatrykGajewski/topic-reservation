@@ -11,7 +11,7 @@ import {
   ButtonType, ContainerWithHeader, ContainerWithHeaderRow, Popup,
 } from '../../components';
 import { AppState } from '../../../store/appState';
-import { ProjectModel, ProjectStatus } from '../../../models/project';
+import { mapProjectTypeToText, ProjectModel, ProjectStatus } from '../../../models/project';
 import { ContentWrapper, StyledIconButton } from '../account/styles';
 import {
   ButtonsContainer,
@@ -21,12 +21,12 @@ import {
   StyledContainer,
   TagWrapper,
 } from './styles';
-import { _fetchProjects, _updateProject } from './services';
+import { _fetchUserProjects, _updateProject } from './services';
 import {
-  ProjectsDataFetched,
-  ProjectsDataFetching,
-  ProjectsDataFetchingError,
-  UpdateProjectsList,
+  UserProjectsDataFetched,
+  UserProjectsDataFetching,
+  UserProjectsDataFetchingError,
+  UpdateUserProjectsList,
 } from '../../../store/actions';
 
 const mapProjectStatusToColor = (status: ProjectStatus): string => {
@@ -50,18 +50,18 @@ const OwnedProjectsPage = () => {
     loading: state.loading,
     success: state.success,
     error: state.error,
-    projects: state.projects,
+    projects: state.userProjects,
     user: state.user,
   }));
 
   const fetchProjects = () => {
-    dispatch({ ...new ProjectsDataFetching() });
-    _fetchProjects()
+    dispatch({ ...new UserProjectsDataFetching() });
+    _fetchUserProjects()
       .then((projects: ProjectModel[]) => {
-        dispatch({ ...new ProjectsDataFetched(projects) });
+        dispatch({ ...new UserProjectsDataFetched(projects) });
       })
       .catch((err) => {
-        dispatch({ ...new ProjectsDataFetchingError(err.message) });
+        dispatch({ ...new UserProjectsDataFetchingError(err.message) });
       });
   };
 
@@ -69,14 +69,12 @@ const OwnedProjectsPage = () => {
     new Promise(((resolve, reject) => {
       _updateProject(projectId, updates)
         .then((updatedProject: ProjectModel) => {
-          const updatedProjectsList: ProjectModel[] = cloneDeep(stateData.projects);
-          const updatedProjectIndex: number = updatedProjectsList.map((project: ProjectModel) => project.id).indexOf(projectId);
-          if (updatedProjectIndex !== -1) {
-            updatedProjectsList[updatedProjectIndex] = updatedProject;
-            dispatch({ ...new UpdateProjectsList(updatedProjectsList) });
+          const updatedProjectsList: ProjectModel[] = stateData.projects.filter((project) => project.id !== projectId);
+          if (stateData.projects.length - updatedProjectsList.length === 1) {
+            dispatch({ ...new UpdateUserProjectsList(updatedProjectsList) });
             resolve();
           }
-          reject(new Error('Cannot find updated element'));
+          reject(new Error('Updated more than one or less than one project'));
         })
         .catch((err) => {
           reject(new Error(err));
@@ -130,95 +128,112 @@ const OwnedProjectsPage = () => {
             timeout={3000} // 3 secs
           />
         </StyledContainer>
-
       )}
       {stateData.success && (
         <ContentWrapper>
           <ProjectsContainer>
             {stateData.projects.map((project) => (
               <ProjectWrapper
-                bgColor={mapProjectStatusToColor(project.status)}
+                borderColor={mapProjectStatusToColor(project.status)}
               >
-                <ContainerWithHeader
-                  noMargin
-                  header={project.type}
-                >
-                  <Grid container>
-                    <Grid container item xs={11}>
-                      <Grid item xs={6}>
-                        <ContainerWithHeaderRow
-                          header="Topic"
-                          content={project.topic}
-                        />
-                        <ContainerWithHeaderRow
-                          header="Promoter"
-                          content={`
-                    ${project.promoter.firstName}
-                    ${project.promoter.lastName}                  
-                  `}
-                        />
-                        <ContainerWithHeaderRow
-                          header="University"
-                          content={project.university.namePL.full}
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <ContainerWithHeaderRow
-                          header="Added date"
-                          content={new Date(project.createdAt).toLocaleDateString()}
-                        />
-                        {project.status === ProjectStatus.FINISHED && (
-                          <ContainerWithHeader
-                            header="Rating"
-                            smallPadding
-                            lightBorder
-                            fitContent
-                          >
-                            <Grid container spacing={2} justify="center">
-                              <Grid item>
-                                <Rating
-                                  value={project.rating.value}
-                                  disabled
-                                />
-                              </Grid>
-                              <Grid item>
-                                Voices: {project.rating.votes}
-                              </Grid>
-                              <Grid item>
-                                Rating: {project.rating.value}
-                              </Grid>
+                <Grid container>
+                  <Grid
+                    container
+                    item
+                    xs={11}
+                    style={{
+                      backgroundColor: 'white',
+                      padding: '12px 16px',
+                    }}
+                  >
+                    <Grid item xs={6}>
+                      <ContainerWithHeaderRow
+                        header="Work type"
+                        content={mapProjectTypeToText(project.type)}
+                      />
+                      <ContainerWithHeaderRow
+                        header="Topic"
+                        content={project.topic}
+                      />
+                      <ContainerWithHeaderRow
+                        header="Description"
+                        content={project.description}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <ContainerWithHeaderRow
+                        header="Promoter"
+                        content={`${project.promoter.firstName} ${project.promoter.lastName}`}
+                      />
+                      <ContainerWithHeaderRow
+                        header="University"
+                        content={project.university.namePL.full}
+                      />
+                      <ContainerWithHeaderRow
+                        header="Department"
+                        content={project.department.namePL.full}
+                      />
+                      <ContainerWithHeaderRow
+                        header="Cathedral"
+                        content={project.cathedral.namePL}
+                      />
+                      <ContainerWithHeaderRow
+                        header="Creation date"
+                        content={new Date(project.createdAt).toLocaleDateString()}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      {project.status === ProjectStatus.FINISHED && (
+                        <ContainerWithHeader
+                          header="Rating"
+                          smallPadding
+                          lightBorder
+                          fitContent
+                        >
+                          <Grid container spacing={2} justify="center">
+                            <Grid item>
+                              <Rating
+                                value={project.rating.value}
+                                disabled
+                              />
                             </Grid>
-                          </ContainerWithHeader>
-                        )}
-                      </Grid>
-                      {project.tags.length > 0 && (
-                        <Grid item xs={12}>
-                          <ContainerWithHeader
-                            header="Tags"
-                            smallPadding
-                            lightBorder
-                          >
-                            {project.tags.map((tag) => (
-                              <TagWrapper>{tag.labelPL}</TagWrapper>
-                            ))}
-                          </ContainerWithHeader>
-                        </Grid>
+                            <Grid item>
+                              Voices: {project.rating.votes}
+                            </Grid>
+                            <Grid item>
+                              Rating: {project.rating.value}
+                            </Grid>
+                          </Grid>
+                        </ContainerWithHeader>
                       )}
                     </Grid>
-                    {project.status !== ProjectStatus.FINISHED && (
-                      <Grid item xs={1}>
-                        <ButtonsContainer>
-                          <StyledIconButton onClick={() => handleDeleteOwnership(project)}>
-                            <DeleteIcon />
-                          </StyledIconButton>
-                          <StyledIconButton onClick={() => handleEdit(project)}>
-                            <EditIcon />
-                          </StyledIconButton>
-                        </ButtonsContainer>
+                    {project.tags.length > 0 && (
+                      <Grid item xs={12}>
+                        <ContainerWithHeader
+                          header="Tags"
+                          smallPadding
+                          lightBorder
+                        >
+                          {project.tags.map((tag) => (
+                            <TagWrapper>{tag.labelPL}</TagWrapper>
+                          ))}
+                        </ContainerWithHeader>
                       </Grid>
                     )}
                   </Grid>
-                </ContainerWithHeader>
+                  {project.status !== ProjectStatus.FINISHED && (
+                    <Grid item xs={1}>
+                      <ButtonsContainer>
+                        <StyledIconButton onClick={() => handleDeleteOwnership(project)}>
+                          <DeleteIcon />
+                        </StyledIconButton>
+                        <StyledIconButton onClick={() => handleEdit(project)}>
+                          <EditIcon />
+                        </StyledIconButton>
+                      </ButtonsContainer>
+                    </Grid>
+                  )}
+                </Grid>
               </ProjectWrapper>
             ))}
           </ProjectsContainer>
@@ -266,7 +281,6 @@ const OwnedProjectsPage = () => {
               ]}
             >
               <div>
-                form here
               </div>
             </Popup>
           )}

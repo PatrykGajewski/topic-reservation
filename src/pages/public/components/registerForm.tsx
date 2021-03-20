@@ -73,11 +73,12 @@ export const FieldsRow = styled.div`
   margin-bottom: 24px;
 `;
 
-export const FieldWrapper = styled.div`
-  min-width: 50%;
+export const FieldWrapper = styled.div<{fullWidth?: boolean}>`
+  ${(props) => props.fullWidth ? 'width: 100%;' : 'min-width: 50%;'}
   padding: 0 12px;
   box-sizing: border-box;
 `;
+
 
 const ButtonWrapper = styled.div`
   width: 100%;

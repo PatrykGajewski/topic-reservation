@@ -4,8 +4,8 @@ import { Switch, RouteComponentProps, Route } from 'react-router-dom';
 import { TopBar } from '../components';
 import { LogoutPage } from './logoutPage';
 import { AccountPage } from './account';
-import { OwnedProjectsPage } from './owned/OwnedProjectsPage';
-import { ProjectListPage } from './list';
+import { OwnedProjectsPage } from './ownedProjectList/OwnedProjectsPage';
+import { ProjectListPage } from './projectList/ProjectListPage';
 import { PageContent } from '../public';
 
 const HomePageAuth = (props: RouteComponentProps) => (

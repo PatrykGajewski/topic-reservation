@@ -1,6 +1,13 @@
 import { UserModel } from '../models/user';
-import { ProjectModel } from '../models/project';
+import {ProjectModel, ProjectType} from '../models/project';
 import { University, UniversityDegree } from '../models/university';
+
+export interface AvailableProjectsTableConfig {
+  lastPageIndex: number,
+  pageIndex: number,
+  searchString: string,
+  projectType: ProjectType,
+}
 
 export interface AppState {
   user: UserModel,
@@ -9,5 +16,8 @@ export interface AppState {
   error: any,
   universities: University[],
   degrees: UniversityDegree[],
-  projects: ProjectModel[],
+  userProjects: ProjectModel[],
+  availableProjects: {
+    table : AvailableProjectsTableConfig
+  }
 }

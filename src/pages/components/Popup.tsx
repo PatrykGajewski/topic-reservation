@@ -29,6 +29,7 @@ const StyledPopupMask = styled.div`
   right: 0;
   left: 0;
   background: #80808059;
+  z-index: 888;
 `;
 
 interface StyledPopupProps {
