@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { cloneDeep } from 'lodash';
+import React, { useState } from 'react';
 import { Grid } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,11 +20,8 @@ import {
   StyledContainer,
   TagWrapper,
 } from './styles';
-import { _fetchUserProjects, _updateProject } from './services';
+import { _updateProject } from './services';
 import {
-  UserProjectsDataFetched,
-  UserProjectsDataFetching,
-  UserProjectsDataFetchingError,
   UpdateUserProjectsList,
 } from '../../../store/actions';
 
@@ -54,17 +50,6 @@ const OwnedProjectsPage = () => {
     user: state.user,
   }));
 
-  const fetchProjects = () => {
-    dispatch({ ...new UserProjectsDataFetching() });
-    _fetchUserProjects()
-      .then((projects: ProjectModel[]) => {
-        dispatch({ ...new UserProjectsDataFetched(projects) });
-      })
-      .catch((err) => {
-        dispatch({ ...new UserProjectsDataFetchingError(err.message) });
-      });
-  };
-
   const updateProject = async (projectId: string, updates: any): Promise<any> => (
     new Promise(((resolve, reject) => {
       _updateProject(projectId, updates)
@@ -81,10 +66,6 @@ const OwnedProjectsPage = () => {
         });
     }))
   );
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
 
   const handleDeleteOwnership = (project: ProjectModel) => {
     setDeleteModalOpen((prev) => !prev);

@@ -7,8 +7,8 @@ import Authentication, { LoginFormValues } from '../../authentication';
 import LoginForm from './components/loginForm';
 import { SIZES } from '../components/constants';
 import BackgroundURL from '../../img/loginBg.jpg';
-import { UserDataFetched } from '../../store/actions';
-import {UserModel} from "../../models/user";
+import { UpdateUserData } from '../../store/actions';
+import { UserModel } from '../../models/user';
 
 const ContainerBase = css`
   display: flex;
@@ -64,7 +64,7 @@ const LoginPage = (props: RouteComponentProps) => {
   const dispatch = useDispatch();
   const userAuthenticationSuccess = (user: UserModel) => {
     setAuthenticationError(false);
-    dispatch({ ...new UserDataFetched(user) });
+    dispatch({ ...new UpdateUserData(user) });
     props.history.push('/');
   };
 

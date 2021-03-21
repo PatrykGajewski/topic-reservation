@@ -1,6 +1,7 @@
 import { UserModel } from '../models/user';
-import {ProjectModel, ProjectType} from '../models/project';
+import {ProjectModel, ProjectTag, ProjectType} from '../models/project';
 import { University, UniversityDegree } from '../models/university';
+import {SimplifiedUser} from "../pages/private/main/services";
 
 export interface AvailableProjectsTableConfig {
   lastPageIndex: number,
@@ -13,10 +14,12 @@ export interface AppState {
   user: UserModel,
   loading: boolean,
   success: boolean,
-  error: any,
+  error: boolean,
   universities: University[],
   degrees: UniversityDegree[],
   userProjects: ProjectModel[],
+  tags: ProjectTag[],
+  promoters: SimplifiedUser[],
   availableProjects: {
     table : AvailableProjectsTableConfig
   }

@@ -36,7 +36,7 @@ import {
 import { ViewState } from '../models';
 import { APISecured } from '../../../API';
 import LoginForm from '../../public/components/loginForm';
-import { UpdateUserData, UserDataFetched } from '../../../store/actions';
+import { UpdateUserData } from '../../../store/actions';
 
 interface ViewData {
   personalData: PersonalSectionData,
@@ -231,7 +231,7 @@ const AccountPage = () => {
       setAccountConfirmModalOpen(false);
 
       dispatch({
-        ...new UserDataFetched(
+        ...new UpdateUserData(
           {
             ...stateData.user,
             roles: [...stateData.user.roles, UserRole.STUDENT],

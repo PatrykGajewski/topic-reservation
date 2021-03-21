@@ -28,9 +28,11 @@ const initialState: AppState = {
   },
   degrees: [],
   universities: [],
-  loading: false,
+  promoters: [],
+  tags: [],
+  loading: true,
   success: false,
-  error: '',
+  error: false,
 };
 
 export default initialState;

@@ -8,10 +8,14 @@ import ChatIcon from '@material-ui/icons/Chat';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { AppState } from '../../../store/appState';
 
-import { mapProjectTypeToText, ProjectModel, ProjectType } from '../../../models/project';
+import {
+  mapProjectTypeToText, ProjectModel, ProjectTag, ProjectType,
+} from '../../../models/project';
 import { SelectOption } from '../../../models/forms';
 import { ContentContainer, EmptyStateContainer } from './styles';
-import { _fetchAvailableProjects, _reserveProject } from './services';
+import {
+  _createProject, _fetchAvailableProjects, _reserveProject,
+} from './services';
 import { ViewState } from '../models';
 import { UpdateAvailableProjectsTable, UpdateUserProjectsList } from '../../../store/actions';
 import { StyledContainer } from '../ownedProjectList';
@@ -19,7 +23,8 @@ import { AvailableProjectsTable } from '../ownedProjectList/components';
 import { SimpleSelect } from '../../components/forms';
 import { StyledIconButton } from '../account/styles';
 import { ButtonType, Popup } from '../../components';
-import { ProjectForm, ProjectFormValues } from "./forms";
+import { ProjectForm, ProjectFormValues } from './forms';
+import { University } from '../../../models/university';
 
 export const projectTypeOptions: SelectOption[] = Object.keys(ProjectType)
   .map((key: string) => ({
@@ -37,7 +42,16 @@ const ProjectListPage = () => {
     userProjects: state.userProjects,
     tableConfig: state.availableProjects.table,
     user: state.user,
+    tags: state.tags,
+    universities: state.universities,
+    promoters: state.promoters,
   }));
+
+  const [university, setUniversity] = useState<University | null>(null);
+  useEffect(() => {
+    setUniversity(stateData.universities[0]);
+  }, [stateData.universities]);
+
   const [viewState, setViewState] = useState<ViewState>(ViewState.LOADING);
   const [projects, setProjects] = useState<ProjectModel[]>([]);
   const [searchString, setSearchString] = useState<string>(stateData.tableConfig.searchString);
@@ -104,6 +118,24 @@ const ProjectListPage = () => {
       .catch(() => {
         toast.error('Project reservation error');
         setViewState(ViewState.ERROR);
+      });
+  };
+
+  const handleSubmitProjectForm = (values: ProjectFormValues): void => {
+    _createProject({
+      topic: values.topic,
+      description: values.description,
+      tag: values.tag,
+      type: values.type,
+      userId: stateData.user.id,
+    })
+      .then((res) => {
+        console.log(res);
+        toast.success('Project has been created');
+        setProjectFormModalOpen((prev) => !prev);
+      })
+      .catch(() => {
+        toast.error('Cannot create project');
       });
   };
 
@@ -193,7 +225,7 @@ const ProjectListPage = () => {
           <StyledIconButton onClick={() => setProjectFormModalOpen((prev) => !prev)}>
             <AddCircleOutlineIcon />
           </StyledIconButton>
-          {projectFormModalOpen && (
+          {projectFormModalOpen && university && (
             <Popup
               header="Create own topic"
               handleClose={() => setProjectFormModalOpen((prev) => !prev)}
@@ -221,9 +253,16 @@ const ProjectListPage = () => {
                   topic: '',
                   description: '',
                   type: ProjectType.RESEARCH_WORK,
-                  tags: [],
+                  tag: stateData.tags[0].id,
+                  department: university.departments[0].id,
+                  university: university.id,
                 }}
-                onSubmit={() => {}}
+                tagsOptions={stateData.tags
+                  .map((tag: ProjectTag):SelectOption => ({ label: tag.labelPL, value: tag.id }))}
+                departmentsOptions={university.departments
+                  .map((department): SelectOption => ({ label: department.name, value: department.id }))}
+                universitiesOptions={[{ label: university.namePL.full, value: university.id }]}
+                onSubmit={handleSubmitProjectForm}
                 handleClose={() => setProjectFormModalOpen((prev) => !prev)}
                 submitBtnRef={projectSubmitBtnRef}
               />

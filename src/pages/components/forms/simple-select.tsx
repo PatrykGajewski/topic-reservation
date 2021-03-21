@@ -23,6 +23,7 @@ interface Props {
   id: string
   label: string,
   labelId: string,
+  multiple?: boolean
 }
 
 const StyledInputLabel = styled(InputLabel)`
@@ -46,6 +47,7 @@ export const SimpleSelect = (props: Props) => {
           id={props.id}
           value={props.selectedOption.value}
           onChange={handleChange}
+          multiple={props.multiple}
         >
           {props.options.map((option: SelectOption) => (
             <MenuItem value={option.value}>{option.label}</MenuItem>

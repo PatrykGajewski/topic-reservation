@@ -1,21 +1,5 @@
-import { APISecured } from '../../../../API';
-import {ProjectModel, ProjectStatus, ProjectType} from '../../../../models/project';
-
-export const fetchUniversitiesList = async () => {
-  try {
-    const { data, error } = await APISecured.get('/universities');
-
-    if (error) {
-      return Promise.reject(error.message);
-      // eslint-disable-next-line no-else-return
-    } else {
-      return Promise.resolve(data);
-    }
-  } catch (err) {
-    console.error(err);
-    return Promise.reject(err.message);
-  }
-};
+import {APISecured} from '../../../../API';
+import {ProjectModel, ProjectStatus, ProjectType,} from '../../../../models/project';
 
 export const _reserveProject = async (projectId: string): Promise<ProjectModel> => {
   try {
@@ -55,5 +39,44 @@ export const _fetchAvailableProjects = async (params: GetAvailableProjectsParams
   } catch (err) {
     console.log(err);
     return Promise.reject(new Error('API error - userProjects route'));
+  }
+};
+
+interface CreateProjectParams {
+  topic: string,
+  description: string,
+  type: ProjectType,
+  tag: string,
+  userId: string
+}
+
+export const _createProject = async (params: CreateProjectParams): Promise<ProjectModel> => {
+  try {
+    const { data, error } = await APISecured.post('/projects/add/project', {
+      topic: params.topic,
+      description: params.description,
+      type: params.type,
+      languagesIds: [],
+      groupProject: false,
+      ownersIds: [params.userId],
+      promoterId: '',
+      reviewersIds: [],
+      universityId: '',
+      departmentId: '',
+      cathedralId: '',
+      status: ProjectStatus.RESERVED,
+      rating: {
+        votes: [],
+        value: 0,
+      }
+    });
+    if (error) {
+      console.log(error);
+      return Promise.reject();
+    }
+    return Promise.resolve(data.data as ProjectModel);
+  } catch (e) {
+    console.log(e);
+    return Promise.reject();
   }
 };

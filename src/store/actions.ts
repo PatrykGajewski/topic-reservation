@@ -1,43 +1,82 @@
 import { UserModel } from '../models/user';
-import { ProjectModel } from '../models/project';
+import { ProjectModel, ProjectTag } from '../models/project';
 import { AvailableProjectsTableConfig } from './appState';
+import { University } from '../models/university';
+import { SimplifiedUser } from '../pages/private/main/services';
 
 export enum ACTION_TYPES {
-  'USER_DATA_FETCHING' = 'USER_DATA_FETCHING',
-  'USER_DATA_FETCHING_ERROR' = 'USER_DATA_FETCHING_ERROR',
-  'USER_DATA_FETCHED' = 'USER_DATA_FETCHED',
-  'USER_DATA_UPDATE' = ' USER_DATA_UPDATE',
+  'INITIAL_DATA_FETCHING' = 'INITIAL_DATA_FETCHING',
+  'INITIAL_DATA_FETCHED' = 'INITIAL_DATA_FETCHED',
+  'INITIAL_DATA_FETCHING_ERROR' = 'INITIAL_DATA_FETCHING_ERROR',
 
-  'USER_PROJECTS_DATA_FETCHING' = 'USER_PROJECTS_DATA_FETCHING',
-  'USER_PROJECTS_DATA_FETCHING_ERROR' = 'USER_PROJECTS_DATA_FETCHING_ERROR',
-  'USER_PROJECTS_DATA_FETCHED' = 'USER_PROJECTS_DATA_FETCHED',
-  'USER_PROJECTS_DATA_UPDATE' = 'USER_PROJECTS_DATA_UPDATE',
+  'USER_DATA_UPDATE' = ' USER_DATA_UPDATE',
   'UPDATE_AVAILABLE_PROJECTS_TABLE_CONFIG' = 'UPDATE_AVAILABLE_PROJECTS_TABLE_CONFIG',
+
+  'UPDATE_UNIVERSITIES_LIST' = 'UPDATE_UNIVERSITIES_LIST',
+  'UPDATE_TAGS_LIST' = 'UPDATE_TAGS_LIST',
+  'UPDATE_PROMOTERS_LIST' = 'UPDATE_PROMOTERS_LIST',
+  'UPDATE_USER_PROJECTS_LIST' = 'UPDATE_USER_PROJECTS_LIST',
 }
 
-export type ActionTypes = UserDataFetched;
+export type ActionTypes = InitialDataFetching
+  | InitialDataFetched
+  | InitialDataFetchingError
+  | UpdateUniversitiesList
+  | UpdateTagsList
+  | UpdatePromotersList
+  | UpdateUserProjectsList
+  | UpdateUserData
+  | UpdateAvailableProjectsTable;
 
-export class UserDataFetched {
-  type = ACTION_TYPES.USER_DATA_FETCHED;
+export class InitialDataFetching {
+  type = ACTION_TYPES.INITIAL_DATA_FETCHING;
+}
 
-  payload: UserModel;
+export class InitialDataFetched {
+  type = ACTION_TYPES.INITIAL_DATA_FETCHED;
+}
 
-  constructor(user: UserModel) {
-    this.payload = user;
+export class InitialDataFetchingError {
+  type = ACTION_TYPES.INITIAL_DATA_FETCHING_ERROR;
+}
+
+export class UpdateUniversitiesList {
+  type = ACTION_TYPES.UPDATE_UNIVERSITIES_LIST;
+
+  payload: University[];
+
+  constructor(list: University[]) {
+    this.payload = list;
   }
 }
 
-export class UserDataFetching {
-  type = ACTION_TYPES.USER_DATA_FETCHING;
+export class UpdateTagsList {
+  type = ACTION_TYPES.UPDATE_TAGS_LIST;
+
+  payload: ProjectTag[];
+
+  constructor(list: ProjectTag[]) {
+    this.payload = list;
+  }
 }
 
-export class UserDataFetchingError {
-  type = ACTION_TYPES.USER_DATA_FETCHING_ERROR;
+export class UpdatePromotersList {
+  type = ACTION_TYPES.UPDATE_PROMOTERS_LIST;
 
-  payload: string;
+  payload: SimplifiedUser[];
 
-  constructor(message: string) {
-    this.payload = message;
+  constructor(list: SimplifiedUser[]) {
+    this.payload = list;
+  }
+}
+
+export class UpdateUserProjectsList {
+  type = ACTION_TYPES.UPDATE_USER_PROJECTS_LIST;
+
+  payload: ProjectModel[];
+
+  constructor(list: ProjectModel[]) {
+    this.payload = list;
   }
 }
 
@@ -51,40 +90,6 @@ export class UpdateUserData {
   }
 }
 
-export class UserProjectsDataFetching {
-  type = ACTION_TYPES.USER_PROJECTS_DATA_FETCHING;
-}
-
-export class UserProjectsDataFetchingError {
-  type = ACTION_TYPES.USER_PROJECTS_DATA_FETCHING_ERROR;
-
-  payload: string;
-
-  constructor(message: string) {
-    this.payload = message;
-  }
-}
-
-export class UserProjectsDataFetched {
-  type = ACTION_TYPES.USER_PROJECTS_DATA_FETCHED;
-
-  payload: ProjectModel[];
-
-  constructor(data: ProjectModel[]) {
-    this.payload = data;
-  }
-}
-
-export class UpdateUserProjectsList {
-  type = ACTION_TYPES.USER_PROJECTS_DATA_UPDATE;
-
-  payload: ProjectModel[];
-
-  constructor(data: ProjectModel[]) {
-    this.payload = data;
-  }
-}
-
 export class UpdateAvailableProjectsTable {
   type = ACTION_TYPES.UPDATE_AVAILABLE_PROJECTS_TABLE_CONFIG;
 
@@ -94,3 +99,5 @@ export class UpdateAvailableProjectsTable {
     this.payload = config;
   }
 }
+
+
