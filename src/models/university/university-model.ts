@@ -1,5 +1,4 @@
-import { UniversityAddress } from './university-address.model';
-import { UniversityDepartment } from './university-department.model';
+import { DepartmentModel } from './models';
 
 export interface University {
   id: string,
@@ -33,7 +32,7 @@ export interface University {
     linkedinProfile?: string,
     instagramProfile?: string,
   },
-  departments: any[],
+  departments: DepartmentModel[],
   createdAt: string,
   updatedAt: string,
 }

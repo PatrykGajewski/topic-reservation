@@ -24,6 +24,7 @@ interface Props {
   label: string,
   labelId: string,
   multiple?: boolean
+  disabled?: boolean
 }
 
 const StyledInputLabel = styled(InputLabel)`
@@ -43,6 +44,7 @@ export const SimpleSelect = (props: Props) => {
       <FormControl variant="outlined" className={classes.formControl}>
         <StyledInputLabel variant="outlined" id={props.labelId}>{props.label}</StyledInputLabel>
         <Select
+          disabled={props.disabled}
           labelId={props.labelId}
           id={props.id}
           value={props.selectedOption.value}

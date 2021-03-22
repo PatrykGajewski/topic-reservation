@@ -25,6 +25,7 @@ import { StyledIconButton } from '../account/styles';
 import { ButtonType, Popup } from '../../components';
 import { ProjectForm, ProjectFormValues } from './forms';
 import { University } from '../../../models/university';
+import { SimplifiedUser } from "../main/services";
 
 export const projectTypeOptions: SelectOption[] = Object.keys(ProjectType)
   .map((key: string) => ({
@@ -225,7 +226,12 @@ const ProjectListPage = () => {
           <StyledIconButton onClick={() => setProjectFormModalOpen((prev) => !prev)}>
             <AddCircleOutlineIcon />
           </StyledIconButton>
-          {projectFormModalOpen && university && (
+          {projectFormModalOpen
+          && university
+          && university.departments.length
+          && university.departments[0].cathedrals.length
+          && stateData.promoters.length
+          && (
             <Popup
               header="Create own topic"
               handleClose={() => setProjectFormModalOpen((prev) => !prev)}
@@ -256,15 +262,20 @@ const ProjectListPage = () => {
                   tag: stateData.tags[0].id,
                   department: university.departments[0].id,
                   university: university.id,
+                  cathedral: university.departments[0].cathedrals[0].id,
+                  promoter: stateData.promoters[0].id,
                 }}
                 tagsOptions={stateData.tags
                   .map((tag: ProjectTag):SelectOption => ({ label: tag.labelPL, value: tag.id }))}
                 departmentsOptions={university.departments
-                  .map((department): SelectOption => ({ label: department.name, value: department.id }))}
+                  .map((department): SelectOption => ({ label: department.namePL.full, value: department.id }))}
                 universitiesOptions={[{ label: university.namePL.full, value: university.id }]}
+                promoters={stateData.promoters
+                  .map((promoter: SimplifiedUser): SelectOption => ({ label: `${promoter.firstName} ${promoter.lastName}`, value: promoter.id }))}
                 onSubmit={handleSubmitProjectForm}
                 handleClose={() => setProjectFormModalOpen((prev) => !prev)}
                 submitBtnRef={projectSubmitBtnRef}
+                departments={university.departments}
               />
             </Popup>
           )}

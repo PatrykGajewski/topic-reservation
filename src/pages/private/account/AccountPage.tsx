@@ -238,8 +238,10 @@ const AccountPage = () => {
           },
         ),
       });
+      toast.success('Account has been confirmed');
     }).catch((error: any) => {
       setAccountConfirmationError(true);
+      toast.error('Cannot confirm account');
     });
   };
 

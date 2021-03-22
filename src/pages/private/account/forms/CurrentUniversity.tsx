@@ -21,6 +21,7 @@ interface State {
   universities: University[]
 }
 
+/*
 export const CurrentUniversityForm = (props: Props) => {
   const stateData: State = useSelector((state: AppState) => ({
     universities: state.universities,
@@ -58,7 +59,7 @@ export const CurrentUniversityForm = (props: Props) => {
         values, setFieldValue, errors,
       }) => (
         <Form>
-          {/* TODO remove errors console log */}
+          {/!* TODO remove errors console log *!/}
           {console.log(errors)}
           {universities.length > 0 && (
             <>
@@ -114,3 +115,4 @@ export const CurrentUniversityForm = (props: Props) => {
     </Formik>
   );
 };
+*/

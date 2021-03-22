@@ -14,4 +14,8 @@ export const ProjectFormValidationSchema = Yup.object().shape({
     .required(),
   department: Yup.string()
     .required(),
+  cathedral: Yup.string()
+    .required(),
+  promoter: Yup.string().
+    required()
 });

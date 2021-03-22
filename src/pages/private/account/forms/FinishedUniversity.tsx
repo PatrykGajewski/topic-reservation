@@ -26,7 +26,7 @@ interface State {
   degrees: UniversityDegree[],
 }
 
-const FinishedUniversityForm = (props: Props) => {
+/*const FinishedUniversityForm = (props: Props) => {
   const stateData: State = useSelector((state: AppState) => ({
     universities: state.universities,
     degrees: state.degrees,
@@ -69,7 +69,7 @@ const FinishedUniversityForm = (props: Props) => {
         values, setFieldValue, errors,
       }) => (
         <Form>
-          {/* TODO remove errors console log */}
+          {/!* TODO remove errors console log *!/}
           {console.log(errors)}
           {universities.length > 0 && (
             <>
@@ -156,4 +156,4 @@ const FinishedUniversityForm = (props: Props) => {
   );
 };
 
-export { FinishedUniversityForm };
+export { FinishedUniversityForm }*/;
