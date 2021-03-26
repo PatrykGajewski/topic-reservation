@@ -39,12 +39,12 @@ interface StyledPopupProps {
 const StyledPopup = styled.div<StyledPopupProps>`
   background: white;
   position: absolute;
-  top: 20px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   width: 80%;
   border-radius: 12px;
-  height: calc(100% - 40px);
+  height: auto;
   overflow-y: hidden;
 `;
 
@@ -137,7 +137,7 @@ const FooterButton = styled.button<FooterButtonProps>`
     case ButtonType.DANGER:
       return 'red';
     case ButtonType.PRIMARY:
-      return '#3da8d9e6';
+      return '#77bf53';
     case ButtonType.SECONDARY:
       return '#c5c5c580';
     default:

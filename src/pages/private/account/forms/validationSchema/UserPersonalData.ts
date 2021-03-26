@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-const UserPersonalValidation = Yup.object().shape({
+export const UserPersonalDataValidation = Yup.object().shape({
   firstName: Yup.string()
     .required(),
   lastName: Yup.string()
@@ -21,6 +21,3 @@ const UserPersonalValidation = Yup.object().shape({
   gender: Yup.string()
     .required(),
 });
-
-// eslint-disable-next-line import/prefer-default-export
-export { UserPersonalValidation };

@@ -1,9 +1,9 @@
 import { AccountSectionData } from '../components';
-import { AccountStateData } from '../AccountPage';
+import { UserModel } from '../../../../models/user';
 
-export const createAccountData = (data: AccountStateData): AccountSectionData => ({
-  email: data.email,
-  creationDate: data.creationDate ? new Date(data.creationDate).toLocaleDateString() : '',
-  updateDate: data.updateDate ? new Date(data.updateDate).toLocaleDateString() : '',
-  userRoles: data.roles,
+export const createAccountData = (user: UserModel): AccountSectionData => ({
+  email: user.email,
+  creationDate: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '',
+  updateDate: user.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : '',
+  userRoles: user.roles,
 });

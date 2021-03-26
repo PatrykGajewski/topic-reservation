@@ -20,6 +20,7 @@ export interface ImageModel {
 export interface UserModel {
   id: string,
   email: string,
+  contactEmail: string,
   roles: UserRole[],
   firstName: string,
   lastName: string,

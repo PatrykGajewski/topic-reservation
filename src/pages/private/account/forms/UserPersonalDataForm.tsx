@@ -12,10 +12,10 @@ import { SelectOption } from 'models/forms';
 import { FieldsRow, FieldWrapper } from '../../../public/components/registerForm';
 import { genderOptions } from './config';
 
-import { UserPersonalValidation } from './validationSchema';
+import { UserPersonalDataValidation } from './validationSchema';
 import { SimpleSelect } from '../../../components/forms';
 
-export interface PersonalSectionValues {
+export interface PersonalDataFormValues {
   firstName: string,
   lastName: string,
   birthDate: string,
@@ -29,8 +29,8 @@ export interface PersonalSectionValues {
 }
 
 interface UserPersonalProps {
-    initialValues: PersonalSectionValues,
-    onSubmit: (values: PersonalSectionValues) => void,
+    initialValues: PersonalDataFormValues,
+    onSubmit: (values: PersonalDataFormValues) => void,
     handleClose: () => void,
     submitBtnRef: RefObject<HTMLButtonElement>,
 }
@@ -43,11 +43,11 @@ export const countryOptions: SelectOption[] = [{
   value: 'EN',
 }];
 
-const UserPersonalForm = (props: UserPersonalProps) => (
+const UserPersonalDataForm = (props: UserPersonalProps) => (
   <Formik
     initialValues={props.initialValues}
     onSubmit={props.onSubmit}
-    validationSchema={UserPersonalValidation}
+    validationSchema={UserPersonalDataValidation}
   >
     {({
       values, errors, setFieldValue, touched,
@@ -199,4 +199,4 @@ const UserPersonalForm = (props: UserPersonalProps) => (
   </Formik>
 );
 
-export { UserPersonalForm };
+export { UserPersonalDataForm };

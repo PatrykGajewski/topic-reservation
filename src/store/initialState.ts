@@ -6,6 +6,7 @@ const initialState: AppState = {
   user: {
     id: '',
     email: '',
+    contactEmail: '',
     roles: [],
     firstName: '',
     lastName: '',

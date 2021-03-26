@@ -7,7 +7,6 @@ export interface PersonalSectionData {
   lastName: string,
   birthDate: string,
   address: UserAddress,
-  phoneNumber: string
   gender: UserGender,
 }
 
@@ -18,14 +17,14 @@ interface Props {
 
 export const PersonalDataSection = (props: Props) => (
   <ContainerWithHeader
-    header="Personal"
+    header="Personal data"
     editable
     handleEdit={props.handleEdit}
   >
     <ContainerWithHeaderRow header="Firstname" content={props.data.firstName} />
     <ContainerWithHeaderRow header="Lastname" content={props.data.lastName} />
 
-    <ContainerWithHeaderRow header="Gender" content={props.data.gender} />
+    <ContainerWithHeaderRow header="Gender" content={props.data.gender.toLocaleLowerCase()} />
 
     <ContainerWithHeaderRow header="Date of birth" content={props.data.birthDate} />
 
@@ -35,7 +34,5 @@ export const PersonalDataSection = (props: Props) => (
     <ContainerWithHeaderRow header="Street name" content={props.data.address.streetName} />
     <ContainerWithHeaderRow header="Flat number" content={props.data.address.flatNumber} />
     <ContainerWithHeaderRow header="Building number" content={props.data.address.buildingNumber} />
-
-{/*    <ContainerWithHeaderRow header="Phone number" content={props.data.phoneNumber} />*/}
   </ContainerWithHeader>
 );

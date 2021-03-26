@@ -1,3 +1,2 @@
-export * from './UserPersonal';
-export * from './finished-university';
-export * from './current-university';
+export * from './UserPersonalData';
+export * from './UserContactData';

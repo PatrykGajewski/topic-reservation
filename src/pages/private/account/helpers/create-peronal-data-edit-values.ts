@@ -1,7 +1,7 @@
-import { countryOptions, PersonalSectionValues } from '../forms';
-import { PersonalStateData } from '../AccountPage';
+import {ContactDataFormValues, PersonalDataFormValues} from '../forms';
+import { PersonalSectionData } from '../components';
 
-export const createPersonalDataEditValues = (data: PersonalStateData): PersonalSectionValues => ({
+export const createPersonalDataEditValues = (data: PersonalSectionData): PersonalDataFormValues => ({
   firstName: data.firstName,
   lastName: data.lastName || '',
   birthDate: data.birthDate || '',

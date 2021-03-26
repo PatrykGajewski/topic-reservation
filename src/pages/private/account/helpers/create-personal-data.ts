@@ -1,18 +1,17 @@
 import { PersonalSectionData } from '../components';
-import { PersonalStateData } from '../AccountPage';
+import { UserModel } from '../../../../models/user';
 
-export const createPersonalData = (data: PersonalStateData): PersonalSectionData => ({
-  firstName: data.firstName,
-  lastName: data.lastName || '',
-  birthDate: data.birthDate ? new Date(data.birthDate).toLocaleDateString() : '',
+export const createPersonalData = (user: UserModel): PersonalSectionData => ({
+  firstName: user.firstName,
+  lastName: user.lastName || '',
+  birthDate: user.birthDate ? new Date(user.birthDate).toLocaleDateString() : '',
   address: {
-    country: (data.address && data.address.country) || '',
-    city: (data.address && data.address.city) || '',
-    zip: (data.address && data.address.zip) || '',
-    streetName: (data.address && data.address.streetName) || '',
-    buildingNumber: (data.address && data.address.buildingNumber) || '',
-    flatNumber: (data.address && data.address.flatNumber) || '',
+    country: (user.address && user.address.country) || '',
+    city: (user.address && user.address.city) || '',
+    zip: (user.address && user.address.zip) || '',
+    streetName: (user.address && user.address.streetName) || '',
+    buildingNumber: (user.address && user.address.buildingNumber) || '',
+    flatNumber: (user.address && user.address.flatNumber) || '',
   },
-  phoneNumber: data.phoneNumber || '',
-  gender: data.gender,
+  gender: user.gender,
 });

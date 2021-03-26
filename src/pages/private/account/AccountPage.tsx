@@ -4,18 +4,17 @@ import React, {
 import { Grid } from '@material-ui/core';
 import FaceIcon from '@material-ui/icons/Face';
 import SettingsIcon from '@material-ui/icons/Settings';
-
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'react-loader-spinner';
-import {
-  UserAddress, UserGender, UserModel, UserRole,
-} from 'models/user';
-import { AppState } from 'store/appState';
 import { toast } from 'react-toastify';
+
+import { UserModel, UserRole } from 'models/user';
+import { AppState } from 'store/appState';
 import { ButtonType, Popup } from '../../components';
 import { ErrorWrapper, LoginFormContainer } from '../../public';
-import { PersonalSectionValues, UserPersonalForm } from './forms';
-
+import {
+  ContactDataFormValues, PersonalDataFormValues, UserContactDataForm, UserPersonalDataForm,
+} from './forms';
 import {
   ContentWrapper, StyledPhotoWrapper, PopupContentWrapper, StyledPhotoForm, StyledIconButton,
   StyledImagePreviewContainer,
@@ -30,47 +29,22 @@ import {
 } from './helpers';
 
 import {
-  AccountDataSection, AccountSectionData, PersonalDataSection, PersonalSectionData,
+  AccountDataSection, AccountSectionData, ContactDataSection, PersonalDataSection, PersonalSectionData,
 } from './components';
 
 import { ViewState } from '../models';
 import { APISecured } from '../../../API';
 import LoginForm from '../../public/components/loginForm';
 import { UpdateUserData } from '../../../store/actions';
+import { createContactData } from './helpers/create-contact-data';
 
 interface ViewData {
   personalData: PersonalSectionData,
   accountData: AccountSectionData,
-}
-
-export interface PersonalStateData {
-  firstName: string,
-  lastName: string | null,
-  birthDate: string | null,
-  address: UserAddress | null,
-  phoneNumber: string | null,
-  gender: UserGender,
-}
-
-export interface AccountStateData {
-  userId: string,
-  email: string,
-  roles: UserRole[],
-  creationDate: string,
-  updateDate: string,
-  profilePhotoId: string | null
-}
-
-export interface PageStateData {
-  success: boolean,
-  loading: boolean,
-  error: any,
+  contactData: ContactDataSection,
 }
 
 interface StateData {
-  personalData: PersonalStateData,
-  accountData: AccountStateData,
-  pageData: PageStateData,
   user: UserModel,
 }
 
@@ -86,47 +60,29 @@ const properImageFileExtensions: ImagesFileExtension[] = [ImagesFileExtension.BM
 const AccountPage = () => {
   const dispatch = useDispatch();
   const stateData: StateData = useSelector((state: AppState):StateData => ({
-    personalData: {
-      firstName: state.user.firstName,
-      lastName: state.user.lastName,
-      birthDate: state.user.birthDate,
-      address: state.user.address,
-      phoneNumber: state.user.phoneNumber,
-      gender: state.user.gender,
-    },
-    accountData: {
-      userId: state.user.id,
-      email: state.user.email,
-      creationDate: state.user.createdAt,
-      updateDate: state.user.updatedAt,
-      profilePhotoId: state.user.profilePhotoId,
-      roles: state.user.roles,
-    },
-    pageData: {
-      success: state.success,
-      error: state.error,
-      loading: state.loading,
-    },
     user: state.user,
   }));
 
-
   const [viewData, setViewData] = useState<ViewData>({
-    personalData: createPersonalData(stateData.personalData),
-    accountData: createAccountData(stateData.accountData),
+    personalData: createPersonalData(stateData.user),
+    accountData: createAccountData(stateData.user),
+    contactData: createContactData(stateData.user),
   });
+
   const [viewState, setViewState] = useState<ViewState>(ViewState.LOADING);
-  const [personalEditing, setPersonalEditing] = useState<boolean>(false);
+  const [personalDataEditModalOpen, setPersonalDataEditModalOpen] = useState<boolean>(false);
   const [accountConfirmModalOpen, setAccountConfirmModalOpen] = useState<boolean>(false);
   const [accountConfirmationError, setAccountConfirmationError] = useState<boolean>(false);
-  const [photoSelectionModalOpen, setPhotoSelectionModalOpen] = useState<boolean>(false);
+  const [contactDataEditModalOpen, setContactDataEditModalOpen] = useState<boolean>(false);
 
+  const [photoSelectionModalOpen, setPhotoSelectionModalOpen] = useState<boolean>(false);
   const [photoToUpload, setPhotoToUpload] = useState<File | null>(null);
   const [profilePhoto, setProfilePhoto] = useState<{data: string, contentType: string} | null>(null);
-  const personalSubmitBtnRef = useRef<HTMLButtonElement | null>(null);
+  const personalDataFormSubmitBtnRef = useRef<HTMLButtonElement | null>(null);
+  const contactDataFormSubmitBtnRef = useRef<HTMLButtonElement | null>(null);
 
   const fetchProfilePhoto = () => {
-    APISecured.get(`/static/avatars/${stateData.accountData.profilePhotoId}`)
+    APISecured.get(`/static/avatars/${stateData.user.profilePhotoId}`)
       .then((res) => {
         setProfilePhoto(res.data);
       })
@@ -138,24 +94,25 @@ const AccountPage = () => {
   useEffect(() => {
     setViewState(ViewState.OK);
     fetchProfilePhoto();
-  }, [stateData.accountData.profilePhotoId]);
+  }, [stateData.user.profilePhotoId]);
 
   useEffect(() => {
     setViewData({
-      personalData: createPersonalData(stateData.personalData),
-      accountData: createAccountData(stateData.accountData),
+      personalData: createPersonalData(stateData.user),
+      accountData: createAccountData(stateData.user),
+      contactData: createContactData(stateData.user),
     });
   }, [stateData.user]);
 
   const handlePersonalEditOpen = () => {
-    setPersonalEditing(true);
+    setPersonalDataEditModalOpen(true);
   };
 
   const handlePersonalEditClose = () => {
-    setPersonalEditing(false);
+    setPersonalDataEditModalOpen(false);
   };
 
-  const handlePersonalSubmit = (values: PersonalSectionValues) => {
+  const handlePersonalSubmit = (values: PersonalDataFormValues) => {
     const dataShape = {
       firstName: values.firstName,
       lastName: values.lastName,
@@ -171,11 +128,11 @@ const AccountPage = () => {
       },
     };
 
-    updatePersonalData(dataShape, stateData.accountData.userId)
+    updatePersonalData(dataShape, stateData.user.id)
       .then((user: UserModel) => {
         dispatch({ ...new UpdateUserData(user) });
         toast.success('User personal data updated');
-        setPersonalEditing(false);
+        setPersonalDataEditModalOpen(false);
       }).catch((err) => {
         toast.error('Error during personal data update');
       });
@@ -245,6 +202,11 @@ const AccountPage = () => {
     });
   };
 
+  const handleUserContactDataSubmit = (values: ContactDataFormValues) => {
+    // TODO finish logic
+    console.log(values);
+  };
+
   return (
     <>
       {viewState === ViewState.LOADING && (
@@ -277,10 +239,15 @@ const AccountPage = () => {
             <Grid item sm={9}>
               <div style={{
                 margin: '30px 50px',
-              }}>
+              }}
+              >
                 <PersonalDataSection
                   handleEdit={handlePersonalEditOpen}
                   data={viewData.personalData}
+                />
+                <ContactDataSection
+                  data={viewData.contactData}
+                  handleEdit={() => setContactDataEditModalOpen((prev) => !prev)}
                 />
                 <AccountDataSection
                   data={viewData.accountData}
@@ -326,10 +293,10 @@ const AccountPage = () => {
               </StyledPhotoForm>
             </Popup>
           )}
-          {personalEditing && (
+          {personalDataEditModalOpen && (
             <Popup
               handleClose={handlePersonalEditClose}
-              header="Personal data"
+              header="Edit personal data"
               buttonsConfig={[
                 {
                   label: 'Cancel',
@@ -338,22 +305,22 @@ const AccountPage = () => {
                   buttonType: ButtonType.SECONDARY,
                 },
                 {
-                  label: 'Submit',
+                  label: 'Save',
                   disabled: false,
                   onClick: () => {
-                    if (personalSubmitBtnRef.current !== null) {
-                      personalSubmitBtnRef.current.click();
+                    if (personalDataFormSubmitBtnRef.current !== null) {
+                      personalDataFormSubmitBtnRef.current.click();
                     }
                   },
                   buttonType: ButtonType.PRIMARY,
                 },
               ]}
             >
-              <UserPersonalForm
-                initialValues={createPersonalDataEditValues(stateData.personalData)}
+              <UserPersonalDataForm
+                initialValues={createPersonalDataEditValues(viewData.personalData)}
                 onSubmit={handlePersonalSubmit}
                 handleClose={handlePersonalEditClose}
-                submitBtnRef={personalSubmitBtnRef}
+                submitBtnRef={personalDataFormSubmitBtnRef}
               />
             </Popup>
           )}
@@ -379,6 +346,39 @@ const AccountPage = () => {
                     <ErrorWrapper> It seems that login or password is incorrect </ErrorWrapper>
                   )}
                 </LoginFormContainer>
+              </PopupContentWrapper>
+            </Popup>
+          )}
+          {contactDataEditModalOpen && (
+            <Popup
+              header="Edit contact data"
+              handleClose={() => setContactDataEditModalOpen((prev) => !prev)}
+              buttonsConfig={[
+                {
+                  label: 'Cancel',
+                  disabled: false,
+                  onClick: () => setContactDataEditModalOpen((prev) => !prev),
+                  buttonType: ButtonType.SECONDARY,
+                },
+                {
+                  label: 'Save',
+                  disabled: false,
+                  onClick: () => {
+                    if (contactDataFormSubmitBtnRef.current !== null) {
+                      contactDataFormSubmitBtnRef.current.click();
+                    }
+                  },
+                  buttonType: ButtonType.PRIMARY,
+                },
+              ]}
+            >
+              <PopupContentWrapper>
+                <UserContactDataForm
+                  initialValues={viewData.contactData}
+                  onSubmit={handleUserContactDataSubmit}
+                  handleClose={() => setContactDataEditModalOpen((prev) => !prev)}
+                  submitBtnRef={contactDataFormSubmitBtnRef}
+                />
               </PopupContentWrapper>
             </Popup>
           )}

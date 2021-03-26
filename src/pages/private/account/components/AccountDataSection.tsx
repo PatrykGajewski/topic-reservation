@@ -44,7 +44,7 @@ export const AccountDataSection = (props: Props) => {
 
   return (
     <ContainerWithHeader
-      header="Account"
+      header="Account data"
     >
       {userConfirmed ? (
         <>

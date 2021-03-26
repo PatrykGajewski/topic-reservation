@@ -1,3 +1,2 @@
-export * from './UserPersonal';
-export * from './FinishedUniversity';
-export * from './CurrentUniversity';
+export * from './UserPersonalDataForm';
+export * from './UserContactDataForm';
