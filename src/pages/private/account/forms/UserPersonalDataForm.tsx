@@ -18,7 +18,7 @@ import { SimpleSelect } from '../../../components/forms';
 export interface PersonalDataFormValues {
   firstName: string,
   lastName: string,
-  birthDate: string,
+  birthDate: Date | null,
   country: string,
   city: string,
   zip: string,
@@ -100,6 +100,7 @@ const UserPersonalDataForm = (props: UserPersonalProps) => (
                 margin="normal"
                 id="date-picker-inline"
                 label="Birth date"
+                // @ts-ignore
                 value={new Date(values.birthDate)}
                 onChange={(value) => setFieldValue('birthDate', value)}
                 KeyboardButtonProps={{

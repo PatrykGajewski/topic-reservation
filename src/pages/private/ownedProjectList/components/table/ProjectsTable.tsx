@@ -5,10 +5,11 @@ import {
   withStyles, Theme, createStyles,
 } from '@material-ui/core/styles';
 import React from 'react';
-import { mapProjectTypeToText, ProjectModel } from '../../../../../models/project';
+import { Project } from '../../../../../models/project';
 import { Props } from './models';
 import { TableContainer, TagWrapper } from '../../styles';
 import { ContainerWithHeader } from '../../../../components';
+import {mapProjectTypeToText} from "../../../utils/mappers";
 
 const StyledTableCell = withStyles((theme: Theme) => createStyles({
   head: {
@@ -36,7 +37,7 @@ export const AvailableProjectsTable = (props: Props) => (
         </TableRow>
       </TableHead>
       <TableBody>
-        {props.projects.map((project: ProjectModel) => (
+        {props.projects.map((project: Project) => (
           <TableRow key={project.id}>
             <StyledTableCell>{project.topic}</StyledTableCell>
             <StyledTableCell>{project.description}</StyledTableCell>

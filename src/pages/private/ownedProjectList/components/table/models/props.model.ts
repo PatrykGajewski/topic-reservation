@@ -1,7 +1,7 @@
-import { ProjectModel } from '../../../../../../models/project';
+import { Project } from '../../../../../../models/project';
 
 export interface Props {
-  projects: ProjectModel[],
+  projects: Project[],
   actions: {
     handleReserveProject: (projectId: string) => void;
   }

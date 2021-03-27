@@ -4,7 +4,7 @@ import { UserModel } from '../../../../models/user';
 export const createPersonalData = (user: UserModel): PersonalSectionData => ({
   firstName: user.firstName,
   lastName: user.lastName || '',
-  birthDate: user.birthDate ? new Date(user.birthDate).toLocaleDateString() : '',
+  birthDate: user.birthDate ? new Date(user.birthDate) : null,
   address: {
     country: (user.address && user.address.country) || '',
     city: (user.address && user.address.city) || '',

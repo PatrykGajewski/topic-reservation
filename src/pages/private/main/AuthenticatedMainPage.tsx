@@ -11,7 +11,7 @@ import { AccountPage } from '../account';
 import { OwnedProjectsPage } from '../ownedProjectList/OwnedProjectsPage';
 import { ProjectListPage } from '../projectList/ProjectListPage';
 import { PageContent } from '../../public';
-import { ProjectTag, ProjectModel } from '../../../models/project';
+import { Tag, Project } from '../../../models/project';
 import {
   _fetchProjectTags, _fetchPromoters, _fetchUniversities, _fetchUserProjects, SimplifiedUser,
 } from './services';
@@ -43,7 +43,7 @@ const AuthenticatedMainPage = (props: RouteComponentProps) => {
 
   const fetchInitialData = () => {
     dispatch({ ...new InitialDataFetching() });
-    Promise.all<ProjectTag[], University[], SimplifiedUser[], ProjectModel[]>([
+    Promise.all<Tag[], University[], SimplifiedUser[], Project[]>([
       _fetchProjectTags(),
       _fetchUniversities(),
       _fetchPromoters(),

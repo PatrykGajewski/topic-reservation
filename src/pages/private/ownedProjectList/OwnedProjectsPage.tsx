@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
-import { Grid } from '@material-ui/core';
-import Rating from '@material-ui/lab/Rating';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useState} from 'react';
+import {Grid} from '@material-ui/core';
+import {useDispatch, useSelector} from 'react-redux';
 import Loader from 'react-loader-spinner';
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import {
-  ButtonType, ContainerWithHeader, ContainerWithHeaderRow, Popup,
-} from '../../components';
-import { AppState } from '../../../store/appState';
-import { mapProjectTypeToText, ProjectModel, ProjectStatus } from '../../../models/project';
-import { ContentWrapper, StyledIconButton } from '../account/styles';
+import {ProjectReview, ProjectStatus} from '../../../models/project/models';
+import {ButtonType, ContainerWithHeader, ContainerWithHeaderRow, Popup,} from '../../components';
+import {AppState} from '../../../store/appState';
+
+import {Project} from '../../../models/project';
+import {ContentWrapper, StyledIconButton} from '../account/styles';
 import {
   ButtonsContainer,
   HighlightedText,
@@ -20,27 +19,15 @@ import {
   StyledContainer,
   TagWrapper,
 } from './styles';
-import { _updateProject } from './services';
-import {
-  UpdateUserProjectsList,
-} from '../../../store/actions';
-
-const mapProjectStatusToColor = (status: ProjectStatus): string => {
-  switch (status) {
-  case ProjectStatus.FINISHED:
-    return '#08bc0852';
-  case ProjectStatus.RESERVED:
-    return '#ffc70054';
-  default:
-    return '#0783d973';
-  }
-};
+import {_updateProject} from './services';
+import {UpdateUserProjectsList,} from '../../../store/actions';
+import {mapProjectStatusToColor, mapProjectTypeToText} from '../utils/mappers';
 
 const OwnedProjectsPage = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
   const [editModelOpen, setEditModalOpen] = useState<boolean>(false);
   // NOTE below project might be deleted or edited
-  const [editedProject, setEditedProject] = useState<ProjectModel | null>(null);
+  const [editedProject, setEditedProject] = useState<Project | null>(null);
   const dispatch = useDispatch();
   const stateData = useSelector((state: AppState) => ({
     loading: state.loading,
@@ -53,8 +40,8 @@ const OwnedProjectsPage = () => {
   const updateProject = async (projectId: string, updates: any): Promise<any> => (
     new Promise(((resolve, reject) => {
       _updateProject(projectId, updates)
-        .then((updatedProject: ProjectModel) => {
-          const updatedProjectsList: ProjectModel[] = stateData.projects.filter((project) => project.id !== projectId);
+        .then((updatedProject: Project) => {
+          const updatedProjectsList: Project[] = stateData.projects.filter((project) => project.id !== projectId);
           if (stateData.projects.length - updatedProjectsList.length === 1) {
             dispatch({ ...new UpdateUserProjectsList(updatedProjectsList) });
             resolve();
@@ -67,12 +54,12 @@ const OwnedProjectsPage = () => {
     }))
   );
 
-  const handleDeleteOwnership = (project: ProjectModel) => {
+  const handleDeleteOwnership = (project: Project) => {
     setDeleteModalOpen((prev) => !prev);
     setEditedProject(project);
   };
 
-  const handleEdit = (project: ProjectModel) => {
+  const handleEdit = (project: Project) => {
     setEditModalOpen((prev) => !prev);
     setEditedProject(project);
   };
@@ -165,27 +152,17 @@ const OwnedProjectsPage = () => {
                     </Grid>
                     <Grid item xs={12}>
                       {project.status === ProjectStatus.FINISHED && (
-                        <ContainerWithHeader
-                          header="Rating"
-                          smallPadding
-                          lightBorder
-                          fitContent
-                        >
-                          <Grid container spacing={2} justify="center">
-                            <Grid item>
-                              <Rating
-                                value={project.rating.value}
-                                disabled
-                              />
-                            </Grid>
-                            <Grid item>
-                              Voices: {project.rating.votes}
-                            </Grid>
-                            <Grid item>
-                              Rating: {project.rating.value}
-                            </Grid>
-                          </Grid>
-                        </ContainerWithHeader>
+                        <>
+                          {project.reviews.map((review: ProjectReview) => (
+                            <div
+                              key={review.id}
+                            >
+                              <p>{`${review.reviewer.firstName} ${review.reviewer.lastName}`}</p>
+                              <p>{review.content}</p>
+                              <p>{review.grade}</p>
+                            </div>
+                          ))}
+                        </>
                       )}
                     </Grid>
                     {project.tags.length > 0 && (
@@ -261,8 +238,7 @@ const OwnedProjectsPage = () => {
                 },
               ]}
             >
-              <div>
-              </div>
+              <div />
             </Popup>
           )}
         </ContentWrapper>

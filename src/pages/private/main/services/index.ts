@@ -1,4 +1,4 @@
-import {ProjectModel, ProjectTag} from '../../../../models/project';
+import {Project, Tag} from '../../../../models/project';
 import {APISecured} from '../../../../API';
 import {University} from '../../../../models/university';
 import {UserGender} from '../../../../models/user';
@@ -17,14 +17,14 @@ export const _fetchUniversities = async (): Promise<University[]> => {
   }
 };
 
-export const _fetchProjectTags = async (): Promise<ProjectTag[]> => {
+export const _fetchProjectTags = async (): Promise<Tag[]> => {
   try {
-    const { data, error } = await APISecured.get('/projects/tags');
+    const { data, error } = await APISecured.get('/tags');
     if (error) {
       console.error(error);
       return Promise.reject(new Error('Cannot get project tags'));
     }
-    return Promise.resolve(data.entries as ProjectTag[]);
+    return Promise.resolve(data.entries as Tag[]);
   } catch (e) {
     console.error(e);
     return Promise.reject();
@@ -52,14 +52,14 @@ export const _fetchPromoters = async (): Promise<SimplifiedUser[]> => {
   }
 };
 
-export const _fetchUserProjects = async (): Promise<ProjectModel[]> => {
+export const _fetchUserProjects = async (): Promise<Project[]> => {
   try {
     const {data, error} = await APISecured.get('/projects/userProjects');
     if (error) {
       console.error(error);
       return Promise.reject(error);
     }
-    return Promise.resolve(data.data as ProjectModel[]);
+    return Promise.resolve(data.data as Project[]);
   } catch (error) {
     console.error(error);
     return Promise.reject(error);

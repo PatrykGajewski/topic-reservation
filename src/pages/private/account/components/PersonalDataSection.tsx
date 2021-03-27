@@ -5,7 +5,7 @@ import { UserAddress, UserGender } from 'models/user';
 export interface PersonalSectionData {
   firstName: string,
   lastName: string,
-  birthDate: string,
+  birthDate: Date | null,
   address: UserAddress,
   gender: UserGender,
 }
@@ -26,7 +26,7 @@ export const PersonalDataSection = (props: Props) => (
 
     <ContainerWithHeaderRow header="Gender" content={props.data.gender.toLocaleLowerCase()} />
 
-    <ContainerWithHeaderRow header="Date of birth" content={props.data.birthDate} />
+    <ContainerWithHeaderRow header="Date of birth" content={props.data.birthDate ? props.data.birthDate.toLocaleDateString() : ''} />
 
     <ContainerWithHeaderRow header="Country" content={props.data.address.country} />
     <ContainerWithHeaderRow header="City" content={props.data.address.city} />

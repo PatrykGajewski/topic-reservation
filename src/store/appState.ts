@@ -1,5 +1,5 @@
 import { UserModel } from '../models/user';
-import {ProjectModel, ProjectTag, ProjectType} from '../models/project';
+import {Project, Tag, ProjectType} from '../models/project';
 import { University, UniversityDegree } from '../models/university';
 import {SimplifiedUser} from "../pages/private/main/services";
 
@@ -17,8 +17,8 @@ export interface AppState {
   error: boolean,
   universities: University[],
   degrees: UniversityDegree[],
-  userProjects: ProjectModel[],
-  tags: ProjectTag[],
+  userProjects: Project[],
+  tags: Tag[],
   promoters: SimplifiedUser[],
   availableProjects: {
     table : AvailableProjectsTableConfig

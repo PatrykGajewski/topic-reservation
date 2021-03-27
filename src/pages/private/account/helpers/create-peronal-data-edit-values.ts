@@ -4,7 +4,7 @@ import { PersonalSectionData } from '../components';
 export const createPersonalDataEditValues = (data: PersonalSectionData): PersonalDataFormValues => ({
   firstName: data.firstName,
   lastName: data.lastName || '',
-  birthDate: data.birthDate || '',
+  birthDate: data.birthDate || null,
   country: (data.address && data.address.country) || '',
   city: (data.address && data.address.city) || '',
   zip: (data.address && data.address.zip) || '',

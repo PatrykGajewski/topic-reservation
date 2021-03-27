@@ -1,7 +1,9 @@
 import {APISecured} from '../../../../API';
-import {ProjectModel, ProjectStatus, ProjectType,} from '../../../../models/project';
+import {Project} from '../../../../models/project';
+import { ProjectStatus, ProjectType } from "../../../../models/project/models";
 
-export const _reserveProject = async (projectId: string): Promise<ProjectModel> => {
+
+export const _reserveProject = async (projectId: string): Promise<Project> => {
   try {
     const { data, error } = await APISecured.patch(`/projects/reserve/${projectId}`, {});
     if (error) {
@@ -22,7 +24,7 @@ interface GetAvailableProjectsParams {
   limit: number,
 }
 
-export const _fetchAvailableProjects = async (params: GetAvailableProjectsParams): Promise<ProjectModel[]> => {
+export const _fetchAvailableProjects = async (params: GetAvailableProjectsParams): Promise<Project[]> => {
   try {
     const { data, error } = await APISecured.post('/projects', {
       type: params.projectType,
@@ -35,7 +37,7 @@ export const _fetchAvailableProjects = async (params: GetAvailableProjectsParams
       console.log(error);
       return Promise.reject(new Error('Cannot get userProjects'));
     }
-    return Promise.resolve(data.data as ProjectModel[]);
+    return Promise.resolve(data.data as Project[]);
   } catch (err) {
     console.log(err);
     return Promise.reject(new Error('API error - userProjects route'));
@@ -50,7 +52,7 @@ interface CreateProjectParams {
   userId: string
 }
 
-export const _createProject = async (params: CreateProjectParams): Promise<ProjectModel> => {
+export const _createProject = async (params: CreateProjectParams): Promise<Project> => {
   try {
     const { data, error } = await APISecured.post('/projects/add/project', {
       topic: params.topic,
@@ -74,7 +76,7 @@ export const _createProject = async (params: CreateProjectParams): Promise<Proje
       console.log(error);
       return Promise.reject();
     }
-    return Promise.resolve(data.data as ProjectModel);
+    return Promise.resolve(data.data as Project);
   } catch (e) {
     console.log(e);
     return Promise.reject();

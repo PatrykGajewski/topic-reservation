@@ -1,5 +1,5 @@
 import { UserModel } from '../models/user';
-import { ProjectModel, ProjectTag } from '../models/project';
+import { Project, Tag } from '../models/project';
 import { AvailableProjectsTableConfig } from './appState';
 import { University } from '../models/university';
 import { SimplifiedUser } from '../pages/private/main/services';
@@ -53,9 +53,9 @@ export class UpdateUniversitiesList {
 export class UpdateTagsList {
   type = ACTION_TYPES.UPDATE_TAGS_LIST;
 
-  payload: ProjectTag[];
+  payload: Tag[];
 
-  constructor(list: ProjectTag[]) {
+  constructor(list: Tag[]) {
     this.payload = list;
   }
 }
@@ -73,9 +73,9 @@ export class UpdatePromotersList {
 export class UpdateUserProjectsList {
   type = ACTION_TYPES.UPDATE_USER_PROJECTS_LIST;
 
-  payload: ProjectModel[];
+  payload: Project[];
 
-  constructor(list: ProjectModel[]) {
+  constructor(list: Project[]) {
     this.payload = list;
   }
 }

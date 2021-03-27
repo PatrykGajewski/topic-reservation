@@ -9,7 +9,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { AppState } from '../../../store/appState';
 
 import {
-  mapProjectTypeToText, ProjectModel, ProjectTag, ProjectType,
+  Project, Tag, ProjectType,
 } from '../../../models/project';
 import { SelectOption } from '../../../models/forms';
 import { ContentContainer, EmptyStateContainer } from './styles';
@@ -26,6 +26,7 @@ import { ButtonType, Popup } from '../../components';
 import { ProjectForm, ProjectFormValues } from './forms';
 import { University } from '../../../models/university';
 import { SimplifiedUser } from "../main/services";
+import {mapProjectTypeToText} from "../utils/mappers";
 
 export const projectTypeOptions: SelectOption[] = Object.keys(ProjectType)
   .map((key: string) => ({
@@ -54,7 +55,7 @@ const ProjectListPage = () => {
   }, [stateData.universities]);
 
   const [viewState, setViewState] = useState<ViewState>(ViewState.LOADING);
-  const [projects, setProjects] = useState<ProjectModel[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [searchString, setSearchString] = useState<string>(stateData.tableConfig.searchString);
   const [projectType, setProjectType] = useState<ProjectType>(stateData.tableConfig.projectType);
   const [pageConfig, setPageConfig] = useState<{ pageIndex: number, lastPageIndex: number}>({
@@ -73,7 +74,7 @@ const ProjectListPage = () => {
       skip: pageConfig.pageIndex * PROJECTS_PER_PAGE,
       limit: PROJECTS_PER_PAGE,
     })
-      .then((fetchedProjects: ProjectModel[]) => {
+      .then((fetchedProjects: Project[]) => {
         setProjects(fetchedProjects);
         setViewState(ViewState.OK);
       })
@@ -110,9 +111,9 @@ const ProjectListPage = () => {
   const handleReserveProject = (projectId: string) => {
     setViewState(ViewState.LOADING);
     _reserveProject(projectId)
-      .then((reservedProject: ProjectModel) => {
+      .then((reservedProject: Project) => {
         dispatch({ ...new UpdateUserProjectsList([...stateData.userProjects, reservedProject]) });
-        setProjects((prev) => prev.filter((project: ProjectModel) => project.id !== projectId));
+        setProjects((prev) => prev.filter((project: Project) => project.id !== projectId));
         toast.success('Project has been reserved');
         setViewState(ViewState.OK);
       })
@@ -266,7 +267,7 @@ const ProjectListPage = () => {
                   promoter: stateData.promoters[0].id,
                 }}
                 tagsOptions={stateData.tags
-                  .map((tag: ProjectTag):SelectOption => ({ label: tag.labelPL, value: tag.id }))}
+                  .map((tag: Tag):SelectOption => ({ label: tag.labelPL, value: tag.id }))}
                 departmentsOptions={university.departments
                   .map((department): SelectOption => ({ label: department.namePL.full, value: department.id }))}
                 universitiesOptions={[{ label: university.namePL.full, value: university.id }]}
