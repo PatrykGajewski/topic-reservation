@@ -1,5 +1,5 @@
 import {APISecured} from '../../../../API';
-import {Project} from '../../../../models/project';
+import {Project, ProjectDegree} from '../../../../models/project';
 import { ProjectStatus, ProjectType } from "../../../../models/project/models";
 
 
@@ -48,29 +48,33 @@ interface CreateProjectParams {
   topic: string,
   description: string,
   type: ProjectType,
+  degree: ProjectDegree,
   tag: string,
-  userId: string
+  userId: string,
+  promoterId: string,
+  universityId: string,
+  departmentId: string,
+  cathedralId: string,
 }
 
 export const _createProject = async (params: CreateProjectParams): Promise<Project> => {
+  console.log(params);
   try {
     const { data, error } = await APISecured.post('/projects/add/project', {
       topic: params.topic,
       description: params.description,
+      tags: [params.tag],
       type: params.type,
+      degree: params.degree,
       languagesIds: [],
       groupProject: false,
       ownersIds: [params.userId],
-      promoterId: '',
+      promoterId: params.promoterId,
       reviewersIds: [],
-      universityId: '',
-      departmentId: '',
-      cathedralId: '',
+      universityId: params.universityId,
+      departmentId: params.departmentId,
+      cathedralId: params.cathedralId,
       status: ProjectStatus.RESERVED,
-      rating: {
-        votes: [],
-        value: 0,
-      }
     });
     if (error) {
       console.log(error);

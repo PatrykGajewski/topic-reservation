@@ -17,7 +17,7 @@ import {
 } from './forms';
 import {
   ContentWrapper, StyledPhotoWrapper, PopupContentWrapper, StyledPhotoForm, StyledIconButton,
-  StyledImagePreviewContainer,
+  StyledImagePreviewContainer, SectionsContainer
 } from './styles';
 import { ImageBox } from '../components';
 
@@ -203,8 +203,19 @@ const AccountPage = () => {
   };
 
   const handleUserContactDataSubmit = (values: ContactDataFormValues) => {
-    // TODO finish logic
-    console.log(values);
+    const dataShape = {
+      contactEmail: values.contactEmail,
+      phoneNumber: values.phoneNumber,
+    };
+
+    updatePersonalData(dataShape, stateData.user.id)
+      .then((user: UserModel) => {
+        dispatch({ ...new UpdateUserData(user) });
+        toast.success('User personal data updated');
+        setContactDataEditModalOpen((prev) => !prev);
+      }).catch((err) => {
+        toast.error('Error during personal data update');
+      });
   };
 
   return (
@@ -237,10 +248,7 @@ const AccountPage = () => {
               </StyledPhotoWrapper>
             </Grid>
             <Grid item sm={9}>
-              <div style={{
-                margin: '30px 50px',
-              }}
-              >
+              <SectionsContainer>
                 <PersonalDataSection
                   handleEdit={handlePersonalEditOpen}
                   data={viewData.personalData}
@@ -253,7 +261,7 @@ const AccountPage = () => {
                   data={viewData.accountData}
                   handleConfirmUser={() => setAccountConfirmModalOpen((prev) => !prev)}
                 />
-              </div>
+              </SectionsContainer>
             </Grid>
           </Grid>
           {photoSelectionModalOpen && (
@@ -332,7 +340,7 @@ const AccountPage = () => {
                 {
                   label: 'Cancel',
                   disabled: false,
-                  onClick: handlePersonalEditClose,
+                  onClick: () => setAccountConfirmModalOpen((prev) => !prev),
                   buttonType: ButtonType.SECONDARY,
                 },
               ]}

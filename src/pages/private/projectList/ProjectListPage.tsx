@@ -9,7 +9,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { AppState } from '../../../store/appState';
 
 import {
-  Project, Tag, ProjectType,
+  Project, Tag, ProjectType, ProjectDegree,
 } from '../../../models/project';
 import { SelectOption } from '../../../models/forms';
 import { ContentContainer, EmptyStateContainer } from './styles';
@@ -25,16 +25,12 @@ import { StyledIconButton } from '../account/styles';
 import { ButtonType, Popup } from '../../components';
 import { ProjectForm, ProjectFormValues } from './forms';
 import { University } from '../../../models/university';
-import { SimplifiedUser } from "../main/services";
-import {mapProjectTypeToText} from "../utils/mappers";
+import { SimplifiedUser } from '../main/services';
+import { mapProjectTypeToOptions } from '../utils/mappers';
+import { mapProjectDegreeToOptions } from '../utils/mappers/map-project-degree-to-options';
 
-export const projectTypeOptions: SelectOption[] = Object.keys(ProjectType)
-  .map((key: string) => ({
-    // @ts-ignore
-    label: mapProjectTypeToText(ProjectType[key]),
-    // @ts-ignore
-    value: ProjectType[key],
-  }));
+const projectTypeOptions: SelectOption[] = mapProjectTypeToOptions();
+const projectDegreeOptions: SelectOption[] = mapProjectDegreeToOptions();
 
 const PROJECTS_PER_PAGE: number = 12;
 
@@ -129,9 +125,14 @@ const ProjectListPage = () => {
       description: values.description,
       tag: values.tag,
       type: values.type,
+      degree: values.degree,
       userId: stateData.user.id,
+      promoterId: values.promoter,
+      universityId: values.university,
+      departmentId: values.department,
+      cathedralId: values.cathedral,
     })
-      .then((res) => {
+      .then((res: Project) => {
         console.log(res);
         toast.success('Project has been created');
         setProjectFormModalOpen((prev) => !prev);
@@ -265,6 +266,7 @@ const ProjectListPage = () => {
                   university: university.id,
                   cathedral: university.departments[0].cathedrals[0].id,
                   promoter: stateData.promoters[0].id,
+                  degree: ProjectDegree.ASSOCIATE_DEGREE,
                 }}
                 tagsOptions={stateData.tags
                   .map((tag: Tag):SelectOption => ({ label: tag.labelPL, value: tag.id }))}
@@ -273,6 +275,8 @@ const ProjectListPage = () => {
                 universitiesOptions={[{ label: university.namePL.full, value: university.id }]}
                 promoters={stateData.promoters
                   .map((promoter: SimplifiedUser): SelectOption => ({ label: `${promoter.firstName} ${promoter.lastName}`, value: promoter.id }))}
+                degreeOptions={projectDegreeOptions}
+                typeOptions={projectTypeOptions}
                 onSubmit={handleSubmitProjectForm}
                 handleClose={() => setProjectFormModalOpen((prev) => !prev)}
                 submitBtnRef={projectSubmitBtnRef}

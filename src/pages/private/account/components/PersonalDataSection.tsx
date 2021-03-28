@@ -19,6 +19,7 @@ export const PersonalDataSection = (props: Props) => (
   <ContainerWithHeader
     header="Personal data"
     editable
+    noMargin
     handleEdit={props.handleEdit}
   >
     <ContainerWithHeaderRow header="Firstname" content={props.data.firstName} />

@@ -5,7 +5,6 @@ const StyledPhotoWrapper = styled.div`
   width: 160px;
   height: 200px;
   overflow: hidden;
-  margin: 30px 20px;
   border-radius: 8px;
   border: 1px solid grey;
   text-align: center;

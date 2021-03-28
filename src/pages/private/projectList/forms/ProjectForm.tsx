@@ -1,11 +1,10 @@
 import React, { RefObject } from 'react';
 import { Formik, Form } from 'formik';
 import TextField from '@material-ui/core/TextField';
-import { ProjectType } from '../../../../models/project';
+import {ProjectDegree, ProjectType} from '../../../../models/project';
 import { FieldsRow, FieldWrapper } from '../../../public/components/registerForm';
 import { SimpleSelect } from '../../../components/forms';
 import { SelectOption } from '../../../../models/forms';
-import { projectTypeOptions } from '../ProjectListPage';
 import { ProjectFormValidationSchema } from './ProjectFormValidationSchema';
 import { CathedralModel, DepartmentModel } from '../../../../models/university';
 
@@ -13,6 +12,7 @@ export interface ProjectFormValues {
   topic: string,
   description: string,
   type: ProjectType,
+  degree: ProjectDegree,
   tag: string,
   promoter: string,
   department: string,
@@ -27,6 +27,8 @@ interface ProjectFormProps {
   promoters: SelectOption[],
   departmentsOptions: SelectOption[],
   universitiesOptions: SelectOption[],
+  degreeOptions: SelectOption[],
+  typeOptions: SelectOption[],
   handleClose: () => void,
   submitBtnRef: RefObject<HTMLButtonElement>
   departments: DepartmentModel[]
@@ -76,13 +78,27 @@ export const ProjectForm = (props: ProjectFormProps) => (
               id="type"
               labelId="projectTypeLabel"
               label="Select project type"
-              selectedOption={projectTypeOptions.find((option: SelectOption) => option.value === values.type) as SelectOption}
+              selectedOption={props.typeOptions.find((option: SelectOption) => option.value === values.type) as SelectOption}
               handleChange={(value: string) => {
                 setFieldValue('type', value);
               }}
-              options={projectTypeOptions}
+              options={props.typeOptions}
             />
           </FieldWrapper>
+          <FieldWrapper>
+            <SimpleSelect
+              id="degree"
+              labelId="degreeLabel"
+              label="Select project degree type"
+              selectedOption={props.degreeOptions.find((option: SelectOption) => option.value === values.degree) as SelectOption}
+              handleChange={(value: string) => {
+                setFieldValue('degree', value);
+              }}
+              options={props.degreeOptions}
+            />
+          </FieldWrapper>
+        </FieldsRow>
+        <FieldsRow>
           <FieldWrapper>
             <SimpleSelect
               id="promoter"
@@ -95,8 +111,6 @@ export const ProjectForm = (props: ProjectFormProps) => (
               options={props.promoters}
             />
           </FieldWrapper>
-        </FieldsRow>
-        <FieldsRow>
           <FieldWrapper>
             <SimpleSelect
               id="tag"

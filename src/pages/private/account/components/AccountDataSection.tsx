@@ -44,6 +44,7 @@ export const AccountDataSection = (props: Props) => {
 
   return (
     <ContainerWithHeader
+      noMargin
       header="Account data"
     >
       {userConfirmed ? (
@@ -64,7 +65,7 @@ export const AccountDataSection = (props: Props) => {
         </StyledStatusContainer>
       )}
       <ContainerWithHeaderRow header="Creation date" content={props.data.creationDate} />
-      <ContainerWithHeaderRow header="Update date" content={props.data.updateDate} />
+      <ContainerWithHeaderRow header="Last update date" content={props.data.updateDate} />
       <Row>
         <span>Account roles:</span>
         <ul>

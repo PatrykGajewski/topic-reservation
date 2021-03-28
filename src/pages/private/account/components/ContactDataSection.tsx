@@ -16,6 +16,7 @@ export const ContactDataSection = (props: Props) => (
   <ContainerWithHeader
     header="Contact data"
     editable
+    noMargin
     handleEdit={props.handleEdit}
   >
     <ContainerWithHeaderRow header="Contact email" content={props.data.contactEmail} />
