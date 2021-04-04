@@ -1,7 +1,7 @@
 import { UserModel } from '../models/user';
 import {Project, Tag, ProjectType} from '../models/project';
 import { University, UniversityDegree } from '../models/university';
-import {SimplifiedUser} from "../pages/private/main/services";
+import {SimplifiedUser} from "../pages/private/roles/STUDENT/services";
 
 export interface AvailableProjectsTableConfig {
   lastPageIndex: number,

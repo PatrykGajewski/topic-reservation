@@ -1,3 +1,3 @@
-export * from './main/AuthenticatedMainPage';
-export * from './logoutPage';
-export * from './account'
+export * from './roles/STUDENT/router/StudentRouter';
+export * from './roles/REGISTERED_USER/pages/logout/logoutPage';
+export * from './roles/REGISTERED_USER/pages/account'

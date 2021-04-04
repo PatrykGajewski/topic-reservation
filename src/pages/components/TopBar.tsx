@@ -40,7 +40,7 @@ interface TopBarProps {
 
 // TODO complete link for auth page
 const TopBar = (props: TopBarProps) => (
-  <Grid container alignItems="center" style={{ background: '#083b66' }}>
+  <Grid container alignItems="center" style={{ background: '#083b66', height: 120 }}>
     <Grid item xs={12} sm={2}>
       <Link to="/">
         <Logo />
