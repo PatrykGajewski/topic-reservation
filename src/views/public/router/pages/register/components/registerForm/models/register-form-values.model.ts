@@ -1,4 +1,4 @@
-import {UserGender} from "../../../../../../../models/user";
+import {UserGender} from "../../../../../../../../models/user";
 
 export interface RegisterFormValues {
   firstName: string;

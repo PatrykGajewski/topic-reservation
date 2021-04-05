@@ -1,9 +1,9 @@
 import React from 'react';
 import { Form, Formik } from 'formik';
 import { Button, TextField } from '@material-ui/core';
-import { SimpleSelect } from '../../../../../components/forms';
-import { genderOptions } from '../../../../../private/roles/REGISTERED_USER/router/pages/account/forms/config';
-import { SelectOption } from '../../../../../../models/forms';
+import { SimpleSelect } from '../../../../../../components/forms';
+import { genderOptions } from '../../../../../../private/roles/REGISTERED_USER/router/pages/account/forms/config';
+import { SelectOption } from '../../../../../../../models/forms';
 import { Props } from './models/props.model';
 import { RegisterValidationSchema } from './validation';
 import { ButtonWrapper, FieldsRow, FieldWrapper } from './styles';

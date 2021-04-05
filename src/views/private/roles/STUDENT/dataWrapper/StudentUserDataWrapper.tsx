@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Project, Tag } from '../../../../../models/project';
 import {
-  _fetchProjectTags, _fetchPromoters, _fetchUniversities, _fetchUserProjects, SimplifiedUser,
+  _fetchProjectTags, _fetchPromoters, _fetchUniversities, _fetchStudentProjects, SimplifiedUser,
 } from '../services';
 import { University } from '../../../../../models/university';
 import {
@@ -38,7 +38,7 @@ const StudentUserDataWrapper = (props: Props) => {
       _fetchProjectTags(),
       _fetchUniversities(),
       _fetchPromoters(),
-      _fetchUserProjects(),
+      _fetchStudentProjects(),
     ]).then((res) => {
       dispatch({ ...new UpdateTagsList(res[0]) });
       dispatch({ ...new UpdateUniversitiesList(res[1]) });

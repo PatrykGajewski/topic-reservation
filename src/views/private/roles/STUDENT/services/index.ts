@@ -1,7 +1,7 @@
-import {Project, Tag} from '../../../../../models/project';
-import {APISecured} from '../../../../../API';
-import {University} from '../../../../../models/university';
-import {UserGender} from '../../../../../models/user';
+import { Project, Tag } from '../../../../../models/project';
+import { APISecured } from '../../../../../API';
+import { University } from '../../../../../models/university';
+import { UserGender } from '../../../../../models/user';
 
 export const _fetchUniversities = async (): Promise<University[]> => {
   try {
@@ -52,9 +52,9 @@ export const _fetchPromoters = async (): Promise<SimplifiedUser[]> => {
   }
 };
 
-export const _fetchUserProjects = async (): Promise<Project[]> => {
+export const _fetchStudentProjects = async (): Promise<Project[]> => {
   try {
-    const {data, error} = await APISecured.get('/projects/userProjects');
+    const { data, error } = await APISecured.get('/projects/studentProjects');
     if (error) {
       console.error(error);
       return Promise.reject(error);

@@ -13,7 +13,7 @@ import { genderOptions } from './config';
 
 import { UserPersonalDataValidation } from './validationSchema';
 import { SimpleSelect } from '../../../../../../../components/forms';
-import {FieldsRow, FieldWrapper} from "../../../../../../../public/pages/register/components/registerForm/styles";
+import {FieldsRow, FieldWrapper} from "../../../../../../../public/router/pages/register/components/registerForm/styles";
 
 export interface PersonalDataFormValues {
   firstName: string,

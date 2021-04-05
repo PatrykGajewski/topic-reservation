@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import { RegisterPage } from '../pages/register/RegisterPage';
-import { LoginPage } from '../pages/login/LoginPage';
-import { MainPage } from '../pages/main/MainPage';
+import { RegisterPage } from './pages/register/RegisterPage';
+import { LoginPage } from './pages/login/LoginPage';
+import { MainPage } from './pages/main/MainPage';
 import { StaticTopBar } from '../../components';
 import { Props } from './models';
 import {PageContainer} from "../../components/styles/PageContainer";

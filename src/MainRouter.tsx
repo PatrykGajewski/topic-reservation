@@ -5,7 +5,7 @@ import {PublicPagesRouter} from './views/public';
 import {APISecured} from './API';
 import {UpdateUserData} from './store/actions';
 import {UserModel} from "./models/user";
-import {LoginFormValues} from "./views/public/pages/login/components/loginForm/models/login-form-values.model";
+import {LoginFormValues} from "./views/public/router/pages/login/components/loginForm/models/login-form-values.model";
 import {PrivatePagesRouter} from "./views/private/router";
 import {PageContainer} from "./views/components/styles/PageContainer";
 

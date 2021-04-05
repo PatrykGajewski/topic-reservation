@@ -5,9 +5,9 @@ import Loader from 'react-loader-spinner';
 import {toast} from 'react-toastify';
 
 import RegisterForm from './components/registerForm/RegisterForm';
-import {API} from '../../../../API';
-import { ViewState } from "../../../../models/other";
-import {UserGender} from '../../../../models/user';
+import {API} from '../../../../../API';
+import { ViewState } from "../../../../../models/other";
+import {UserGender} from '../../../../../models/user';
 import {Container, ErrorWrapper, RegisterFormContainer} from '../login/styles';
 import {CenteredContentContainer} from "./styles";
 import {RegisterFormValues} from "./components/registerForm/models";

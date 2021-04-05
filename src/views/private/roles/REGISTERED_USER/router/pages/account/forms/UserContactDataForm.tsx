@@ -3,7 +3,7 @@ import { Form, Formik } from 'formik';
 import TextField from '@material-ui/core/TextField';
 
 import { UserContactDataValidation } from './validationSchema';
-import {FieldsRow, FieldWrapper} from "../../../../../../../public/pages/register/components/registerForm/styles";
+import {FieldsRow, FieldWrapper} from "../../../../../../../public/router/pages/register/components/registerForm/styles";
 
 export interface ContactDataFormValues {
   contactEmail: string,

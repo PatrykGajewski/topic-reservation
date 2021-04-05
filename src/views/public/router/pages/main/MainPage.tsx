@@ -5,10 +5,10 @@ import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import ForumIcon from '@material-ui/icons/Forum';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 
-import Whatweare from '../../../../img/whatweare.png';
-import Vision from '../../../../img/vision.jpg';
-import Participation from '../../../../img/participation.jpg';
-import News from '../../../../img/news.png';
+import Whatweare from '../../../../../img/whatweare.png';
+import Vision from '../../../../../img/vision.jpg';
+import Participation from '../../../../../img/participation.jpg';
+import News from '../../../../../img/news.png';
 import {
   DarkSection,
   HeaderBig,

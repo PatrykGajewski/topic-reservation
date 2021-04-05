@@ -1,6 +1,6 @@
 import styled, {css} from "styled-components";
-import BackgroundURL from "../../../../../img/loginBg.jpg";
-import {SIZES} from "../../../../components/constants";
+import BackgroundURL from "../../../../../../img/loginBg.jpg";
+import {SIZES} from "../../../../../components/constants";
 
 const ContainerBase = css`
   display: flex;

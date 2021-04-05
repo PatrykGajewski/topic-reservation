@@ -6,7 +6,7 @@ import { SimpleSelect } from '../../../../../../../components/forms';
 import { SelectOption } from '../../../../../../../../models/forms';
 import { ProjectFormValidationSchema } from './ProjectFormValidationSchema';
 import { CathedralModel, DepartmentModel } from '../../../../../../../../models/university';
-import {FieldsRow, FieldWrapper} from "../../../../../../../public/pages/register/components/registerForm/styles";
+import {FieldsRow, FieldWrapper} from "../../../../../../../public/router/pages/register/components/registerForm/styles";
 
 export interface ProjectFormValues {
   topic: string,
