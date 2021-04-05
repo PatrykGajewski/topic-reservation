@@ -2,7 +2,7 @@ import { UserModel } from '../models/user';
 import { Project, Tag } from '../models/project';
 import { AvailableProjectsTableConfig } from './appState';
 import { University } from '../models/university';
-import { SimplifiedUser } from '../pages/private/roles/STUDENT/services';
+import { SimplifiedUser } from '../views/private/roles/STUDENT/services';
 
 export enum ACTION_TYPES {
   'INITIAL_DATA_FETCHING' = 'INITIAL_DATA_FETCHING',

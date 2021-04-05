@@ -1,13 +1,13 @@
 import {Route} from 'react-router-dom';
 import {useDispatch} from 'react-redux';
 import React, {useState} from 'react';
-import {PublicPagesRouter} from './pages/public';
+import {PublicPagesRouter} from './views/public';
 import {APISecured} from './API';
 import {UpdateUserData} from './store/actions';
 import {UserModel} from "./models/user";
-import {LoginFormValues} from "./pages/public/login/components/loginForm/models/login-form-values.model";
-import {PrivatePagesRouter} from "./pages/private/router";
-import {PageContainer} from "./pages/components/styles/PageContainer";
+import {LoginFormValues} from "./views/public/pages/login/components/loginForm/models/login-form-values.model";
+import {PrivatePagesRouter} from "./views/private/router";
+import {PageContainer} from "./views/components/styles/PageContainer";
 
 export const MainRouter = () => {
   const dispatch = useDispatch();
