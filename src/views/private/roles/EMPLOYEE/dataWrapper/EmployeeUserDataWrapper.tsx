@@ -20,7 +20,6 @@ import {
   _fetchProjectTags,
   _fetchPromoters,
   _fetchUniversities,
-  _fetchStudentProjects,
   SimplifiedUser
 } from '../../STUDENT/services';
 import {Tag} from "../../../../../models/tags";

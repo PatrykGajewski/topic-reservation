@@ -87,7 +87,7 @@ export const StatisticsPage = () => {
       )}
       {viewState === ViewState.OK && (
         <ContentWrapper>
-          <span>Number of projects over years</span>
+          <span>Number of projects over years divided into types</span>
           <ResponsiveBar
             data={data}
             keys={[researchType, technologicalType, overviewType, constructionType]}

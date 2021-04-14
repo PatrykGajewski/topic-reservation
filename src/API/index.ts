@@ -50,3 +50,5 @@ export class APISecured {
     axios.patch(`${BACKEND_API_URL}${path}`, data, securedAPIConfig)
   )
 }
+
+export * from './models';

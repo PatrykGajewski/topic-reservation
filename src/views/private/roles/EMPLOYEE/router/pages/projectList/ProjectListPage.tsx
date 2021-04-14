@@ -1,37 +1,46 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  ChangeEvent, useEffect, useRef, useState,
+} from 'react';
 import { Button, Grid, TextField } from '@material-ui/core';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Loader from 'react-loader-spinner';
 import ChatIcon from '@material-ui/icons/Chat';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { ViewState } from 'models/other';
+import {
+  BarContainer, ContentContainer, ContentWrapper, BarElement,
+} from 'views/components/contentWithBar';
 import { AppState } from '../../../../../../../store/appState';
 
 import {
   Project, Tag, ProjectType, ProjectDegree, ProjectStatus,
 } from '../../../../../../../models/project';
 import { SelectOption } from '../../../../../../../models/forms';
-import { ContentContainer} from './styles';
+import { StyledErrorItem, StyledErrorList } from './styles';
 import {
   _createProject, _fetchAvailableProjects, _reserveProject,
 } from './services';
-import { ViewState } from "../../../../../../../models/other";
 import { UpdateAvailableProjectsTable, UpdateUserProjectsList } from '../../../../../../../store/actions';
-import { StyledContainer } from '../ownedProjectList';
-import { AvailableProjectsTable } from '../ownedProjectList/components';
 import { SimpleSelect } from '../../../../../../components/forms';
 import { StyledIconButton } from '../../../../REGISTERED_USER/router/pages/account/styles';
 import { ButtonType, Popup } from '../../../../../../components';
 import { ProjectForm, ProjectFormValues } from './forms';
 import { University } from '../../../../../../../models/university';
-import { SimplifiedUser } from '../../../services';
-import { mapProjectTypeToOptions } from '../../../../../../../utils/mappers';
+import { mapProjectStatusToOptions, mapProjectTypeToOptions } from '../../../../../../../utils/mappers';
 import { mapProjectDegreeToOptions } from '../../../../../../../utils/mappers/map-project-degree-to-options';
-import {EmptyStateContainer} from "../../../../../components/initialDataError/styles";
+import { EmptyStateContainer } from '../../../../../components/initialDataError/styles';
+import { AvailableProjectsTable } from '../../../../STUDENT/router/pages/ownedProjectList/components';
+import { StyledContainer } from '../../../../STUDENT/router/pages/ownedProjectList';
+import { SimplifiedUser } from '../../../../STUDENT/services';
+import { APISecured, MultiResponse } from '../../../../../../../API';
 
 const projectTypeOptions: SelectOption[] = mapProjectTypeToOptions();
 const projectDegreeOptions: SelectOption[] = mapProjectDegreeToOptions();
+const projectStatusOptions: SelectOption[] = mapProjectStatusToOptions();
 
 const PROJECTS_PER_PAGE: number = 12;
 
@@ -64,6 +73,11 @@ const ProjectListPage = () => {
 
   const [projectFormModalOpen, setProjectFormModalOpen] = useState<boolean>(false);
   const projectSubmitBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  const [templateUploadModal, setTemplateUploadModal] = useState<boolean>(false);
+  const [templateToUpload, setTemplateToUpload] = useState<File | null>(null);
+  const [templateErrors, setTemplateErrors] = useState<string[]>([]);
+  const [invalidTemplate, setInvalidTemplate] = useState<boolean>(false);
 
   const fetchAvailableProjects = () => {
     setViewState(ViewState.LOADING);
@@ -147,6 +161,50 @@ const ProjectListPage = () => {
       });
   };
 
+  const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const fileExtension: string | null = (e.target.files && e.target.files.length && e.target.files[0].type.split('/')[1]) || null;
+
+    if (e.target.files) {
+      if (fileExtension && ['vnd.openxmlformats-officedocument.spreadsheetml.sheet'].includes(fileExtension)) {
+        setTemplateToUpload(e.target.files[0]);
+        if (invalidTemplate) {
+          setInvalidTemplate(false);
+        }
+      } else {
+        toast.error('You can upload only xlsx file');
+      }
+    }
+  };
+
+  const handleTemplateUpload = () => {
+    if (templateToUpload) {
+      const form = new FormData();
+      form.append('template', templateToUpload);
+      form.append('name', templateToUpload.name);
+      form.append('size', templateToUpload.size.toString());
+      form.append('type', templateToUpload.type);
+
+      APISecured.post('/projects/uploadTemplate', form)
+        .then((res: MultiResponse<Project>) => {
+          dispatch({ ...new UpdateUserProjectsList([...stateData.userProjects, ...res.data.entries]) });
+          setTemplateUploadModal((prev) => !prev);
+          toast.success(`${res.data.entries.length} thesis have been added`);
+          setTemplateErrors([]);
+        })
+        .catch((e) => {
+          setTemplateErrors(e.response.data.message);
+          setInvalidTemplate(true);
+          toast.error('You have to correct given template');
+        });
+    }
+  };
+
+  const handleTemplateModalClose = () => {
+    setTemplateUploadModal((prev) => !prev);
+    setTemplateErrors([]);
+    setTemplateToUpload(null);
+  };
+
   const filtersNotSubmitted = stateData.tableConfig.searchString !== searchString
   || stateData.tableConfig.projectType !== projectType;
 
@@ -164,13 +222,10 @@ const ProjectListPage = () => {
         </StyledContainer>
       )}
       {viewState === ViewState.OK && (
-        <ContentContainer>
-          <Grid container>
-            <Grid item xs={12}>
-              <p>Filters section</p>
-            </Grid>
-            <Grid container item xs={12} spacing={3}>
-              <Grid item xs={4}>
+        <ContentWrapper>
+          <BarContainer>
+            <Grid container alignContent="flex-start">
+              <BarElement item xs={12}>
                 <SimpleSelect
                   id="projectType"
                   labelId="projectTypeLabel"
@@ -181,58 +236,101 @@ const ProjectListPage = () => {
                   }}
                   options={projectTypeOptions}
                 />
-              </Grid>
-              <Grid item xs={4}>
+              </BarElement>
+              <BarElement item xs={12}>
+                <SimpleSelect
+                  id="projectDegree"
+                  labelId="projectDegreeLabel"
+                  label="Select project degree"
+                  selectedOption={projectDegreeOptions.find((option: SelectOption) => option.value === projectDegree) as SelectOption}
+                  handleChange={(value: string) => {
+                    setProjectDegree(value as ProjectDegree);
+                  }}
+                  options={projectDegreeOptions}
+                />
+              </BarElement>
+              <BarElement item xs={12}>
+                <SimpleSelect
+                  id="projectStatus"
+                  labelId="projectStatusLabel"
+                  label="Select project status"
+                  selectedOption={projectStatusOptions.find((option: SelectOption) => option.value === projectStatus) as SelectOption}
+                  handleChange={(value: string) => {
+                    setProjectStatus(value as ProjectStatus);
+                  }}
+                  options={projectStatusOptions}
+                />
+              </BarElement>
+              <BarElement item xs={12}>
                 <TextField
                   fullWidth
                   variant="outlined"
                   name="search"
-                  label="Search"
+                  label="Search by thesis topic"
                   value={searchString}
                   onChange={(e) => setSearchString(e.currentTarget.value)}
                 />
-              </Grid>
-              <Grid container item xs={4} spacing={1} alignItems="center">
-                <Grid item xs={6}>
-                  <Button
-                    onClick={handleFiltersSubmit}
-                    variant="outlined"
-                    color="primary"
-                  >Submit filters
-                  </Button>
-                </Grid>
+              </BarElement>
+              <BarElement item xs={12}>
+                <Button
+                  onClick={handleFiltersSubmit}
+                  variant="outlined"
+                  color="primary"
+                >Submit filters
+                </Button>
+              </BarElement>
+              <BarElement item xs={12}>
                 {filtersNotSubmitted && (
-                  <Grid item xs={6}>
-                    <Button
-                      onClick={handleRemoveFilters}
-                      variant="outlined"
-                    >Remove filters
-                    </Button>
-                  </Grid>
+                  <Button
+                    onClick={handleRemoveFilters}
+                    variant="outlined"
+                  >Remove filters
+                  </Button>
                 )}
+              </BarElement>
+            </Grid>
+            <Grid item container xs={12} alignItems="flex-end">
+              <Grid item xs={4} justify="center">
+                <StyledIconButton onClick={() => setProjectFormModalOpen((prev) => !prev)}>
+                  <AddCircleOutlineIcon />
+                </StyledIconButton>
+              </Grid>
+              <Grid item xs={4} justify="center">
+                <StyledIconButton onClick={() => setTemplateUploadModal((prev) => !prev)}>
+                  <CloudUploadIcon />
+                </StyledIconButton>
+              </Grid>
+              <Grid item xs={4} justify="center">
+                <a
+                  href={`${process.env.PUBLIC_URL}/templates/en_template.xlsx`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                >
+                  <StyledIconButton>
+                    <CloudDownloadIcon />
+                  </StyledIconButton>
+                </a>
               </Grid>
             </Grid>
-            <Grid item xs={12}>
-              {projects.length > 0 ? (
-                <AvailableProjectsTable
-                  projects={projects}
-                  actions={{
-                    handleReserveProject,
-                  }}
-                />
-              ) : (
-                <EmptyStateContainer>
-                  <div>
-                    <ChatIcon />
-                  </div>
-                  <p>No project found. Please change filters</p>
-                </EmptyStateContainer>
-              )}
-            </Grid>
-          </Grid>
-          <StyledIconButton onClick={() => setProjectFormModalOpen((prev) => !prev)}>
-            <AddCircleOutlineIcon />
-          </StyledIconButton>
+          </BarContainer>
+          <ContentContainer>
+            {projects.length > 0 ? (
+              <AvailableProjectsTable
+                projects={projects}
+                actions={{
+                  handleReserveProject,
+                }}
+              />
+            ) : (
+              <EmptyStateContainer>
+                <div>
+                  <ChatIcon />
+                </div>
+                <p>No project found. Please change filters</p>
+              </EmptyStateContainer>
+            )}
+          </ContentContainer>
           {projectFormModalOpen
           && university
           && university.departments.length
@@ -289,7 +387,52 @@ const ProjectListPage = () => {
               />
             </Popup>
           )}
-        </ContentContainer>
+          {templateUploadModal && (
+            <Popup
+              header="Upload excel with topics"
+              handleClose={handleTemplateModalClose}
+              buttonsConfig={[
+                {
+                  label: 'Cancel',
+                  disabled: false,
+                  onClick: handleTemplateModalClose,
+                  buttonType: ButtonType.SECONDARY,
+                },
+                {
+                  label: 'Upload',
+                  disabled: invalidTemplate,
+                  onClick: handleTemplateUpload,
+                  buttonType: ButtonType.PRIMARY,
+                },
+              ]}
+            >
+              <p>When you uploads template filled up with thesis remember that</p>
+              <ul>
+                <li>you will be assign as thesis promoter</li>
+                <li>reviewers list will be empty</li>
+              </ul>
+              <input
+                name="templateInput"
+                type="file"
+                onChange={onFileUploadChange}
+                accept=".xlsx"
+              />
+              {templateErrors.length > 0 && (
+                <div>
+                  <p> Last uploaded template errors: </p>
+                  <StyledErrorList>
+                    {templateErrors.map((error: string, index: number) => (
+                      <StyledErrorItem
+                        key={index}
+                      >{error}
+                      </StyledErrorItem>
+                    ))}
+                  </StyledErrorList>
+                </div>
+              )}
+            </Popup>
+          )}
+        </ContentWrapper>
       )}
     </>
   );

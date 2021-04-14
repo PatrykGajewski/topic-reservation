@@ -1,5 +1,5 @@
 import { UserModel } from '../models/user';
-import {Project, Tag, ProjectType} from '../models/project';
+import {Project, Tag, ProjectType, ProjectDegree, ProjectStatus} from '../models/project';
 import { University, UniversityDegree } from '../models/university';
 import {SimplifiedUser} from "../views/private/roles/STUDENT/services";
 
@@ -8,6 +8,8 @@ export interface AvailableProjectsTableConfig {
   pageIndex: number,
   searchString: string,
   projectType: ProjectType,
+  projectDegree: ProjectDegree,
+  projectStatus: ProjectStatus,
 }
 
 export interface AppState {

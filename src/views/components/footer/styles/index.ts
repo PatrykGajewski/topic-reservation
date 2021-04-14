@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 
 const FooterContainer = styled.div`
-  height: 60px;
+  height: 40px;
   width: 100%;
   background: rgb(8, 59, 102);
+  overflow: hidden;
   display: flex;
   align-items: center;
   align-content: center;

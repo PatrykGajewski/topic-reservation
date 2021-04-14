@@ -3,7 +3,7 @@ import React from 'react';
 import { Props } from './models';
 import { LogoutPage } from '../../REGISTERED_USER/router/pages/logout';
 import { AccountPage } from '../../REGISTERED_USER';
-import {StatisticsPage} from "./pages";
+import { StatisticsPage, ProjectListPage } from './pages';
 
 export const EmployeeUserRouter = (props: Props) => (
   <Switch>
@@ -14,6 +14,10 @@ export const EmployeeUserRouter = (props: Props) => (
     <Route
       path="/statistics"
       render={() => (<StatisticsPage />)}
+    />
+    <Route
+      path="/projects"
+      render={() => (<ProjectListPage />)}
     />
     <Route
       exact

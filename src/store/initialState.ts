@@ -1,6 +1,6 @@
 import {AppState} from './appState';
 import {UserGender} from '../models/user';
-import {ProjectType} from "../models/project";
+import {ProjectDegree, ProjectStatus, ProjectType} from "../models/project";
 
 const initialState: AppState = {
   user: {
@@ -25,6 +25,8 @@ const initialState: AppState = {
       lastPageIndex: 0,
       searchString: '',
       projectType: ProjectType.RESEARCH_WORK,
+      projectDegree: ProjectDegree.ASSOCIATE_DEGREE,
+      projectStatus: ProjectStatus.AVAILABLE,
     },
   },
   degrees: [],

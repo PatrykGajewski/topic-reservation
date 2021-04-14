@@ -69,12 +69,13 @@ const StyledIconButton = styled.button<{animated?: boolean, positioned?: boolean
   border-radius: 50%;
   padding: 5px;
   transition: all 0.2s;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
   ${(props) => (props.animated ? animationStyles : null)}
   
   svg {
-    font-size: 20px;
+    font-size: 24px;
   }
   
   &:hover {
