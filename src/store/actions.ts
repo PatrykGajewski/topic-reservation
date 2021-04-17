@@ -1,6 +1,6 @@
 import { UserModel } from '../models/user';
 import { Project, Tag } from '../models/project';
-import { AvailableProjectsTableConfig } from './appState';
+import { ProjectsTableConfig } from './appState';
 import { University } from '../models/university';
 import { SimplifiedUser } from '../views/private/roles/STUDENT/services';
 
@@ -93,9 +93,9 @@ export class UpdateUserData {
 export class UpdateAvailableProjectsTable {
   type = ACTION_TYPES.UPDATE_AVAILABLE_PROJECTS_TABLE_CONFIG;
 
-  payload: AvailableProjectsTableConfig;
+  payload: ProjectsTableConfig;
 
-  constructor(config: AvailableProjectsTableConfig) {
+  constructor(config: ProjectsTableConfig) {
     this.payload = config;
   }
 }

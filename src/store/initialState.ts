@@ -1,6 +1,6 @@
 import {AppState} from './appState';
 import {UserGender} from '../models/user';
-import {ProjectDegree, ProjectStatus, ProjectType} from "../models/project";
+import {RoleInProject} from "../views/private/roles/EMPLOYEE/router/pages";
 
 const initialState: AppState = {
   user: {
@@ -22,11 +22,13 @@ const initialState: AppState = {
   availableProjects: {
     table: {
       pageIndex: 0,
-      lastPageIndex: 0,
+      total: 0,
+      rowsPerPage: 10,
       searchString: '',
-      projectType: ProjectType.RESEARCH_WORK,
-      projectDegree: ProjectDegree.ASSOCIATE_DEGREE,
-      projectStatus: ProjectStatus.AVAILABLE,
+      projectsTypes: [],
+      projectsDegrees: [],
+      projectsStatuses: [],
+      roleInProjects: RoleInProject.ANY,
     },
   },
   degrees: [],

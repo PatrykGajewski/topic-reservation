@@ -2,14 +2,17 @@ import { UserModel } from '../models/user';
 import {Project, Tag, ProjectType, ProjectDegree, ProjectStatus} from '../models/project';
 import { University, UniversityDegree } from '../models/university';
 import {SimplifiedUser} from "../views/private/roles/STUDENT/services";
+import {RoleInProject} from "../views/private/roles/EMPLOYEE/router/pages";
 
-export interface AvailableProjectsTableConfig {
-  lastPageIndex: number,
+export interface ProjectsTableConfig {
+  total: number,
   pageIndex: number,
+  rowsPerPage: number,
   searchString: string,
-  projectType: ProjectType,
-  projectDegree: ProjectDegree,
-  projectStatus: ProjectStatus,
+  projectsTypes: ProjectType[],
+  projectsDegrees: ProjectDegree[],
+  projectsStatuses: ProjectStatus[],
+  roleInProjects: RoleInProject,
 }
 
 export interface AppState {
@@ -23,6 +26,6 @@ export interface AppState {
   tags: Tag[],
   promoters: SimplifiedUser[],
   availableProjects: {
-    table : AvailableProjectsTableConfig
+    table : ProjectsTableConfig
   }
 }

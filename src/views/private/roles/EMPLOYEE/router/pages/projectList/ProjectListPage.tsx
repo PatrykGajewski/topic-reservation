@@ -14,6 +14,8 @@ import { ViewState } from 'models/other';
 import {
   BarContainer, ContentContainer, ContentWrapper, BarElement,
 } from 'views/components/contentWithBar';
+
+import TablePagination from '@material-ui/core/TablePagination';
 import { AppState } from '../../../../../../../store/appState';
 
 import {
@@ -22,7 +24,7 @@ import {
 import { SelectOption } from '../../../../../../../models/forms';
 import { StyledErrorItem, StyledErrorList } from './styles';
 import {
-  _createProject, _fetchAvailableProjects, _reserveProject,
+  _createProject, _reserveProject,
 } from './services';
 import { UpdateAvailableProjectsTable, UpdateUserProjectsList } from '../../../../../../../store/actions';
 import { SimpleSelect } from '../../../../../../components/forms';
@@ -37,12 +39,31 @@ import { AvailableProjectsTable } from '../../../../STUDENT/router/pages/ownedPr
 import { StyledContainer } from '../../../../STUDENT/router/pages/ownedProjectList';
 import { SimplifiedUser } from '../../../../STUDENT/services';
 import { APISecured, MultiResponse } from '../../../../../../../API';
+import { _fetchProjects, FetchProjectsResponse } from '../../../services';
+import { MultipleSelect } from '../../../../../../components/forms/multiple-select';
 
 const projectTypeOptions: SelectOption[] = mapProjectTypeToOptions();
 const projectDegreeOptions: SelectOption[] = mapProjectDegreeToOptions();
 const projectStatusOptions: SelectOption[] = mapProjectStatusToOptions();
 
-const PROJECTS_PER_PAGE: number = 12;
+export enum RoleInProject {
+  PROMOTER = 'PROMOTER',
+  REVIEWER = 'REVIEWER',
+  OWNER = 'OWNER',
+  ANY = 'ANY'
+}
+
+const roleInProjectOptions: SelectOption[] = [
+  { label: 'Promotor', value: RoleInProject.PROMOTER },
+  { label: 'Recenzent', value: RoleInProject.REVIEWER },
+  { label: 'Wszystkie', value: RoleInProject.ANY },
+];
+
+interface PageConfig {
+  pageIndex: number;
+  total: number;
+  rowsPerPage: number;
+}
 
 const ProjectListPage = () => {
   const dispatch = useDispatch();
@@ -63,12 +84,14 @@ const ProjectListPage = () => {
   const [viewState, setViewState] = useState<ViewState>(ViewState.LOADING);
   const [projects, setProjects] = useState<Project[]>([]);
   const [searchString, setSearchString] = useState<string>(stateData.tableConfig.searchString);
-  const [projectType, setProjectType] = useState<ProjectType>(stateData.tableConfig.projectType);
-  const [projectDegree, setProjectDegree] = useState<ProjectDegree>(stateData.tableConfig.projectDegree);
-  const [projectStatus, setProjectStatus] = useState<ProjectStatus>(stateData.tableConfig.projectStatus);
-  const [pageConfig, setPageConfig] = useState<{ pageIndex: number, lastPageIndex: number}>({
+  const [projectsTypes, setProjectsTypes] = useState<ProjectType[]>(stateData.tableConfig.projectsTypes);
+  const [projectsDegrees, setProjectsDegrees] = useState<ProjectDegree[]>(stateData.tableConfig.projectsDegrees);
+  const [projectsStatuses, setProjectsStatuses] = useState<ProjectStatus[]>(stateData.tableConfig.projectsStatuses);
+  const [roleInProjects, setRoleInProjects] = useState<RoleInProject>(stateData.tableConfig.roleInProjects);
+  const [pageConfig, setPageConfig] = useState<PageConfig>({
     pageIndex: stateData.tableConfig.pageIndex,
-    lastPageIndex: stateData.tableConfig.lastPageIndex,
+    total: stateData.tableConfig.total,
+    rowsPerPage: stateData.tableConfig.rowsPerPage,
   });
 
   const [projectFormModalOpen, setProjectFormModalOpen] = useState<boolean>(false);
@@ -79,16 +102,25 @@ const ProjectListPage = () => {
   const [templateErrors, setTemplateErrors] = useState<string[]>([]);
   const [invalidTemplate, setInvalidTemplate] = useState<boolean>(false);
 
-  const fetchAvailableProjects = () => {
+  const fetchProjects = () => {
     setViewState(ViewState.LOADING);
-    _fetchAvailableProjects({
-      projectType,
+    setViewState(ViewState.ERROR);
+    _fetchProjects({
+      projectsTypes,
+      projectsDegrees,
+      projectsStatuses,
+      roleInProjects,
       searchString,
-      skip: pageConfig.pageIndex * PROJECTS_PER_PAGE,
-      limit: PROJECTS_PER_PAGE,
+      skip: pageConfig.pageIndex * pageConfig.rowsPerPage,
+      limit: pageConfig.rowsPerPage,
     })
-      .then((fetchedProjects: Project[]) => {
-        setProjects(fetchedProjects);
+      .then((res: FetchProjectsResponse) => {
+        setProjects(res.projects);
+        setPageConfig((prev: PageConfig) => ({
+          total: res.total,
+          pageIndex: prev.pageIndex,
+          rowsPerPage: prev.rowsPerPage,
+        }));
         setViewState(ViewState.OK);
       })
       .catch(() => {
@@ -97,30 +129,33 @@ const ProjectListPage = () => {
   };
 
   useEffect(() => {
-    fetchAvailableProjects();
+    fetchProjects();
   }, []);
 
   const handleFiltersSubmit = () => {
-    fetchAvailableProjects();
+    fetchProjects();
     dispatch({
       ...new UpdateAvailableProjectsTable({
-        lastPageIndex: pageConfig.lastPageIndex,
+        total: pageConfig.total,
         pageIndex: pageConfig.pageIndex,
+        rowsPerPage: pageConfig.rowsPerPage,
         searchString,
-        projectType,
-        projectDegree,
-        projectStatus,
+        projectsTypes,
+        projectsStatuses,
+        projectsDegrees,
+        roleInProjects,
       }),
     });
   };
 
   const handleRemoveFilters = () => {
     setSearchString(stateData.tableConfig.searchString);
-    setProjectType(stateData.tableConfig.projectType);
-    setPageConfig({
+    setProjectsTypes(stateData.tableConfig.projectsTypes);
+    setPageConfig((prev: PageConfig) => ({
       pageIndex: stateData.tableConfig.pageIndex,
-      lastPageIndex: stateData.tableConfig.lastPageIndex,
-    });
+      total: 0,
+      rowsPerPage: prev.rowsPerPage,
+    }));
   };
 
   const handleReserveProject = (projectId: string) => {
@@ -205,8 +240,47 @@ const ProjectListPage = () => {
     setTemplateToUpload(null);
   };
 
-  const filtersNotSubmitted = stateData.tableConfig.searchString !== searchString
-  || stateData.tableConfig.projectType !== projectType;
+  const restoreDefaultFilters = () => {
+    setSearchString('');
+    setRoleInProjects(RoleInProject.ANY);
+    setProjectsTypes([]);
+    setProjectsDegrees([]);
+    setProjectsStatuses([]);
+    setPageConfig((prev: PageConfig) => ({
+      pageIndex: 0,
+      total: 0,
+      rowsPerPage: prev.rowsPerPage,
+    }));
+  };
+
+  const handleRowPerPageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPageConfig((prev) => ({
+      pageIndex: 0,
+      total: prev.total,
+      // @ts-ignore
+      rowsPerPage: e.target.value as number,
+    }));
+  };
+
+  const handlePageChange = (e: any, page: number) => {
+    setPageConfig((prev: any) => ({
+      pageIndex: page,
+      total: prev.total,
+      rowsPerPage: prev.rowsPerPage,
+    }));
+  };
+
+  const filtersNotSubmitted: boolean = stateData.tableConfig.searchString !== searchString
+    || stateData.tableConfig.projectsTypes !== projectsTypes
+    || stateData.tableConfig.projectsStatuses !== projectsStatuses
+    || stateData.tableConfig.projectsDegrees !== projectsDegrees
+    || stateData.tableConfig.roleInProjects !== roleInProjects;
+
+  const notDefaultFilters: boolean = stateData.tableConfig.searchString !== ''
+    || stateData.tableConfig.projectsTypes.length !== 0
+    || stateData.tableConfig.projectsStatuses.length !== 0
+    || stateData.tableConfig.projectsDegrees.length !== 0
+    || stateData.tableConfig.roleInProjects !== RoleInProject.ANY;
 
   return (
     <>
@@ -226,39 +300,45 @@ const ProjectListPage = () => {
           <BarContainer>
             <Grid container alignContent="flex-start">
               <BarElement item xs={12}>
-                <SimpleSelect
-                  id="projectType"
-                  labelId="projectTypeLabel"
-                  label="Select project type"
-                  selectedOption={projectTypeOptions.find((option: SelectOption) => option.value === projectType) as SelectOption}
-                  handleChange={(value: string) => {
-                    setProjectType(value as ProjectType);
-                  }}
+                <MultipleSelect
+                  id="projectsTypes"
+                  labelId="projectTypesLabel"
+                  label="Select projects types"
+                  selectedOptions={projectsTypes}
+                  handleChange={(value: string[]) => { setProjectsTypes(value as ProjectType[]); }}
                   options={projectTypeOptions}
                 />
               </BarElement>
               <BarElement item xs={12}>
-                <SimpleSelect
-                  id="projectDegree"
-                  labelId="projectDegreeLabel"
-                  label="Select project degree"
-                  selectedOption={projectDegreeOptions.find((option: SelectOption) => option.value === projectDegree) as SelectOption}
-                  handleChange={(value: string) => {
-                    setProjectDegree(value as ProjectDegree);
-                  }}
+                <MultipleSelect
+                  id="projectsDegrees"
+                  labelId="projectsDegreesLabel"
+                  label="Select projects degrees"
+                  selectedOptions={projectsDegrees}
+                  handleChange={(value: string[]) => { setProjectsDegrees(value as ProjectDegree[]); }}
                   options={projectDegreeOptions}
                 />
               </BarElement>
               <BarElement item xs={12}>
-                <SimpleSelect
-                  id="projectStatus"
-                  labelId="projectStatusLabel"
-                  label="Select project status"
-                  selectedOption={projectStatusOptions.find((option: SelectOption) => option.value === projectStatus) as SelectOption}
-                  handleChange={(value: string) => {
-                    setProjectStatus(value as ProjectStatus);
-                  }}
+                <MultipleSelect
+                  id="projectsStatuses"
+                  labelId="projectsStatusesLabel"
+                  label="Select projects statuses"
                   options={projectStatusOptions}
+                  selectedOptions={projectsStatuses}
+                  handleChange={(values: string[]) => setProjectsStatuses(values as ProjectStatus[])}
+                />
+              </BarElement>
+              <BarElement item xs={12}>
+                <SimpleSelect
+                  id="roleInProjects"
+                  labelId="roleInProjectsLabel"
+                  label="Select role in projects"
+                  selectedOption={roleInProjectOptions.find((option: SelectOption) => option.value === roleInProjects) as SelectOption}
+                  handleChange={(value: string) => {
+                    setRoleInProjects(value as RoleInProject);
+                  }}
+                  options={roleInProjectOptions}
                 />
               </BarElement>
               <BarElement item xs={12}>
@@ -276,7 +356,7 @@ const ProjectListPage = () => {
                   onClick={handleFiltersSubmit}
                   variant="outlined"
                   color="primary"
-                >Submit filters
+                >Apply filters
                 </Button>
               </BarElement>
               <BarElement item xs={12}>
@@ -285,6 +365,15 @@ const ProjectListPage = () => {
                     onClick={handleRemoveFilters}
                     variant="outlined"
                   >Remove filters
+                  </Button>
+                )}
+              </BarElement>
+              <BarElement item xs={12}>
+                {notDefaultFilters && (
+                  <Button
+                    onClick={restoreDefaultFilters}
+                    variant="outlined"
+                  >Restore default
                   </Button>
                 )}
               </BarElement>
@@ -321,6 +410,11 @@ const ProjectListPage = () => {
                 actions={{
                   handleReserveProject,
                 }}
+                count={pageConfig.total}
+                page={pageConfig.pageIndex}
+                onChangePage={handlePageChange}
+                rowsPerPage={pageConfig.rowsPerPage}
+                onChangeRowsPerPage={handleRowPerPageChange}
               />
             ) : (
               <EmptyStateContainer>
@@ -338,7 +432,7 @@ const ProjectListPage = () => {
           && stateData.promoters.length
           && (
             <Popup
-              header="Create own topic"
+              header="Create new thesis"
               handleClose={() => setProjectFormModalOpen((prev) => !prev)}
               buttonsConfig={[
                 {
@@ -368,7 +462,7 @@ const ProjectListPage = () => {
                   department: university.departments[0].id,
                   university: university.id,
                   cathedral: university.departments[0].cathedrals[0].id,
-                  promoter: stateData.promoters[0].id,
+                  promoter: stateData.user.id,
                   degree: ProjectDegree.ASSOCIATE_DEGREE,
                 }}
                 tagsOptions={stateData.tags

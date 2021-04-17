@@ -10,6 +10,7 @@ import { Props } from './models';
 import { TableContainer, TagWrapper } from '../../styles';
 import { SectionWithHeader } from '../../../../../../../../components';
 import {mapProjectTypeToText} from "../../../../../../../../../utils/mappers";
+import TablePagination from "@material-ui/core/TablePagination";
 
 const StyledTableCell = withStyles((theme: Theme) => createStyles({
   head: {
@@ -36,6 +37,20 @@ export const AvailableProjectsTable = (props: Props) => (
           <StyledTableCell>Actions</StyledTableCell>
         </TableRow>
       </TableHead>
+      <tfoot>
+      <tr>
+        <td colSpan={7}>
+          <TablePagination
+            component="div"
+            count={props.count}
+            page={props.page}
+            onChangePage={props.onChangePage}
+            rowsPerPage={props.rowsPerPage}
+            onChangeRowsPerPage={props.onChangeRowsPerPage}
+          />
+        </td>
+      </tr>
+      </tfoot>
       <TableBody>
         {props.projects.map((project: Project) => (
           <TableRow key={project.id}>

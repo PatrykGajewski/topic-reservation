@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ChangeEvent} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -6,6 +6,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { SelectOption } from 'models/forms';
 import styled from 'styled-components';
+import { uniq } from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -18,8 +19,8 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   options: SelectOption[]
-  selectedOption: SelectOption,
-  handleChange: (value: string) => void,
+  selectedOptions: string[],
+  handleChange: (value: string[]) => void,
   id: string
   label: string,
   labelId: string,
@@ -31,11 +32,11 @@ const StyledInputLabel = styled(InputLabel)`
   border-radius: 4px;
 `;
 
-export const SimpleSelect = (props: Props) => {
+export const MultipleSelect = (props: Props) => {
   const classes = useStyles();
 
-  const handleChange = (event: any) => {
-    props.handleChange(event.target.value);
+  const handleChange = (e: ChangeEvent<any>) => {
+    props.handleChange(uniq(e.target.value as string[]));
   };
 
   return (
@@ -45,8 +46,9 @@ export const SimpleSelect = (props: Props) => {
         <Select
           disabled={props.disabled}
           labelId={props.labelId}
+          multiple
           id={props.id}
-          value={props.selectedOption.value}
+          value={props.selectedOptions}
           onChange={handleChange}
         >
           {props.options.map((option: SelectOption) => (

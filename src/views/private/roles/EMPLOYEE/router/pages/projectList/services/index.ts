@@ -18,7 +18,7 @@ export const _reserveProject = async (projectId: string): Promise<Project> => {
 };
 
 interface GetAvailableProjectsParams {
-  projectType: ProjectType,
+  projectType: ProjectType | null,
   searchString: string | null,
   skip: number,
   limit: number,
