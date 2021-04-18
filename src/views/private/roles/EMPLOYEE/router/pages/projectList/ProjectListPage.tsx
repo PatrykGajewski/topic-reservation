@@ -132,6 +132,10 @@ const ProjectListPage = () => {
     fetchProjects();
   }, []);
 
+  useEffect(() => {
+    fetchProjects();
+  }, [pageConfig.pageIndex]);
+
   const handleFiltersSubmit = () => {
     fetchProjects();
     dispatch({
@@ -227,7 +231,7 @@ const ProjectListPage = () => {
           setTemplateErrors([]);
         })
         .catch((e) => {
-          setTemplateErrors(e.response.data.message);
+          setTemplateErrors((e.response && e.response.data && e.response.data.message) || ['Duplications found']);
           setInvalidTemplate(true);
           toast.error('You have to correct given template');
         });

@@ -6,7 +6,7 @@ export const contentContainerStyles = css`
   background-repeat: repeat;
   position: relative;
   height: 100%;
-  padding: 30px;
+  padding: 20px;
   box-sizing: border-box;
   overflow-y: scroll;
 `;
