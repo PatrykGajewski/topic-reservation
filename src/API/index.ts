@@ -49,6 +49,10 @@ export class APISecured {
   static patch = (path: string, data: any): Promise<any> => (
     axios.patch(`${BACKEND_API_URL}${path}`, data, securedAPIConfig)
   )
+
+  static delete = (path: string): Promise<any> => (
+    axios.delete(`${BACKEND_API_URL}${path}`, securedAPIConfig)
+  )
 }
 
 export * from './models';

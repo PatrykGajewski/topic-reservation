@@ -154,7 +154,7 @@ const OwnedProjectsPage = () => {
                     <Grid item xs={12}>
                       {project.status === ProjectStatus.FINISHED && (
                         <>
-                          {project.reviews.map((review: ProjectReview) => (
+{/*                          {project.reviews.map((review: ProjectReview) => (
                             <div
                               key={review.id}
                             >
@@ -162,7 +162,7 @@ const OwnedProjectsPage = () => {
                               <p>{review.content}</p>
                               <p>{review.grade}</p>
                             </div>
-                          ))}
+                          ))}*/}
                         </>
                       )}
                     </Grid>

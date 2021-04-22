@@ -1,6 +1,6 @@
-export interface SingleResponse {
+export interface SingleResponse<T> {
   data: {
-    entries: any,
+    entry: T,
   },
   embedded: any,
 }

@@ -1,23 +1,27 @@
 import React, { RefObject } from 'react';
 import { Formik, Form } from 'formik';
 import TextField from '@material-ui/core/TextField';
-import {ProjectDegree, ProjectType} from '../../../../../../../../models/project';
+import {ProjectDegree, ProjectStatus, ProjectType} from '../../../../../../../../models/project';
 import { SimpleSelect } from '../../../../../../../components/forms';
 import { SelectOption } from '../../../../../../../../models/forms';
 import { ProjectFormValidationSchema } from './ProjectFormValidationSchema';
 import { CathedralModel, DepartmentModel } from '../../../../../../../../models/university';
 import {FieldsRow, FieldWrapper} from "../../../../../../../public/router/pages/register/components/registerForm/styles";
+import {MultipleSelect} from "../../../../../../../components/forms/multiple-select";
 
 export interface ProjectFormValues {
   topic: string,
   description: string,
   type: ProjectType,
   degree: ProjectDegree,
-  tag: string,
+  tags: string[],
   promoter: string,
   department: string,
   university: string,
   cathedral: string,
+  reviewers: string[],
+  status: ProjectStatus,
+  groupProject: string,
 }
 
 interface ProjectFormProps {
@@ -31,7 +35,10 @@ interface ProjectFormProps {
   typeOptions: SelectOption[],
   handleClose: () => void,
   submitBtnRef: RefObject<HTMLButtonElement>
-  departments: DepartmentModel[]
+  departments: DepartmentModel[],
+  reviewersOptions: SelectOption[],
+  statusOptions: SelectOption[],
+  groupProjectOptions: SelectOption[],
 }
 
 export const ProjectForm = (props: ProjectFormProps) => (
@@ -44,6 +51,7 @@ export const ProjectForm = (props: ProjectFormProps) => (
       values, errors, setFieldValue, touched,
     }) => (
       <Form>
+{/*        {console.log(errors)}*/}
         <FieldsRow>
           <FieldWrapper fullWidth>
             <TextField
@@ -112,15 +120,41 @@ export const ProjectForm = (props: ProjectFormProps) => (
             />
           </FieldWrapper>
           <FieldWrapper>
-            <SimpleSelect
-              id="tag"
-              labelId="tagLabel"
-              label="Select project main tag"
-              selectedOption={props.tagsOptions.find((option: SelectOption) => option.value === values.tag) as SelectOption}
-              handleChange={(value: string) => {
-                setFieldValue('tag', value);
+            <MultipleSelect
+              id="reviewers"
+              labelId="reviewersLabel"
+              label="Select thesis reviewers"
+              selectedOptions={values.reviewers}
+              handleChange={(reviewers: string[]) => {
+                setFieldValue('reviewers', reviewers);
               }}
-              options={props.tagsOptions}
+              options={props.reviewersOptions}
+            />
+          </FieldWrapper>
+        </FieldsRow>
+        <FieldsRow>
+          <FieldWrapper>
+            <SimpleSelect
+              id="status"
+              labelId="projectStatusLabel"
+              label="Select project status"
+              selectedOption={props.statusOptions.find((option: SelectOption) => option.value === values.status) as SelectOption}
+              handleChange={(value: string) => {
+                setFieldValue('status', value);
+              }}
+              options={props.statusOptions}
+            />
+          </FieldWrapper>
+          <FieldWrapper>
+            <SimpleSelect
+              id="isGroupProject"
+              labelId="isGroupProjectLabel"
+              label="Is project group project"
+              selectedOption={props.groupProjectOptions.find((option: SelectOption) => option.value === values.groupProject) as SelectOption}
+              handleChange={(value: string) => {
+                setFieldValue('groupProject', value);
+              }}
+              options={props.groupProjectOptions}
             />
           </FieldWrapper>
         </FieldsRow>
@@ -173,6 +207,18 @@ export const ProjectForm = (props: ProjectFormProps) => (
                   .cathedrals
                   .map((cathedral: CathedralModel): SelectOption => ({ label: cathedral.namePL, value: cathedral.id }))
               }
+            />
+          </FieldWrapper>
+          <FieldWrapper>
+            <MultipleSelect
+              id="tags"
+              labelId="tagsLabel"
+              label="Select project tags"
+              selectedOptions={values.tags}
+              handleChange={(tags: string[]) => {
+                setFieldValue('tags', tags);
+              }}
+              options={props.tagsOptions}
             />
           </FieldWrapper>
         </FieldsRow>

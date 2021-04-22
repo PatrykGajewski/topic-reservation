@@ -5,12 +5,13 @@ import {
   withStyles, Theme, createStyles,
 } from '@material-ui/core/styles';
 import React from 'react';
+import TablePagination from '@material-ui/core/TablePagination';
 import { Project } from '../../../../../../../../../models/project';
 import { Props } from './models';
 import { TableContainer, TagWrapper } from '../../styles';
 import { SectionWithHeader } from '../../../../../../../../components';
-import {mapProjectTypeToText} from "../../../../../../../../../utils/mappers";
-import TablePagination from "@material-ui/core/TablePagination";
+import { mapProjectTypeToText } from '../../../../../../../../../utils/mappers';
+import { DotsMenu } from '../../../../../../../../components/dotsMenu';
 
 const StyledTableCell = withStyles((theme: Theme) => createStyles({
   head: {
@@ -40,18 +41,18 @@ export const AvailableProjectsTable = (props: Props) => (
         </TableRow>
       </TableHead>
       <tfoot>
-      <tr>
-        <td colSpan={7}>
-          <TablePagination
-            component="div"
-            count={props.count}
-            page={props.page}
-            onChangePage={props.onChangePage}
-            rowsPerPage={props.rowsPerPage}
-            onChangeRowsPerPage={props.onChangeRowsPerPage}
-          />
-        </td>
-      </tr>
+        <tr>
+          <td colSpan={7}>
+            <TablePagination
+              component="div"
+              count={props.count}
+              page={props.page}
+              onChangePage={props.onChangePage}
+              rowsPerPage={props.rowsPerPage}
+              onChangeRowsPerPage={props.onChangeRowsPerPage}
+            />
+          </td>
+        </tr>
       </tfoot>
       <TableBody>
         {props.projects.map((project: Project) => (
@@ -67,12 +68,7 @@ export const AvailableProjectsTable = (props: Props) => (
             <StyledTableCell>{project.department.namePL.full}</StyledTableCell>
             <StyledTableCell>{project.cathedral.namePL}</StyledTableCell>
             <StyledTableCell>
-              <Button
-                onClick={() => props.actions.handleReserveProject(project.id)}
-                variant="outlined"
-                color="primary"
-              >Reserve
-              </Button>
+              <DotsMenu actions={props.rowActions} element={project} />
             </StyledTableCell>
           </TableRow>
         ))}

@@ -1,6 +1,8 @@
-import {Project, ProjectDegree, ProjectStatus, ProjectType} from '../../../../../models/project';
-import {APISecured} from '../../../../../API';
-import {RoleInProject} from "../router/pages";
+import {
+  Project, ProjectDegree, ProjectStatus, ProjectType,
+} from '../../../../../models/project';
+import { APISecured, SingleResponse } from '../../../../../API';
+import { RoleInProject } from '../router/pages';
 
 export const _fetchEmployeeProjects = async (): Promise<Project[]> => {
   try {
@@ -13,7 +15,6 @@ export const _fetchEmployeeProjects = async (): Promise<Project[]> => {
     return Promise.reject(e);
   }
 };
-
 
 interface Params {
   projectsTypes: ProjectType[],
@@ -52,3 +53,10 @@ export const _fetchProjects = async (params: Params): Promise<FetchProjectsRespo
     return Promise.reject(e);
   }
 };
+
+export const _deleteProject = async (projectId: String): Promise<Project> => (
+  APISecured.delete(`/projects/${projectId}`)
+    .then((res: SingleResponse<Project>) => Promise.resolve(res.data.entry))
+    .catch((err) => Promise.reject(err))
+);
+

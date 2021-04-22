@@ -4,6 +4,7 @@ import React, {
 import { Button, Grid, TextField } from '@material-ui/core';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import { cloneDeep } from 'lodash';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -12,20 +13,17 @@ import ChatIcon from '@material-ui/icons/Chat';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { ViewState } from 'models/other';
 import {
-  BarContainer, ContentContainer, ContentWrapper, BarElement,
+  BarContainer, BarElement, ContentContainer, ContentWrapper,
 } from 'views/components/contentWithBar';
 
-import TablePagination from '@material-ui/core/TablePagination';
 import { AppState } from '../../../../../../../store/appState';
 
 import {
-  Project, Tag, ProjectType, ProjectDegree, ProjectStatus,
+  Project, ProjectDegree, ProjectStatus, ProjectType, Tag,
 } from '../../../../../../../models/project';
 import { SelectOption } from '../../../../../../../models/forms';
 import { StyledErrorItem, StyledErrorList } from './styles';
-import {
-  _createProject, _reserveProject,
-} from './services';
+import { _createProject } from './services';
 import { UpdateAvailableProjectsTable, UpdateUserProjectsList } from '../../../../../../../store/actions';
 import { SimpleSelect } from '../../../../../../components/forms';
 import { StyledIconButton } from '../../../../REGISTERED_USER/router/pages/account/styles';
@@ -39,12 +37,22 @@ import { AvailableProjectsTable } from '../../../../STUDENT/router/pages/ownedPr
 import { StyledContainer } from '../../../../STUDENT/router/pages/ownedProjectList';
 import { SimplifiedUser } from '../../../../STUDENT/services';
 import { APISecured, MultiResponse } from '../../../../../../../API';
-import { _fetchProjects, FetchProjectsResponse } from '../../../services';
+import { _deleteProject, _fetchProjects, FetchProjectsResponse } from '../../../services';
 import { MultipleSelect } from '../../../../../../components/forms/multiple-select';
 
 const projectTypeOptions: SelectOption[] = mapProjectTypeToOptions();
 const projectDegreeOptions: SelectOption[] = mapProjectDegreeToOptions();
 const projectStatusOptions: SelectOption[] = mapProjectStatusToOptions();
+const groupProjectOptions: SelectOption[] = [
+  {
+    label: 'Tak',
+    value: 'true',
+  },
+  {
+    label: 'Nie',
+    value: 'false',
+  },
+];
 
 export enum RoleInProject {
   PROMOTER = 'PROMOTER',
@@ -96,11 +104,15 @@ const ProjectListPage = () => {
 
   const [projectFormModalOpen, setProjectFormModalOpen] = useState<boolean>(false);
   const projectSubmitBtnRef = useRef<HTMLButtonElement | null>(null);
+  const projectEditSubmitBtnRef = useRef<HTMLButtonElement | null>(null);
 
   const [templateUploadModal, setTemplateUploadModal] = useState<boolean>(false);
   const [templateToUpload, setTemplateToUpload] = useState<File | null>(null);
   const [templateErrors, setTemplateErrors] = useState<string[]>([]);
   const [invalidTemplate, setInvalidTemplate] = useState<boolean>(false);
+
+  const [editedProject, setEditedProject] = useState<Project | null>(null);
+  const [projectEditModalOpen, setProjectEditModalOpen] = useState<boolean>(false);
 
   const fetchProjects = () => {
     setViewState(ViewState.LOADING);
@@ -162,13 +174,16 @@ const ProjectListPage = () => {
     }));
   };
 
-  const handleReserveProject = (projectId: string) => {
+  const handleDeleteProject = (project: Project) => {
     setViewState(ViewState.LOADING);
-    _reserveProject(projectId)
-      .then((reservedProject: Project) => {
-        dispatch({ ...new UpdateUserProjectsList([...stateData.userProjects, reservedProject]) });
-        setProjects((prev) => prev.filter((project: Project) => project.id !== projectId));
-        toast.success('Project has been reserved');
+    _deleteProject(project.id)
+      .then((deletedProject: Project) => {
+        setProjects((prev) => prev.filter((prevProject) => prevProject.id !== project.id));
+        setPageConfig((prev) => ({
+          ...prev,
+          total: prev.total - 1,
+        }));
+        toast.success('Project has been deleted');
         setViewState(ViewState.OK);
       })
       .catch(() => {
@@ -181,7 +196,7 @@ const ProjectListPage = () => {
     _createProject({
       topic: values.topic,
       description: values.description,
-      tag: values.tag,
+      tags: values.tags,
       type: values.type,
       degree: values.degree,
       userId: stateData.user.id,
@@ -272,6 +287,16 @@ const ProjectListPage = () => {
       total: prev.total,
       rowsPerPage: prev.rowsPerPage,
     }));
+  };
+
+  const handleEditProject = (project: Project) => {
+    setEditedProject(cloneDeep(project));
+    setProjectEditModalOpen((prev) => !prev);
+  };
+
+  const handleSubmitEditForm = (values: ProjectFormValues): void => {
+    console.log(values);
+    setProjectEditModalOpen((prev) => !prev);
   };
 
   const filtersNotSubmitted: boolean = stateData.tableConfig.searchString !== searchString
@@ -411,9 +436,18 @@ const ProjectListPage = () => {
             {projects.length > 0 ? (
               <AvailableProjectsTable
                 projects={projects}
-                actions={{
-                  handleReserveProject,
-                }}
+                rowActions={[
+                  {
+                    id: 'delete',
+                    label: 'Delete',
+                    action: handleDeleteProject,
+                  },
+                  {
+                    id: 'edit',
+                    label: 'Edit',
+                    action: handleEditProject,
+                  },
+                ]}
                 count={pageConfig.total}
                 page={pageConfig.pageIndex}
                 onChangePage={handlePageChange}
@@ -462,12 +496,15 @@ const ProjectListPage = () => {
                   topic: '',
                   description: '',
                   type: ProjectType.RESEARCH_WORK,
-                  tag: stateData.tags[0].id,
+                  tags: [],
                   department: university.departments[0].id,
                   university: university.id,
                   cathedral: university.departments[0].cathedrals[0].id,
                   promoter: stateData.user.id,
                   degree: ProjectDegree.ASSOCIATE_DEGREE,
+                  reviewers: [],
+                  status: ProjectStatus.AVAILABLE,
+                  groupProject: 'false'
                 }}
                 tagsOptions={stateData.tags
                   .map((tag: Tag):SelectOption => ({ label: tag.labelPL, value: tag.id }))}
@@ -482,6 +519,13 @@ const ProjectListPage = () => {
                 handleClose={() => setProjectFormModalOpen((prev) => !prev)}
                 submitBtnRef={projectSubmitBtnRef}
                 departments={university.departments}
+                reviewersOptions={stateData.promoters
+                  .map((promoter: SimplifiedUser): SelectOption => ({
+                    label: `${promoter.firstName} ${promoter.lastName}`,
+                    value: promoter.id,
+                  }))}
+                statusOptions={projectStatusOptions}
+                groupProjectOptions={groupProjectOptions}
               />
             </Popup>
           )}
@@ -528,6 +572,75 @@ const ProjectListPage = () => {
                   </StyledErrorList>
                 </div>
               )}
+            </Popup>
+          )}
+          {projectEditModalOpen
+          && editedProject
+          && university
+          && university.departments.length
+          && university.departments[0].cathedrals.length
+          && stateData.promoters.length
+          && (
+            <Popup
+              header="Edit thesis"
+              handleClose={() => setProjectEditModalOpen((prev) => !prev)}
+              buttonsConfig={[
+                {
+                  label: 'Cancel',
+                  disabled: false,
+                  onClick: () => setProjectEditModalOpen((prev) => !prev),
+                  buttonType: ButtonType.SECONDARY,
+                },
+                {
+                  label: 'Update',
+                  disabled: false,
+                  onClick: () => {
+                    if (projectEditSubmitBtnRef.current !== null) {
+                      projectEditSubmitBtnRef.current.click();
+                      console.log(projectEditSubmitBtnRef);
+                    }
+                  },
+                  buttonType: ButtonType.PRIMARY,
+                },
+              ]}
+            >
+              <ProjectForm
+                initialValues={{
+                  topic: editedProject.topic,
+                  description: editedProject.description,
+                  type: editedProject.type,
+                  tags: editedProject.tags.map((tag: Tag) => tag.id),
+                  department: editedProject.department.id,
+                  university: editedProject.university.id,
+                  cathedral: editedProject.cathedral.id,
+                  promoter: editedProject.promoter.id,
+                  degree: editedProject.degree,
+                  status: editedProject.status,
+                  reviewers: editedProject.reviewers.map((reviewer: SimplifiedUser) => reviewer.id),
+                  groupProject: `${editedProject.groupProject}`,
+                }}
+                tagsOptions={stateData.tags
+                  .map((tag: Tag):SelectOption => ({ label: tag.labelPL, value: tag.id }))}
+                departmentsOptions={university.departments
+                  .map((department): SelectOption => ({ label: department.namePL.full, value: department.id }))}
+                universitiesOptions={[{ label: university.namePL.full, value: university.id }]}
+                promoters={stateData.promoters
+                  .map((promoter: SimplifiedUser): SelectOption => ({ label: `${promoter.firstName} ${promoter.lastName}`, value: promoter.id }))}
+                degreeOptions={projectDegreeOptions}
+                typeOptions={projectTypeOptions}
+                onSubmit={handleSubmitEditForm}
+                handleClose={() => setProjectFormModalOpen((prev) => !prev)}
+                submitBtnRef={projectEditSubmitBtnRef}
+                departments={university.departments}
+                reviewersOptions={stateData.promoters
+                  .filter((promoter) => promoter.id !== editedProject.promoter.id)
+                  .map((promoter: SimplifiedUser): SelectOption => ({
+                    label: `${promoter.firstName} ${promoter.lastName}`,
+                    value: promoter.id,
+                  }))}
+                statusOptions={projectStatusOptions}
+                groupProjectOptions={groupProjectOptions}
+              />
             </Popup>
           )}
         </ContentWrapper>

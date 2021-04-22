@@ -49,7 +49,7 @@ interface CreateProjectParams {
   description: string,
   type: ProjectType,
   degree: ProjectDegree,
-  tag: string,
+  tags: string[],
   userId: string,
   promoterId: string,
   universityId: string,
@@ -63,7 +63,7 @@ export const _createProject = async (params: CreateProjectParams): Promise<Proje
     const { data, error } = await APISecured.post('/projects/add/project', {
       topic: params.topic,
       description: params.description,
-      tags: [params.tag],
+      tags: params.tags,
       type: params.type,
       degree: params.degree,
       languagesIds: [],

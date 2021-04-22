@@ -10,6 +10,7 @@ export interface Project {
   degree: ProjectDegree,
   status: ProjectStatus,
   promoter: SimplifiedUser,
+  groupProject: boolean,
   university: {
     id: string,
     nameEN: {
@@ -37,8 +38,9 @@ export interface Project {
     nameEN: string,
     namePL: string,
   },
-  reviews: ProjectReview[],
+  reviews: string[],
   owners: SimplifiedUser[],
+  reviewers: SimplifiedUser[],
   tags: Tag[],
   createdAt: Date,
   updatedAt: Date,
