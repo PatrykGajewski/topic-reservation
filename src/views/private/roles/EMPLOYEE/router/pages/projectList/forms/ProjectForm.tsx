@@ -116,7 +116,8 @@ export const ProjectForm = (props: ProjectFormProps) => (
               handleChange={(value: string) => {
                 setFieldValue('promoter', value);
               }}
-              options={props.promoters}
+              options={props.promoters
+                .filter((promoter) => !values.reviewers.includes(promoter.value))}
             />
           </FieldWrapper>
           <FieldWrapper>
@@ -128,7 +129,8 @@ export const ProjectForm = (props: ProjectFormProps) => (
               handleChange={(reviewers: string[]) => {
                 setFieldValue('reviewers', reviewers);
               }}
-              options={props.reviewersOptions}
+              options={props.reviewersOptions
+                .filter((option: SelectOption) => option.value !== values.promoter)}
             />
           </FieldWrapper>
         </FieldsRow>

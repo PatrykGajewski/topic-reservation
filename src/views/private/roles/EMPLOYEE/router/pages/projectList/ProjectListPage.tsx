@@ -633,7 +633,6 @@ const ProjectListPage = () => {
                 submitBtnRef={projectEditSubmitBtnRef}
                 departments={university.departments}
                 reviewersOptions={stateData.promoters
-                  .filter((promoter) => promoter.id !== editedProject.promoter.id)
                   .map((promoter: SimplifiedUser): SelectOption => ({
                     label: `${promoter.firstName} ${promoter.lastName}`,
                     value: promoter.id,
