@@ -28,7 +28,7 @@ interface ProjectFormProps {
   initialValues: ProjectFormValues,
   onSubmit: (values: ProjectFormValues) => void,
   tagsOptions: SelectOption[],
-  promoters: SelectOption[],
+  employeesOptions: SelectOption[],
   departmentsOptions: SelectOption[],
   universitiesOptions: SelectOption[],
   degreeOptions: SelectOption[],
@@ -36,7 +36,6 @@ interface ProjectFormProps {
   handleClose: () => void,
   submitBtnRef: RefObject<HTMLButtonElement>
   departments: DepartmentModel[],
-  reviewersOptions: SelectOption[],
   statusOptions: SelectOption[],
   groupProjectOptions: SelectOption[],
 }
@@ -112,11 +111,11 @@ export const ProjectForm = (props: ProjectFormProps) => (
               id="promoter"
               labelId="promoterLabel"
               label="Select promoter"
-              selectedOption={props.promoters.find((option: SelectOption) => option.value === values.promoter) as SelectOption}
+              selectedOption={props.employeesOptions.find((option: SelectOption) => option.value === values.promoter) as SelectOption}
               handleChange={(value: string) => {
                 setFieldValue('promoter', value);
               }}
-              options={props.promoters
+              options={props.employeesOptions
                 .filter((promoter) => !values.reviewers.includes(promoter.value))}
             />
           </FieldWrapper>
@@ -129,7 +128,7 @@ export const ProjectForm = (props: ProjectFormProps) => (
               handleChange={(reviewers: string[]) => {
                 setFieldValue('reviewers', reviewers);
               }}
-              options={props.reviewersOptions
+              options={props.employeesOptions
                 .filter((option: SelectOption) => option.value !== values.promoter)}
             />
           </FieldWrapper>

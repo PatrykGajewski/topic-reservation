@@ -511,7 +511,7 @@ const ProjectListPage = () => {
                 departmentsOptions={university.departments
                   .map((department): SelectOption => ({ label: department.namePL.full, value: department.id }))}
                 universitiesOptions={[{ label: university.namePL.full, value: university.id }]}
-                promoters={stateData.promoters
+                employeesOptions={stateData.promoters
                   .map((promoter: SimplifiedUser): SelectOption => ({ label: `${promoter.firstName} ${promoter.lastName}`, value: promoter.id }))}
                 degreeOptions={projectDegreeOptions}
                 typeOptions={projectTypeOptions}
@@ -519,11 +519,6 @@ const ProjectListPage = () => {
                 handleClose={() => setProjectFormModalOpen((prev) => !prev)}
                 submitBtnRef={projectSubmitBtnRef}
                 departments={university.departments}
-                reviewersOptions={stateData.promoters
-                  .map((promoter: SimplifiedUser): SelectOption => ({
-                    label: `${promoter.firstName} ${promoter.lastName}`,
-                    value: promoter.id,
-                  }))}
                 statusOptions={projectStatusOptions}
                 groupProjectOptions={groupProjectOptions}
               />
@@ -624,7 +619,7 @@ const ProjectListPage = () => {
                 departmentsOptions={university.departments
                   .map((department): SelectOption => ({ label: department.namePL.full, value: department.id }))}
                 universitiesOptions={[{ label: university.namePL.full, value: university.id }]}
-                promoters={stateData.promoters
+                employeesOptions={stateData.promoters
                   .map((promoter: SimplifiedUser): SelectOption => ({ label: `${promoter.firstName} ${promoter.lastName}`, value: promoter.id }))}
                 degreeOptions={projectDegreeOptions}
                 typeOptions={projectTypeOptions}
@@ -632,11 +627,6 @@ const ProjectListPage = () => {
                 handleClose={() => setProjectFormModalOpen((prev) => !prev)}
                 submitBtnRef={projectEditSubmitBtnRef}
                 departments={university.departments}
-                reviewersOptions={stateData.promoters
-                  .map((promoter: SimplifiedUser): SelectOption => ({
-                    label: `${promoter.firstName} ${promoter.lastName}`,
-                    value: promoter.id,
-                  }))}
                 statusOptions={projectStatusOptions}
                 groupProjectOptions={groupProjectOptions}
               />
