@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import {ProjectStatus, ProjectType} from '../../../../../../../../models/project';
+import { ProjectStatus, ProjectType } from '../../../../../../../../models/project';
 
 export const ProjectFormValidationSchema = Yup.object().shape({
   topic: Yup.string()
@@ -23,5 +23,6 @@ export const ProjectFormValidationSchema = Yup.object().shape({
     .required(),
   groupProject: Yup.mixed()
     .oneOf(['false', 'true'])
-    .required()
+    .required(),
+  owners: Yup.array(Yup.string()),
 });

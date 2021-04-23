@@ -25,6 +25,7 @@ export interface AppState {
   userProjects: Project[],
   tags: Tag[],
   promoters: SimplifiedUser[],
+  students: SimplifiedUser[],
   availableProjects: {
     table : ProjectsTableConfig
   }

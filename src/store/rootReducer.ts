@@ -2,11 +2,11 @@ import {
   ACTION_TYPES,
   ActionTypes,
   UpdateAvailableProjectsTable,
-  UpdatePromotersList,
+  UpdatePromotersList, UpdateStudentsList,
   UpdateTagsList,
   UpdateUniversitiesList,
   UpdateUserData,
-  UpdateUserProjectsList
+  UpdateUserProjectsList,
 } from './actions';
 import { AppState } from './appState';
 import initialState from './initialState';
@@ -62,6 +62,11 @@ const rootReducer = (state = initialState, action: ActionTypes): AppState => {
         ...state.availableProjects,
         table: (action as UpdateAvailableProjectsTable).payload,
       },
+    };
+  case ACTION_TYPES.UPDATE_STUDENTS_LIST:
+    return {
+      ...state,
+      students: (action as UpdateStudentsList).payload,
     };
   default:
     return state;

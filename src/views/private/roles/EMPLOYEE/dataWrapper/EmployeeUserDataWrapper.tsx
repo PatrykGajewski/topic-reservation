@@ -4,7 +4,7 @@ import { AppState } from '../../../../../store/appState';
 import {
   InitialDataFetched,
   InitialDataFetching, InitialDataFetchingError,
-  UpdatePromotersList,
+  UpdatePromotersList, UpdateStudentsList,
   UpdateTagsList,
   UpdateUniversitiesList,
   UpdateUserProjectsList,
@@ -20,12 +20,12 @@ import {
   _fetchProjectTags,
   _fetchPromoters,
   _fetchUniversities,
-  SimplifiedUser
+  SimplifiedUser,
 } from '../../STUDENT/services';
-import {Tag} from "../../../../../models/tags";
-import {University} from "../../../../../models/university";
-import {Project} from "../../../../../models/project";
-import {_fetchEmployeeProjects} from "../services";
+import { Tag } from '../../../../../models/tags';
+import { University } from '../../../../../models/university';
+import { Project } from '../../../../../models/project';
+import { _fetchEmployeeProjects, _fetchStudents } from '../services';
 
 export const EmployeeUserDataWrapper = (props: Props) => {
   const dispatch = useDispatch();
@@ -37,16 +37,18 @@ export const EmployeeUserDataWrapper = (props: Props) => {
 
   const fetchInitialData = () => {
     dispatch({ ...new InitialDataFetching() });
-    Promise.all<Tag[], University[], SimplifiedUser[], Project[]>([
+    Promise.all<Tag[], University[], SimplifiedUser[], Project[], SimplifiedUser[]>([
       _fetchProjectTags(),
       _fetchUniversities(),
       _fetchPromoters(),
       _fetchEmployeeProjects(),
+      _fetchStudents(),
     ]).then((res) => {
       dispatch({ ...new UpdateTagsList(res[0]) });
       dispatch({ ...new UpdateUniversitiesList(res[1]) });
       dispatch({ ...new UpdatePromotersList(res[2]) });
       dispatch({ ...new UpdateUserProjectsList(res[3]) });
+      dispatch({ ...new UpdateStudentsList(res[4]) });
 
       dispatch({ ...new InitialDataFetched() });
     }).catch(() => {

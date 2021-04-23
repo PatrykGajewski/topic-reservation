@@ -82,6 +82,7 @@ const ProjectListPage = () => {
     tags: state.tags,
     universities: state.universities,
     promoters: state.promoters,
+    students: state.students,
   }));
 
   const [university, setUniversity] = useState<University | null>(null);
@@ -504,7 +505,8 @@ const ProjectListPage = () => {
                   degree: ProjectDegree.ASSOCIATE_DEGREE,
                   reviewers: [],
                   status: ProjectStatus.AVAILABLE,
-                  groupProject: 'false'
+                  groupProject: 'false',
+                  owners: [],
                 }}
                 tagsOptions={stateData.tags
                   .map((tag: Tag):SelectOption => ({ label: tag.labelPL, value: tag.id }))}
@@ -521,6 +523,9 @@ const ProjectListPage = () => {
                 departments={university.departments}
                 statusOptions={projectStatusOptions}
                 groupProjectOptions={groupProjectOptions}
+                ownerOptions={stateData.students
+                    .map((student: SimplifiedUser): SelectOption => ({ label: `${student.firstName} ${student.lastName}`, value: student.id}))
+                }
               />
             </Popup>
           )}
@@ -592,7 +597,6 @@ const ProjectListPage = () => {
                   onClick: () => {
                     if (projectEditSubmitBtnRef.current !== null) {
                       projectEditSubmitBtnRef.current.click();
-                      console.log(projectEditSubmitBtnRef);
                     }
                   },
                   buttonType: ButtonType.PRIMARY,
@@ -612,6 +616,7 @@ const ProjectListPage = () => {
                   degree: editedProject.degree,
                   status: editedProject.status,
                   reviewers: editedProject.reviewers.map((reviewer: SimplifiedUser) => reviewer.id),
+                  owners: editedProject.owners.map((owner) => owner.id),
                   groupProject: `${editedProject.groupProject}`,
                 }}
                 tagsOptions={stateData.tags
@@ -629,6 +634,9 @@ const ProjectListPage = () => {
                 departments={university.departments}
                 statusOptions={projectStatusOptions}
                 groupProjectOptions={groupProjectOptions}
+                ownerOptions={stateData.students
+                  .map((student: SimplifiedUser): SelectOption => ({ label: `${student.firstName} ${student.lastName}`, value: student.id}))
+                }
               />
             </Popup>
           )}

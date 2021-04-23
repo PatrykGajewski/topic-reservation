@@ -1,47 +1,109 @@
-import {
-  Button, Table, TableBody, TableCell, TableHead, TableRow,
-} from '@material-ui/core';
-import {
-  withStyles, Theme, createStyles,
-} from '@material-ui/core/styles';
 import React from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
 import { Project } from '../../../../../../../../../models/project';
 import { Props } from './models';
 import { TableContainer, TagWrapper } from '../../styles';
-import { SectionWithHeader } from '../../../../../../../../components';
-import { mapProjectTypeToText } from '../../../../../../../../../utils/mappers';
 import { DotsMenu } from '../../../../../../../../components/dotsMenu';
+import styled from 'styled-components';
 
-const StyledTableCell = withStyles((theme: Theme) => createStyles({
-  head: {
-    backgroundColor: '#0a4f8a78',
-    fontSize: '1.1rem',
-    lineHeight: '1.2rem',
-    textAlign: 'center',
-    border: '1px solid grey',
-  },
-  body: {
-    fontSize: 14,
-  },
-}))(TableCell);
+const StyledTable = styled.table`
+  display: block;
+  position: relative;
+  border-spacing: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: #0b3b66;
+`;
+
+const StyledTableHead = styled.thead`
+  display: block;
+  width: calc(100% - 15px);
+  
+  tr {
+    background-color: #0b3b66;
+    color: white;
+    & > th:last-child {
+      border-right: 1px solid #0b3b66;
+    }
+  }
+`;
+
+const StyledTh = styled.th<{ width: string }>`
+  line-height: 40px;
+  text-align: center;
+  border-right: 1px solid white;
+  box-sizing: border-box;
+  width: ${(props) => props.width};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+const StyledTableBody = styled.tbody`
+  display: block;
+  height: calc(100% - 92px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  width: 100%;
+  margin-bottom: 52px;
+  background-color: white;
+`;
+
+const StyledTr = styled.tr`
+  display: flex;
+`;
+
+const StyledTd = styled.td<{ width: string}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 20px;
+  padding: 0 4px;
+  border: 1px solid #0b3b66;
+  box-sizing: border-box;
+  width: ${(props) => props.width};
+/*  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;*/
+  background: white;
+`;
+
+const StyledTableFoot = styled.tfoot`
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: #0b3b66;
+  width: 100%;
+  height: 52px;
+`;
+
+enum ColumnWidth {
+  Topic = '25%',
+  Description = '10%',
+  Tags = '10%',
+  Promoter = '20%',
+  Department = '15%',
+  Cathedral = '15%',
+  Actions = '5%'
+}
 
 export const AvailableProjectsTable = (props: Props) => (
   <TableContainer>
-    <Table>
-      <TableHead>
-        <TableRow>
-          <StyledTableCell>Topic</StyledTableCell>
-          <StyledTableCell>Description</StyledTableCell>
-          <StyledTableCell>Tags</StyledTableCell>
-          <StyledTableCell>Promoter</StyledTableCell>
-          <StyledTableCell>Department</StyledTableCell>
-          <StyledTableCell>Cathedral</StyledTableCell>
-          <StyledTableCell>Actions</StyledTableCell>
-        </TableRow>
-      </TableHead>
-      <tfoot>
-        <tr>
+    <StyledTable>
+      <StyledTableHead>
+        <StyledTr>
+          <StyledTh width={ColumnWidth.Topic}>Topic</StyledTh>
+          <StyledTh width={ColumnWidth.Description}>Description</StyledTh>
+          <StyledTh width={ColumnWidth.Tags}>Tags</StyledTh>
+          <StyledTh width={ColumnWidth.Promoter}>Promoter</StyledTh>
+          <StyledTh width={ColumnWidth.Department}>Department</StyledTh>
+          <StyledTh width={ColumnWidth.Cathedral}>Cathedral</StyledTh>
+          <StyledTh width={ColumnWidth.Actions}>Actions</StyledTh>
+        </StyledTr>
+      </StyledTableHead>
+      <StyledTableFoot>
+        <StyledTr>
           <td colSpan={7}>
             <TablePagination
               component="div"
@@ -52,27 +114,27 @@ export const AvailableProjectsTable = (props: Props) => (
               onChangeRowsPerPage={props.onChangeRowsPerPage}
             />
           </td>
-        </tr>
-      </tfoot>
-      <TableBody>
+        </StyledTr>
+      </StyledTableFoot>
+      <StyledTableBody>
         {props.projects.map((project: Project) => (
-          <TableRow key={project.id}>
-            <StyledTableCell>{project.topic}</StyledTableCell>
-            <StyledTableCell>{project.description}</StyledTableCell>
-            <StyledTableCell>{project.tags
+          <StyledTr key={project.id}>
+            <StyledTd width={ColumnWidth.Topic}>{project.topic}</StyledTd>
+            <StyledTd width={ColumnWidth.Description}>{project.description}</StyledTd>
+            <StyledTd width={ColumnWidth.Tags}>{project.tags
               .map((tag) => (
                 <TagWrapper>{tag.labelPL}</TagWrapper>
               ))}
-            </StyledTableCell>
-            <StyledTableCell>{`${project.promoter.firstName} ${project.promoter.lastName}`}</StyledTableCell>
-            <StyledTableCell>{project.department.namePL.full}</StyledTableCell>
-            <StyledTableCell>{project.cathedral.namePL}</StyledTableCell>
-            <StyledTableCell>
+            </StyledTd>
+            <StyledTd width={ColumnWidth.Promoter}>{`${project.promoter.firstName} ${project.promoter.lastName}`}</StyledTd>
+            <StyledTd width={ColumnWidth.Department}>{project.department.namePL.full}</StyledTd>
+            <StyledTd width={ColumnWidth.Cathedral}>{project.cathedral.namePL}</StyledTd>
+            <StyledTd width={ColumnWidth.Actions}>
               <DotsMenu actions={props.rowActions} element={project} />
-            </StyledTableCell>
-          </TableRow>
+            </StyledTd>
+          </StyledTr>
         ))}
-      </TableBody>
-    </Table>
+      </StyledTableBody>
+    </StyledTable>
   </TableContainer>
 );

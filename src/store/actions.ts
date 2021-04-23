@@ -16,6 +16,8 @@ export enum ACTION_TYPES {
   'UPDATE_TAGS_LIST' = 'UPDATE_TAGS_LIST',
   'UPDATE_PROMOTERS_LIST' = 'UPDATE_PROMOTERS_LIST',
   'UPDATE_USER_PROJECTS_LIST' = 'UPDATE_USER_PROJECTS_LIST',
+
+  'UPDATE_STUDENTS_LIST' = 'UPDATE_STUDENTS_LIST'
 }
 
 export type ActionTypes = InitialDataFetching
@@ -26,7 +28,8 @@ export type ActionTypes = InitialDataFetching
   | UpdatePromotersList
   | UpdateUserProjectsList
   | UpdateUserData
-  | UpdateAvailableProjectsTable;
+  | UpdateAvailableProjectsTable
+  | UpdateStudentsList;
 
 export class InitialDataFetching {
   type = ACTION_TYPES.INITIAL_DATA_FETCHING;
@@ -100,4 +103,12 @@ export class UpdateAvailableProjectsTable {
   }
 }
 
+export class UpdateStudentsList {
+  type = ACTION_TYPES.UPDATE_STUDENTS_LIST;
 
+  payload: SimplifiedUser[];
+
+  constructor(students: SimplifiedUser[]) {
+    this.payload = students;
+  }
+}

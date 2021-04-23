@@ -55,10 +55,11 @@ export const StyledContainer = styled.div`
 
 export const TableContainer = styled.div`
   background: white;
-  height: fit-content;
-  max-height: 100%;
-  overflow: scroll;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
   border-radius: 4px;
   border: 1px solid #373737;
   box-sizing: border-box;
+  box-shadow: 0 0 2px 0 rgb(0 0 0 / 54%);
 `;

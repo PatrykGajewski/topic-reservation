@@ -22,6 +22,7 @@ export interface ProjectFormValues {
   reviewers: string[],
   status: ProjectStatus,
   groupProject: string,
+  owners: string[],
 }
 
 interface ProjectFormProps {
@@ -38,6 +39,7 @@ interface ProjectFormProps {
   departments: DepartmentModel[],
   statusOptions: SelectOption[],
   groupProjectOptions: SelectOption[],
+  ownerOptions: SelectOption[],
 }
 
 export const ProjectForm = (props: ProjectFormProps) => (
@@ -136,6 +138,32 @@ export const ProjectForm = (props: ProjectFormProps) => (
         <FieldsRow>
           <FieldWrapper>
             <SimpleSelect
+              id="isGroupProject"
+              labelId="isGroupProjectLabel"
+              label="Is project group project"
+              selectedOption={props.groupProjectOptions.find((option: SelectOption) => option.value === values.groupProject) as SelectOption}
+              handleChange={(value: string) => {
+                setFieldValue('groupProject', value);
+              }}
+              options={props.groupProjectOptions}
+            />
+          </FieldWrapper>
+          <FieldWrapper>
+            <MultipleSelect
+              id="owners"
+              labelId="ownersLabel"
+              label="Select thesis owners"
+              selectedOptions={values.owners}
+              handleChange={(owners: string[]) => {
+                setFieldValue('owners', owners);
+              }}
+              options={props.ownerOptions}
+            />
+          </FieldWrapper>
+        </FieldsRow>
+        <FieldsRow>
+          <FieldWrapper>
+            <SimpleSelect
               id="status"
               labelId="projectStatusLabel"
               label="Select project status"
@@ -147,15 +175,15 @@ export const ProjectForm = (props: ProjectFormProps) => (
             />
           </FieldWrapper>
           <FieldWrapper>
-            <SimpleSelect
-              id="isGroupProject"
-              labelId="isGroupProjectLabel"
-              label="Is project group project"
-              selectedOption={props.groupProjectOptions.find((option: SelectOption) => option.value === values.groupProject) as SelectOption}
-              handleChange={(value: string) => {
-                setFieldValue('groupProject', value);
+            <MultipleSelect
+              id="tags"
+              labelId="tagsLabel"
+              label="Select project tags"
+              selectedOptions={values.tags}
+              handleChange={(tags: string[]) => {
+                setFieldValue('tags', tags);
               }}
-              options={props.groupProjectOptions}
+              options={props.tagsOptions}
             />
           </FieldWrapper>
         </FieldsRow>
@@ -208,18 +236,6 @@ export const ProjectForm = (props: ProjectFormProps) => (
                   .cathedrals
                   .map((cathedral: CathedralModel): SelectOption => ({ label: cathedral.namePL, value: cathedral.id }))
               }
-            />
-          </FieldWrapper>
-          <FieldWrapper>
-            <MultipleSelect
-              id="tags"
-              labelId="tagsLabel"
-              label="Select project tags"
-              selectedOptions={values.tags}
-              handleChange={(tags: string[]) => {
-                setFieldValue('tags', tags);
-              }}
-              options={props.tagsOptions}
             />
           </FieldWrapper>
         </FieldsRow>

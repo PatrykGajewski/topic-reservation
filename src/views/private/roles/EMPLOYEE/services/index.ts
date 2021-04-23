@@ -1,8 +1,9 @@
 import {
   Project, ProjectDegree, ProjectStatus, ProjectType,
 } from '../../../../../models/project';
-import { APISecured, SingleResponse } from '../../../../../API';
+import {APISecured, MultiResponse, SingleResponse} from '../../../../../API';
 import { RoleInProject } from '../router/pages';
+import {SimplifiedUser} from "../../STUDENT/services";
 
 export const _fetchEmployeeProjects = async (): Promise<Project[]> => {
   try {
@@ -60,3 +61,8 @@ export const _deleteProject = async (projectId: String): Promise<Project> => (
     .catch((err) => Promise.reject(err))
 );
 
+export const _fetchStudents = async (): Promise<SimplifiedUser[]> => (
+  APISecured.get('/users/students/list')
+    .then((res: MultiResponse<SimplifiedUser>) => Promise.resolve(res.data.entries))
+    .catch((err) => Promise.reject(err))
+);

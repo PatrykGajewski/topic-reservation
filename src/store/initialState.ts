@@ -34,6 +34,7 @@ const initialState: AppState = {
   degrees: [],
   universities: [],
   promoters: [],
+  students: [],
   tags: [],
   loading: true,
   success: false,
