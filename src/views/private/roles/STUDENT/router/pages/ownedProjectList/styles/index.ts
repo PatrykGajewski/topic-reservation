@@ -44,6 +44,9 @@ export const TagWrapper = styled.div`
   box-sizing: border-box;
   padding: 2px 5px;
   margin: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 export const StyledContainer = styled.div`
   width: 100%;

@@ -33,11 +33,13 @@ import { University } from '../../../../../../../models/university';
 import { mapProjectStatusToOptions, mapProjectTypeToOptions } from '../../../../../../../utils/mappers';
 import { mapProjectDegreeToOptions } from '../../../../../../../utils/mappers/map-project-degree-to-options';
 import { EmptyStateContainer } from '../../../../../components/initialDataError/styles';
-import { AvailableProjectsTable } from '../../../../STUDENT/router/pages/ownedProjectList/components';
+import { ProjectsTable } from '../../../../STUDENT/router/pages/ownedProjectList/components';
 import { StyledContainer } from '../../../../STUDENT/router/pages/ownedProjectList';
 import { SimplifiedUser } from '../../../../STUDENT/services';
 import { APISecured, MultiResponse } from '../../../../../../../API';
-import { _deleteProject, _fetchProjects, FetchProjectsResponse } from '../../../services';
+import {
+  _deleteProject, _fetchProjects, _updateProject, FetchProjectsResponse,
+} from '../../../services';
 import { MultipleSelect } from '../../../../../../components/forms/multiple-select';
 
 const projectTypeOptions: SelectOption[] = mapProjectTypeToOptions();
@@ -296,8 +298,25 @@ const ProjectListPage = () => {
   };
 
   const handleSubmitEditForm = (values: ProjectFormValues): void => {
-    console.log(values);
-    setProjectEditModalOpen((prev) => !prev);
+    if (editedProject) {
+      console.log(values);
+      _updateProject(editedProject.id, values)
+        .then((updatedProject: Project) => {
+          setProjectEditModalOpen((prev) => !prev);
+          setProjects((prev) => {
+            const updatedProjects: Project[] = cloneDeep(prev);
+            const updatedProjectIndex: number = updatedProjects.findIndex((project: Project) => project.id === updatedProject.id);
+            if (updatedProjectIndex !== -1) {
+              updatedProjects[updatedProjectIndex] = updatedProject;
+            }
+            return updatedProjects;
+          });
+          toast.success('Project successfully updated');
+        })
+        .catch((err) => {
+          toast.error('Cannot update project');
+        });
+    }
   };
 
   const filtersNotSubmitted: boolean = stateData.tableConfig.searchString !== searchString
@@ -435,7 +454,7 @@ const ProjectListPage = () => {
           </BarContainer>
           <ContentContainer>
             {projects.length > 0 ? (
-              <AvailableProjectsTable
+              <ProjectsTable
                 projects={projects}
                 rowActions={[
                   {
@@ -524,8 +543,7 @@ const ProjectListPage = () => {
                 statusOptions={projectStatusOptions}
                 groupProjectOptions={groupProjectOptions}
                 ownerOptions={stateData.students
-                    .map((student: SimplifiedUser): SelectOption => ({ label: `${student.firstName} ${student.lastName}`, value: student.id}))
-                }
+                  .map((student: SimplifiedUser): SelectOption => ({ label: `${student.firstName} ${student.lastName}`, value: student.id }))}
               />
             </Popup>
           )}
@@ -635,8 +653,7 @@ const ProjectListPage = () => {
                 statusOptions={projectStatusOptions}
                 groupProjectOptions={groupProjectOptions}
                 ownerOptions={stateData.students
-                  .map((student: SimplifiedUser): SelectOption => ({ label: `${student.firstName} ${student.lastName}`, value: student.id}))
-                }
+                  .map((student: SimplifiedUser): SelectOption => ({ label: `${student.firstName} ${student.lastName}`, value: student.id }))}
               />
             </Popup>
           )}

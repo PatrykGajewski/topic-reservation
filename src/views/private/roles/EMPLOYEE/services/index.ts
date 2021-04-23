@@ -66,3 +66,9 @@ export const _fetchStudents = async (): Promise<SimplifiedUser[]> => (
     .then((res: MultiResponse<SimplifiedUser>) => Promise.resolve(res.data.entries))
     .catch((err) => Promise.reject(err))
 );
+
+export const _updateProject = async (projectId: string, data: any): Promise<Project> => (
+  APISecured.post(`/projects/${projectId}/advancedUpdate`, data)
+    .then((res: SingleResponse<Project>) => Promise.resolve(res.data.entry))
+    .catch((err) => Promise.reject(err))
+);

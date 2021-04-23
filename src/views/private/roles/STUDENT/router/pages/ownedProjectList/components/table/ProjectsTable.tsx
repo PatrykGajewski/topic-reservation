@@ -5,6 +5,7 @@ import { Props } from './models';
 import { TableContainer, TagWrapper } from '../../styles';
 import { DotsMenu } from '../../../../../../../../components/dotsMenu';
 import styled from 'styled-components';
+import {SimplifiedUser} from "../../../../../services";
 
 const StyledTable = styled.table`
   display: block;
@@ -78,25 +79,33 @@ const StyledTableFoot = styled.tfoot`
   height: 52px;
 `;
 
+const StyledTagsContainer = styled.div`
+  display: flex;
+  max-width: 100%;
+  flex-wrap: wrap;
+`;
+
 enum ColumnWidth {
   Topic = '25%',
   Description = '10%',
+  Owners = '15%',
+  Promoter = '15%',
   Tags = '10%',
-  Promoter = '20%',
-  Department = '15%',
+  Department = '5%',
   Cathedral = '15%',
   Actions = '5%'
 }
 
-export const AvailableProjectsTable = (props: Props) => (
+export const ProjectsTable = (props: Props) => (
   <TableContainer>
     <StyledTable>
       <StyledTableHead>
         <StyledTr>
           <StyledTh width={ColumnWidth.Topic}>Topic</StyledTh>
           <StyledTh width={ColumnWidth.Description}>Description</StyledTh>
-          <StyledTh width={ColumnWidth.Tags}>Tags</StyledTh>
           <StyledTh width={ColumnWidth.Promoter}>Promoter</StyledTh>
+          <StyledTh width={ColumnWidth.Owners}>Owners</StyledTh>
+          <StyledTh width={ColumnWidth.Tags}>Tags</StyledTh>
           <StyledTh width={ColumnWidth.Department}>Department</StyledTh>
           <StyledTh width={ColumnWidth.Cathedral}>Cathedral</StyledTh>
           <StyledTh width={ColumnWidth.Actions}>Actions</StyledTh>
@@ -121,13 +130,14 @@ export const AvailableProjectsTable = (props: Props) => (
           <StyledTr key={project.id}>
             <StyledTd width={ColumnWidth.Topic}>{project.topic}</StyledTd>
             <StyledTd width={ColumnWidth.Description}>{project.description}</StyledTd>
-            <StyledTd width={ColumnWidth.Tags}>{project.tags
-              .map((tag) => (
-                <TagWrapper>{tag.labelPL}</TagWrapper>
-              ))}
-            </StyledTd>
             <StyledTd width={ColumnWidth.Promoter}>{`${project.promoter.firstName} ${project.promoter.lastName}`}</StyledTd>
-            <StyledTd width={ColumnWidth.Department}>{project.department.namePL.full}</StyledTd>
+            <StyledTd width={ColumnWidth.Owners}>{project.owners.map((owner: SimplifiedUser) => `${owner.firstName} ${owner.lastName}`).join(' ,')}</StyledTd>
+            <StyledTd width={ColumnWidth.Tags}>
+              <StyledTagsContainer>
+                {project.tags.map((tag) => <TagWrapper>{tag.labelPL}</TagWrapper>)}
+              </StyledTagsContainer>
+            </StyledTd>
+            <StyledTd width={ColumnWidth.Department}>{project.department.namePL.short}</StyledTd>
             <StyledTd width={ColumnWidth.Cathedral}>{project.cathedral.namePL}</StyledTd>
             <StyledTd width={ColumnWidth.Actions}>
               <DotsMenu actions={props.rowActions} element={project} />

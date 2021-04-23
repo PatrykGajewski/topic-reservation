@@ -15,7 +15,7 @@ import {_createProject, _fetchAvailableProjects, _reserveProject,} from './servi
 import {ViewState} from "../../../../../../../models/other";
 import {UpdateAvailableProjectsTable, UpdateUserProjectsList} from '../../../../../../../store/actions';
 import {StyledContainer} from '../ownedProjectList';
-import {AvailableProjectsTable} from '../ownedProjectList/components';
+import {ProjectsTable} from '../ownedProjectList/components';
 import {SimpleSelect} from '../../../../../../components/forms';
 import {StyledIconButton} from '../../../../REGISTERED_USER/router/pages/account/styles';
 import {ButtonType, Popup} from '../../../../../../components';
@@ -213,7 +213,7 @@ const ProjectListPage = () => {
             </Grid>
             <Grid item xs={12}>
               {projects.length > 0 ? (
-/*                <AvailableProjectsTable
+/*                <ProjectsTable
                   projects={projects}
                   actions={{
                     handleReserveProject,
