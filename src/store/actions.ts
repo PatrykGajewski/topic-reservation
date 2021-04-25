@@ -1,6 +1,6 @@
 import { UserModel } from '../models/user';
 import { Project, Tag } from '../models/project';
-import { ProjectsTableConfig } from './appState';
+import { ProjectsTableConfig, PromotersRankConfig } from './appState';
 import { University } from '../models/university';
 import { SimplifiedUser } from '../views/private/roles/STUDENT/services';
 
@@ -17,7 +17,8 @@ export enum ACTION_TYPES {
   'UPDATE_PROMOTERS_LIST' = 'UPDATE_PROMOTERS_LIST',
   'UPDATE_USER_PROJECTS_LIST' = 'UPDATE_USER_PROJECTS_LIST',
 
-  'UPDATE_STUDENTS_LIST' = 'UPDATE_STUDENTS_LIST'
+  'UPDATE_STUDENTS_LIST' = 'UPDATE_STUDENTS_LIST',
+  'UPDATE_PROMOTERS_LIST_CONFIG' = 'UPDATE_PROMOTERS_LIST_CONFIG'
 }
 
 export type ActionTypes = InitialDataFetching
@@ -29,7 +30,8 @@ export type ActionTypes = InitialDataFetching
   | UpdateUserProjectsList
   | UpdateUserData
   | UpdateAvailableProjectsTable
-  | UpdateStudentsList;
+  | UpdateStudentsList
+  | UpdatePromotersListView;
 
 export class InitialDataFetching {
   type = ACTION_TYPES.INITIAL_DATA_FETCHING;
@@ -110,5 +112,15 @@ export class UpdateStudentsList {
 
   constructor(students: SimplifiedUser[]) {
     this.payload = students;
+  }
+}
+
+export class UpdatePromotersListView {
+  type = ACTION_TYPES.UPDATE_PROMOTERS_LIST_CONFIG;
+
+  payload: PromotersRankConfig;
+
+  constructor(config: PromotersRankConfig) {
+    this.payload = config;
   }
 }

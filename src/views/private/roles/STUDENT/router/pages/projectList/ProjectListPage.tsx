@@ -36,7 +36,7 @@ const ProjectListPage = () => {
   const dispatch = useDispatch();
   const stateData = useSelector((state: AppState) => ({
     userProjects: state.userProjects,
-    tableConfig: state.availableProjects.table,
+    tableConfig: state.projectsListView.table,
     user: state.user,
     tags: state.tags,
     universities: state.universities,

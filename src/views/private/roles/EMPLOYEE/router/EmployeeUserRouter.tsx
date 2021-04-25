@@ -4,6 +4,7 @@ import { Props } from './models';
 import { LogoutPage } from '../../REGISTERED_USER/router/pages/logout';
 import { AccountPage } from '../../REGISTERED_USER';
 import { StatisticsPage, ProjectListPage } from './pages';
+import { PromotersRank } from './pages/promotersRanking';
 
 export const EmployeeUserRouter = (props: Props) => (
   <Switch>
@@ -18,6 +19,10 @@ export const EmployeeUserRouter = (props: Props) => (
     <Route
       path="/projects"
       render={() => (<ProjectListPage />)}
+    />
+    <Route
+      path="/promoters"
+      render={() => <PromotersRank />}
     />
     <Route
       exact

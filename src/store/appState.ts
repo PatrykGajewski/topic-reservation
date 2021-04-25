@@ -3,6 +3,7 @@ import {Project, Tag, ProjectType, ProjectDegree, ProjectStatus} from '../models
 import { University, UniversityDegree } from '../models/university';
 import {SimplifiedUser} from "../views/private/roles/STUDENT/services";
 import {RoleInProject} from "../views/private/roles/EMPLOYEE/router/pages";
+import {Order} from "../views/private/roles/EMPLOYEE/router/pages/promotersRanking/services";
 
 export interface ProjectsTableConfig {
   total: number,
@@ -13,6 +14,13 @@ export interface ProjectsTableConfig {
   projectsDegrees: ProjectDegree[],
   projectsStatuses: ProjectStatus[],
   roleInProjects: RoleInProject,
+}
+
+export interface PromotersRankConfig {
+  total: number,
+  pageIndex: number,
+  rowsPerPage: number,
+  order: Order,
 }
 
 export interface AppState {
@@ -26,7 +34,8 @@ export interface AppState {
   tags: Tag[],
   promoters: SimplifiedUser[],
   students: SimplifiedUser[],
-  availableProjects: {
+  projectsListView: {
     table : ProjectsTableConfig
-  }
+  },
+  promotersListView: PromotersRankConfig,
 }

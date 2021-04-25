@@ -1,6 +1,7 @@
 import {AppState} from './appState';
 import {UserGender} from '../models/user';
 import {RoleInProject} from "../views/private/roles/EMPLOYEE/router/pages";
+import {Order} from "../views/private/roles/EMPLOYEE/router/pages/promotersRanking/services";
 
 const initialState: AppState = {
   user: {
@@ -19,7 +20,7 @@ const initialState: AppState = {
     phoneNumber: null,
   },
   userProjects: [],
-  availableProjects: {
+  projectsListView: {
     table: {
       pageIndex: 0,
       total: 0,
@@ -30,6 +31,12 @@ const initialState: AppState = {
       projectsStatuses: [],
       roleInProjects: RoleInProject.ANY,
     },
+  },
+  promotersListView: {
+    pageIndex: 0,
+    total: 0,
+    rowsPerPage: 10,
+    order: Order.DESCENDING,
   },
   degrees: [],
   universities: [],
