@@ -17,6 +17,7 @@ import { SimpleSelect } from '../../../../../../components/forms';
 import { SelectOption } from '../../../../../../../models/forms';
 import { EmptyStateContainer } from '../../../../../components/initialDataError/styles';
 import { UpdatePromotersListView } from '../../../../../../../store/actions';
+import { StyledPromotersList, StyledPromoterItem, StyledListHeader} from "./styles";
 
 interface ExtendedPageConfig extends PageConfig {
   order: Order
@@ -136,17 +137,26 @@ export const PromotersRank = () => {
           </BarContainer>
           <ContentContainer>
             {promoters.length > 0 ? (
-              <>
-                {promoters.map((promoter) => (
-                  <div>{promoter.firstName}</div>
+              <StyledPromotersList>
+                <StyledListHeader>
+                  <div>Photo</div>
+                  <div>FirstName</div>
+                  <div>LastName</div>
+                  <div>Email</div>
+                  <div>Position</div>
+                  <div>Opinions number</div>
+                  <div>Rating</div>
+                </StyledListHeader>
+                {promoters.map((promoter: SimplifiedUserWithOpinions) => (
+                  <StyledPromoterItem>{promoter.firstName}</StyledPromoterItem>
                 ))}
-              </>
+              </StyledPromotersList>
             ) : (
               <EmptyStateContainer>
                 <div>
                   <ChatIcon />
                 </div>
-                <p>No project found. Please change filters</p>
+                <p>It seems that promoters list is empty</p>
               </EmptyStateContainer>
             )}
           </ContentContainer>
