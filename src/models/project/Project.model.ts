@@ -1,6 +1,6 @@
 import {ProjectStatus, ProjectDegree, ProjectType, ProjectReview} from "./models";
 import {Tag} from "../tags";
-import {SimplifiedUser} from "../../views/private/roles/STUDENT/services";
+import {SimplifiedUser} from "../user";
 
 export interface Project {
   id: string,

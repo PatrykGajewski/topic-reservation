@@ -1,4 +1,4 @@
-import {SimplifiedUser} from "../../../views/private/roles/STUDENT/services";
+import {SimplifiedUser} from "../../user";
 
 export interface ProjectReview {
   id: string,

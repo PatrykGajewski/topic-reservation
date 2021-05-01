@@ -3,7 +3,7 @@ import {
 } from '../../../../../models/project';
 import {APISecured, MultiResponse, SingleResponse} from '../../../../../API';
 import { RoleInProject } from '../router/pages';
-import {SimplifiedUser} from "../../STUDENT/services";
+import {SimplifiedUser} from "../../../../../models/user";
 
 export const _fetchEmployeeProjects = async (): Promise<Project[]> => {
   try {

@@ -1,7 +1,7 @@
 import { Project, Tag } from '../../../../../models/project';
 import { APISecured } from '../../../../../API';
 import { University } from '../../../../../models/university';
-import { UserGender } from '../../../../../models/user';
+import { SimplifiedUser, UserDegree } from '../../../../../models/user';
 
 export const _fetchUniversities = async (): Promise<University[]> => {
   try {
@@ -31,15 +31,6 @@ export const _fetchProjectTags = async (): Promise<Tag[]> => {
   }
 };
 
-export interface SimplifiedUser {
-  id: string,
-  email: string,
-  firstName: string,
-  lastName: string,
-  gender: UserGender,
-  profilePhotoId: string,
-}
-
 export const _fetchPromoters = async (): Promise<SimplifiedUser[]> => {
   try {
     const { data, error } = await APISecured.get('/users/promoters/list');
@@ -63,5 +54,19 @@ export const _fetchStudentProjects = async (): Promise<Project[]> => {
   } catch (error) {
     console.error(error);
     return Promise.reject(error);
+  }
+};
+
+export const _fetchDegrees = async (): Promise<UserDegree[]> => {
+  try {
+    const { data, error } = await APISecured.get('/degrees/list');
+    if (error) {
+      console.error(error);
+      return Promise.reject();
+    }
+    return Promise.resolve(data.entries as UserDegree[]);
+  } catch (error) {
+    console.log(error);
+    return Promise.reject();
   }
 };

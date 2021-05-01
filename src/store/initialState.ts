@@ -9,6 +9,7 @@ const initialState: AppState = {
     email: '',
     contactEmail: '',
     roles: [],
+    degrees: [],
     firstName: '',
     lastName: '',
     birthDate: null,

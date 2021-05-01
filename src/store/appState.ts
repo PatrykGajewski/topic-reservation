@@ -1,7 +1,6 @@
-import { UserModel } from '../models/user';
+import {SimplifiedUser, UserDegree, UserModel} from '../models/user';
 import {Project, Tag, ProjectType, ProjectDegree, ProjectStatus} from '../models/project';
-import { University, UniversityDegree } from '../models/university';
-import {SimplifiedUser} from "../views/private/roles/STUDENT/services";
+import { University} from '../models/university';
 import {RoleInProject} from "../views/private/roles/EMPLOYEE/router/pages";
 import {Order} from "../views/private/roles/EMPLOYEE/router/pages/promotersRanking/services";
 
@@ -29,7 +28,7 @@ export interface AppState {
   success: boolean,
   error: boolean,
   universities: University[],
-  degrees: UniversityDegree[],
+  degrees: UserDegree[],
   userProjects: Project[],
   tags: Tag[],
   promoters: SimplifiedUser[],

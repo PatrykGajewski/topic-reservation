@@ -5,7 +5,7 @@ import { Project } from '../../../../../../../../../models/project';
 import { Props } from './models';
 import { TableContainer, TagWrapper } from '../../styles';
 import { DotsMenu } from '../../../../../../../../components/dotsMenu';
-import { SimplifiedUser } from '../../../../../services';
+import {SimplifiedUser} from "../../../../../../../../../models/user";
 
 export const StyledTable = styled.table`
   display: block;

@@ -1,6 +1,6 @@
-import { SimplifiedUser } from '../../../../../STUDENT/services';
 import { APISecured, MultiResponse } from '../../../../../../../../API';
 import {ProjectDegree, ProjectStatus, ProjectType} from "../../../../../../../../models/project";
+import {SimplifiedUser} from "../../../../../../../../models/user";
 
 export enum Order {
   ASCENDING= 'ASCENDING',

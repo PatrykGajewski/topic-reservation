@@ -21,11 +21,11 @@ import {StyledIconButton} from '../../../../REGISTERED_USER/router/pages/account
 import {ButtonType, Popup} from '../../../../../../components';
 import {ProjectForm, ProjectFormValues} from './forms';
 import {University} from '../../../../../../../models/university';
-import {SimplifiedUser} from '../../../services';
 import {mapProjectTypeToOptions} from '../../../../../../../utils/mappers';
 import {mapProjectDegreeToOptions} from '../../../../../../../utils/mappers/map-project-degree-to-options';
 import {EmptyStateContainer} from "../../../../../components/initialDataError/styles";
 import {RoleInProject } from "../../../../EMPLOYEE/router/pages";
+import {SimplifiedUser} from "../../../../../../../models/user";
 
 const projectTypeOptions: SelectOption[] = mapProjectTypeToOptions();
 const projectDegreeOptions: SelectOption[] = mapProjectDegreeToOptions();

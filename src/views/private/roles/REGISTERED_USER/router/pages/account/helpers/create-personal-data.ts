@@ -1,7 +1,9 @@
 import { PersonalSectionData } from '../components';
-import { UserModel } from '../../../../../../../../models/user';
+import {UserDegree, UserModel} from '../../../../../../../../models/user';
+import {mapDegreesIdsToDegrees} from "../../../../../../../../utils/mappers";
 
-export const createPersonalData = (user: UserModel): PersonalSectionData => ({
+export const createPersonalData = (user: UserModel, degrees: UserDegree[]): PersonalSectionData => ({
+  degrees: mapDegreesIdsToDegrees(user.degrees, degrees),
   firstName: user.firstName,
   lastName: user.lastName || '',
   birthDate: user.birthDate ? new Date(user.birthDate) : null,

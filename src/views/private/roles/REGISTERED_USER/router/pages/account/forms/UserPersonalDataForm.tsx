@@ -14,6 +14,7 @@ import { genderOptions } from './config';
 import { UserPersonalDataValidation } from './validationSchema';
 import { SimpleSelect } from '../../../../../../../components/forms';
 import {FieldsRow, FieldWrapper} from "../../../../../../../public/router/pages/register/components/registerForm/styles";
+import {MultipleSelect} from "../../../../../../../components/forms/multiple-select";
 
 export interface PersonalDataFormValues {
   firstName: string,
@@ -26,6 +27,7 @@ export interface PersonalDataFormValues {
   buildingNumber: string,
   flatNumber: string,
   gender: string,
+  degrees: string[],
 }
 
 interface UserPersonalProps {
@@ -33,6 +35,7 @@ interface UserPersonalProps {
     onSubmit: (values: PersonalDataFormValues) => void,
     handleClose: () => void,
     submitBtnRef: RefObject<HTMLButtonElement>,
+    degreesOptions: SelectOption[],
 }
 
 export const countryOptions: SelectOption[] = [{
@@ -81,6 +84,16 @@ const UserPersonalDataForm = (props: UserPersonalProps) => (
         </FieldsRow>
         <FieldsRow>
           <FieldWrapper>
+            <MultipleSelect
+              options={props.degreesOptions}
+              selectedOptions={values.degrees}
+              handleChange={(degrees: string[]) => setFieldValue('degrees', degrees)}
+              id="degrees"
+              label="Select degrees"
+              labelId="selectDegrees"
+            />
+          </FieldWrapper>
+          <FieldWrapper>
             <SimpleSelect
               options={genderOptions}
               selectedOption={genderOptions.find((option) => option.value === values.gender) as SelectOption}
@@ -91,6 +104,8 @@ const UserPersonalDataForm = (props: UserPersonalProps) => (
             />
             <ErrorMessage name="gender" />
           </FieldWrapper>
+        </FieldsRow>
+        <FieldsRow>
           <FieldWrapper>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
@@ -121,8 +136,6 @@ const UserPersonalDataForm = (props: UserPersonalProps) => (
               labelId="countryLabel"
             />
           </FieldWrapper>
-        </FieldsRow>
-        <FieldsRow>
           <FieldWrapper>
             <TextField
               variant="outlined"
@@ -135,6 +148,8 @@ const UserPersonalDataForm = (props: UserPersonalProps) => (
               onChange={(e) => setFieldValue('city', e.currentTarget.value)}
             />
           </FieldWrapper>
+        </FieldsRow>
+        <FieldsRow>
           <FieldWrapper>
             <TextField
               variant="outlined"
@@ -147,8 +162,6 @@ const UserPersonalDataForm = (props: UserPersonalProps) => (
               onChange={(e) => setFieldValue('zip', e.currentTarget.value)}
             />
           </FieldWrapper>
-        </FieldsRow>
-        <FieldsRow>
           <FieldWrapper>
             <TextField
               variant="outlined"
@@ -161,6 +174,8 @@ const UserPersonalDataForm = (props: UserPersonalProps) => (
               onChange={(e) => setFieldValue('streetName', e.currentTarget.value)}
             />
           </FieldWrapper>
+        </FieldsRow>
+        <FieldsRow>
           <FieldWrapper>
             <TextField
               variant="outlined"
@@ -173,8 +188,6 @@ const UserPersonalDataForm = (props: UserPersonalProps) => (
               onChange={(e) => setFieldValue('buildingNumber', e.currentTarget.value)}
             />
           </FieldWrapper>
-        </FieldsRow>
-        <FieldsRow>
           <FieldWrapper>
             <TextField
               variant="outlined"

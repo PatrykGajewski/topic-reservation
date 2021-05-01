@@ -22,6 +22,7 @@ export interface UserModel {
   email: string,
   contactEmail: string,
   roles: UserRole[],
+  degrees: string[],
   firstName: string,
   lastName: string,
   profilePhotoId: string | null,

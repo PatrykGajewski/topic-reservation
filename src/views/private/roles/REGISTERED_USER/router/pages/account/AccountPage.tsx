@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'react-loader-spinner';
 import { toast } from 'react-toastify';
 
-import { UserModel, UserRole } from 'models/user';
+import {UserDegree, UserModel, UserRole} from 'models/user';
 import { AppState } from 'store/appState';
 import { Popup, ButtonType} from "../../../../../../components";
 import { ErrorWrapper, LoginFormContainer } from '../../../../../../public';
@@ -37,6 +37,7 @@ import { APISecured } from '../../../../../../../API';
 import LoginForm from '../../../../../../public/router/pages/login/components/loginForm/LoginForm';
 import { UpdateUserData } from '../../../../../../../store/actions';
 import { createContactData } from './helpers/create-contact-data';
+import {mapDegreesToOptions} from "../../../../../../../utils/mappers";
 
 interface ViewData {
   personalData: PersonalSectionData,
@@ -46,6 +47,7 @@ interface ViewData {
 
 interface StateData {
   user: UserModel,
+  degrees: UserDegree[],
 }
 
 enum ImagesFileExtension {
@@ -61,10 +63,11 @@ const AccountPage = () => {
   const dispatch = useDispatch();
   const stateData: StateData = useSelector((state: AppState):StateData => ({
     user: state.user,
+    degrees: state.degrees,
   }));
 
   const [viewData, setViewData] = useState<ViewData>({
-    personalData: createPersonalData(stateData.user),
+    personalData: createPersonalData(stateData.user, stateData.degrees),
     accountData: createAccountData(stateData.user),
     contactData: createContactData(stateData.user),
   });
@@ -98,7 +101,7 @@ const AccountPage = () => {
 
   useEffect(() => {
     setViewData({
-      personalData: createPersonalData(stateData.user),
+      personalData: createPersonalData(stateData.user, stateData.degrees),
       accountData: createAccountData(stateData.user),
       contactData: createContactData(stateData.user),
     });
@@ -118,6 +121,7 @@ const AccountPage = () => {
       lastName: values.lastName,
       birthDate: values.birthDate,
       gender: values.gender,
+      degrees: values.degrees,
       address: {
         country: values.country,
         city: values.city,
@@ -329,6 +333,7 @@ const AccountPage = () => {
                 onSubmit={handlePersonalSubmit}
                 handleClose={handlePersonalEditClose}
                 submitBtnRef={personalDataFormSubmitBtnRef}
+                degreesOptions={mapDegreesToOptions(stateData.degrees)}
               />
             </Popup>
           )}

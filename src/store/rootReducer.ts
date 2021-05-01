@@ -1,7 +1,7 @@
 import {
   ACTION_TYPES,
   ActionTypes,
-  UpdateAvailableProjectsTable,
+  UpdateAvailableProjectsTable, UpdateDegreesList,
   UpdatePromotersList, UpdatePromotersListView, UpdateStudentsList,
   UpdateTagsList,
   UpdateUniversitiesList,
@@ -72,6 +72,11 @@ const rootReducer = (state = initialState, action: ActionTypes): AppState => {
     return {
       ...state,
       promotersListView: (action as UpdatePromotersListView).payload,
+    };
+  case ACTION_TYPES.UPDATE_DEGREES_LIST:
+    return {
+      ...state,
+      degrees: (action as UpdateDegreesList).payload,
     };
   default:
     return state;

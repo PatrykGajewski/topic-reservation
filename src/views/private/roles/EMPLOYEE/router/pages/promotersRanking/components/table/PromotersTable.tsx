@@ -13,9 +13,12 @@ import {
   StyledTh,
   StyledTr,
 } from '../../../../../../STUDENT/router/pages/ownedProjectList/components';
-import {Opinion, Order, SimplifiedUserWithOpinions} from '../../services';
+import {Opinion, SimplifiedUserWithOpinions} from '../../services';
 import {AvatarBox} from '../../../../../../../../components/AvatarBox';
 import styled from "styled-components";
+import {getHighestDegree} from "utils/getters";
+import {mapDegreesIdsToDegrees} from "../../../../../../../../../utils/mappers/map-degreesIds-to-degrees";
+import {UserDegree} from "../../../../../../../../../models/user";
 
 const StyledRatingContainer = styled.div`
   display: flex;
@@ -66,7 +69,7 @@ export const PromotersTable = (props: Props) => (
       <StyledTableHead>
         <StyledTr>
           <StyledTh width={ColumnWidth.Photo}>Photo</StyledTh>
-          <StyledTh width={ColumnWidth.Title}>Title</StyledTh>
+          <StyledTh width={ColumnWidth.Title}>Degree</StyledTh>
           <StyledTh width={ColumnWidth.NameSurname}>Name & Surname</StyledTh>
           <StyledTh width={ColumnWidth.Email}>Email</StyledTh>
           <StyledTh width={ColumnWidth.Ranking}>Rank</StyledTh>
@@ -95,12 +98,15 @@ export const PromotersTable = (props: Props) => (
               .reduce((current: number, acc: number) => acc += current, 0) / promoter.opinions.length
             : 0;
 
+          const promoterDegrees: UserDegree[] = mapDegreesIdsToDegrees(promoter.degrees, props.degrees);
+          const highestDegree: UserDegree | null = getHighestDegree(promoterDegrees);
+
           return (
             <StyledTr key={promoter.id} clickable>
               <StyledTd width={ColumnWidth.Photo}>
                 <AvatarBox avatarId={promoter.profilePhotoId} gender={promoter.gender} />
               </StyledTd>
-              <StyledTd width={ColumnWidth.Title}>Title</StyledTd>
+              <StyledTd width={ColumnWidth.Title}>{highestDegree ? highestDegree.pl.full : '-'}</StyledTd>
               <StyledTd width={ColumnWidth.NameSurname}>{`${promoter.firstName} ${promoter.lastName}`}</StyledTd>
               <StyledTd width={ColumnWidth.Email}>{promoter.email}</StyledTd>
               <StyledTd width={ColumnWidth.Ranking}>{promoter.rank}</StyledTd>

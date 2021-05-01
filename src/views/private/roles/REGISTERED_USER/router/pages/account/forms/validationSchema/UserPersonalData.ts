@@ -20,4 +20,5 @@ export const UserPersonalDataValidation = Yup.object().shape({
   flatNumber: Yup.string(),
   gender: Yup.string()
     .required(),
+  degrees: Yup.array(Yup.string()),
 });

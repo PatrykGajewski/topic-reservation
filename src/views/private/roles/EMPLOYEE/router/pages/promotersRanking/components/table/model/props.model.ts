@@ -1,12 +1,12 @@
-import {Order, SimplifiedUserWithOpinions} from '../../../services';
+import { SimplifiedUserWithOpinions} from '../../../services';
 import { MenuAction } from '../../../../../../../STUDENT/router/pages/ownedProjectList/components/table/models';
+import {UserDegree} from "../../../../../../../../../../models/user";
 
 export interface Props {
   promoters: SimplifiedUserWithOpinions[],
-  total: number,
   count: number,
   page: number,
-  order: Order,
+  degrees: UserDegree[],
   onChangePage: (e: any, page: number) => void,
   rowsPerPage: number,
   onChangeRowsPerPage: (a: any) => void,

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Project, Tag } from '../../../../../models/project';
 import {
-  _fetchProjectTags, _fetchPromoters, _fetchUniversities, _fetchStudentProjects, SimplifiedUser,
+  _fetchProjectTags, _fetchPromoters, _fetchUniversities, _fetchStudentProjects,
 } from '../services';
 import { University } from '../../../../../models/university';
 import {
@@ -23,6 +23,7 @@ import { Footer } from '../../../../components/footer';
 import { StudentRouter } from '../router';
 import { InitialDataError } from '../../../components/initialDataError/InitialDataError';
 import { StudentUserTopBar } from './components';
+import {SimplifiedUser} from "../../../../../models/user";
 
 const StudentUserDataWrapper = (props: Props) => {
   const dispatch = useDispatch();

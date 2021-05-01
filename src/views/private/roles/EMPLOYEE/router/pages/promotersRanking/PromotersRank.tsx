@@ -41,6 +41,7 @@ export const PromotersRank = () => {
   const stateData = useSelector((state: AppState) => ({
     promoters: state.promoters,
     pageConfig: state.promotersListView,
+    degrees: state.degrees,
   }));
 
   const [promoters, setPromoters] = useState<SimplifiedUserWithOpinions[]>([]);
@@ -160,10 +161,9 @@ export const PromotersRank = () => {
             {promoters.length > 0 ? (
               <PromotersTable
                 promoters={promoters}
+                degrees={stateData.degrees}
                 count={pageConfig.total}
                 page={pageConfig.pageIndex}
-                order={pageConfig.order}
-                total={pageConfig.total}
                 onChangePage={handlePageChange}
                 rowsPerPage={pageConfig.rowsPerPage}
                 onChangeRowsPerPage={handleRowPerPageChange}

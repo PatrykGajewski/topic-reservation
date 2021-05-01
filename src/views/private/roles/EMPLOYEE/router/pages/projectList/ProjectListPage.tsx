@@ -35,12 +35,12 @@ import { mapProjectDegreeToOptions } from '../../../../../../../utils/mappers/ma
 import { EmptyStateContainer } from '../../../../../components/initialDataError/styles';
 import { ProjectsTable } from '../../../../STUDENT/router/pages/ownedProjectList/components';
 import { StyledContainer } from '../../../../STUDENT/router/pages/ownedProjectList';
-import { SimplifiedUser } from '../../../../STUDENT/services';
 import { APISecured, MultiResponse } from '../../../../../../../API';
 import {
   _deleteProject, _fetchProjects, _updateProject, FetchProjectsResponse,
 } from '../../../services';
 import { MultipleSelect } from '../../../../../../components/forms/multiple-select';
+import {SimplifiedUser} from "../../../../../../../models/user";
 
 const projectTypeOptions: SelectOption[] = mapProjectTypeToOptions();
 const projectDegreeOptions: SelectOption[] = mapProjectDegreeToOptions();
