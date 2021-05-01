@@ -1,13 +1,13 @@
 import React from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
+import styled, {css} from 'styled-components';
 import { Project } from '../../../../../../../../../models/project';
 import { Props } from './models';
 import { TableContainer, TagWrapper } from '../../styles';
 import { DotsMenu } from '../../../../../../../../components/dotsMenu';
-import styled from 'styled-components';
-import {SimplifiedUser} from "../../../../../services";
+import { SimplifiedUser } from '../../../../../services';
 
-const StyledTable = styled.table`
+export const StyledTable = styled.table`
   display: block;
   position: relative;
   border-spacing: 0;
@@ -16,7 +16,7 @@ const StyledTable = styled.table`
   background-color: #0b3b66;
 `;
 
-const StyledTableHead = styled.thead`
+export const StyledTableHead = styled.thead`
   display: block;
   width: calc(100% - 15px);
   
@@ -29,7 +29,7 @@ const StyledTableHead = styled.thead`
   }
 `;
 
-const StyledTh = styled.th<{ width: string }>`
+export const StyledTh = styled.th<{ width: string }>`
   line-height: 40px;
   text-align: center;
   border-right: 1px solid white;
@@ -40,7 +40,7 @@ const StyledTh = styled.th<{ width: string }>`
   text-overflow: ellipsis;
 `;
 
-const StyledTableBody = styled.tbody`
+export const StyledTableBody = styled.tbody`
   display: block;
   height: calc(100% - 92px);
   overflow-y: scroll;
@@ -50,11 +50,22 @@ const StyledTableBody = styled.tbody`
   background-color: white;
 `;
 
-const StyledTr = styled.tr`
-  display: flex;
+const clickableTrStyles = css`
+  &:hover {
+    td {
+      background: #083b661c;
+      cursor: pointer;
+    }
+  }
 `;
 
-const StyledTd = styled.td<{ width: string}>`
+export const StyledTr = styled.tr<{clickable?: boolean}>`
+  display: flex;
+  
+   ${({ clickable }) => (clickable ? clickableTrStyles : null)}
+`;
+
+export const StyledTd = styled.td<{ width: string}>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,7 +80,7 @@ const StyledTd = styled.td<{ width: string}>`
   background: white;
 `;
 
-const StyledTableFoot = styled.tfoot`
+export const StyledTableFoot = styled.tfoot`
   display: block;
   position: absolute;
   bottom: 0;
@@ -79,7 +90,7 @@ const StyledTableFoot = styled.tfoot`
   height: 52px;
 `;
 
-const StyledTagsContainer = styled.div`
+export const StyledTagsContainer = styled.div`
   display: flex;
   max-width: 100%;
   flex-wrap: wrap;

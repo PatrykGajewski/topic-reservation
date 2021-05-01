@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {ChangeEvent, useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'react-loader-spinner';
 import { Button, Grid } from '@material-ui/core';
@@ -17,19 +17,21 @@ import { SimpleSelect } from '../../../../../../components/forms';
 import { SelectOption } from '../../../../../../../models/forms';
 import { EmptyStateContainer } from '../../../../../components/initialDataError/styles';
 import { UpdatePromotersListView } from '../../../../../../../store/actions';
-import { StyledPromotersList, StyledPromoterItem, StyledListHeader} from "./styles";
+import { PromotersTable } from "./components";
 
 interface ExtendedPageConfig extends PageConfig {
   order: Order
 }
 
+// NOTE for backend side that logic is different
+// because when order of rank is e.g 1,2,3 (ascending) rank value is descending e.g 150, 140, 130
 const orderOptions: SelectOption[] = [
   {
-    label: 'Rosnąca',
+    label: 'Malejąca',
     value: Order.ASCENDING,
   },
   {
-    label: 'Malejąca',
+    label: 'Rosnąca',
     value: Order.DESCENDING,
   },
 ];
@@ -80,6 +82,25 @@ export const PromotersRank = () => {
         ...pageConfig,
       }),
     });
+  };
+
+  const handlePageChange = (e: any, page: number) => {
+    setPageConfig((prev: any) => ({
+      ...prev,
+      pageIndex: page,
+      total: prev.total,
+      rowsPerPage: prev.rowsPerPage,
+    }));
+  };
+
+  const handleRowPerPageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPageConfig((prev) => ({
+      ...prev,
+      pageIndex: 0,
+      total: prev.total,
+      // @ts-ignore
+      rowsPerPage: e.target.value as number,
+    }));
   };
 
   const filtersNotSubmitted: boolean = stateData.pageConfig.order !== pageConfig.order;
@@ -137,20 +158,17 @@ export const PromotersRank = () => {
           </BarContainer>
           <ContentContainer>
             {promoters.length > 0 ? (
-              <StyledPromotersList>
-                <StyledListHeader>
-                  <div>Photo</div>
-                  <div>FirstName</div>
-                  <div>LastName</div>
-                  <div>Email</div>
-                  <div>Position</div>
-                  <div>Opinions number</div>
-                  <div>Rating</div>
-                </StyledListHeader>
-                {promoters.map((promoter: SimplifiedUserWithOpinions) => (
-                  <StyledPromoterItem>{promoter.firstName}</StyledPromoterItem>
-                ))}
-              </StyledPromotersList>
+              <PromotersTable
+                promoters={promoters}
+                count={pageConfig.total}
+                page={pageConfig.pageIndex}
+                order={pageConfig.order}
+                total={pageConfig.total}
+                onChangePage={handlePageChange}
+                rowsPerPage={pageConfig.rowsPerPage}
+                onChangeRowsPerPage={handleRowPerPageChange}
+                rowsActions={[]}
+              />
             ) : (
               <EmptyStateContainer>
                 <div>

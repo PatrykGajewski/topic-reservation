@@ -1,5 +1,6 @@
 import { SimplifiedUser } from '../../../../../STUDENT/services';
 import { APISecured, MultiResponse } from '../../../../../../../../API';
+import {ProjectDegree, ProjectStatus, ProjectType} from "../../../../../../../../models/project";
 
 export enum Order {
   ASCENDING= 'ASCENDING',
@@ -12,10 +13,28 @@ interface PromotersRankingParams {
   order: Order,
 }
 
-export interface SimplifiedUserWithOpinions extends SimplifiedUser {
-  opinions: any[],
+export interface SimplifiedProject {
+  id: string,
+  topic: string,
+  degree: ProjectDegree,
+  status: ProjectStatus,
+  type: ProjectType,
 }
 
+export interface Opinion {
+  id: string,
+  createdAt: string,
+  updatedAt: string,
+  content: string,
+  grade: number,
+  author: SimplifiedUser,
+  subject: SimplifiedProject,
+}
+
+export interface SimplifiedUserWithOpinions extends SimplifiedUser {
+  opinions: Opinion[],
+  rank: number,
+}
 
 export interface PromotersRankingResponse {
   entries: SimplifiedUserWithOpinions[],
