@@ -4,7 +4,7 @@ import { ViewState } from '../../../../../../../../../models/other';
 import { StyledWidgetContainer } from '../../styles';
 import {
   constructionType,
-  mapProjectTypeDataToPresentation,
+  mapProjectsTypeDataToPresentation,
   overviewType,
   researchType,
   technologicalType,
@@ -18,7 +18,7 @@ export const ProjectTypeWidget = (props: Props) => {
 
   const prepareData = () => {
     setViewState(ViewState.LOADING);
-    const preparedData: any[] = mapProjectTypeDataToPresentation(props.data);
+    const preparedData: any[] = mapProjectsTypeDataToPresentation(props.data);
     if (preparedData.length > 0) {
       setData(preparedData);
       setViewState(ViewState.OK);
@@ -95,6 +95,10 @@ export const ProjectTypeWidget = (props: Props) => {
             axisTop={null}
             axisRight={null}
             axisBottom={{
+              axis: 'x',
+              scale: 'linear',
+              length: 100,
+              ticksPosition: 'after',
               tickSize: 5,
               tickPadding: 5,
               tickRotation: 0,
@@ -103,6 +107,10 @@ export const ProjectTypeWidget = (props: Props) => {
               legendOffset: 32,
             }}
             axisLeft={{
+              axis: 'y',
+              scale: 'linear',
+              length: 100,
+              ticksPosition: 'after',
               tickSize: 5,
               tickPadding: 5,
               tickRotation: 0,

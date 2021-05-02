@@ -8,7 +8,7 @@ export const technologicalType: string = mapProjectTypeToText(ProjectType.TECHNO
 export const constructionType: string = mapProjectTypeToText(ProjectType.CONSTRUCTION_WORK);
 
 
-export const mapProjectTypeDataToPresentation = (groups: ProjectTypeDataGroup[]): any[] => (
+export const mapProjectsTypeDataToPresentation = (groups: ProjectTypeDataGroup[]): any[] => (
   groups.map((group: ProjectTypeDataGroup) => ({
     year: group.year,
     [researchType]: group.data[ProjectType.RESEARCH_WORK],

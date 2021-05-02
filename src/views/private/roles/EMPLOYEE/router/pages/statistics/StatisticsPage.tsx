@@ -6,10 +6,12 @@ import { AppState } from '../../../../../../../store/appState';
 import { ContentWrapper } from '../../../../../../components';
 import { ViewData } from './models';
 import {
-  mapProjectToProjectTypeDataDividedByYears,
+  mapProjectsToProjectsTypeDataDividedByYears,
 } from './utils';
 
-import {DegreeTypeWidget, ProjectTypeWidget} from './widgets';
+import { DegreeTypeWidget, ProjectTypeWidget } from './widgets';
+import { mapProjectsToProjectsDegreeData } from './utils/map-projects-to-projects-degree-data';
+import { ProjectDegree } from '../../../../../../../models/project';
 
 export const StatisticsPage = () => {
   const stateData = useSelector((state: AppState) => ({
@@ -20,12 +22,19 @@ export const StatisticsPage = () => {
 
   const [viewData, setViewData] = useState<ViewData>({
     projectTypeData: [],
+    degreeTypeData: {
+      [ProjectDegree.ASSOCIATE_DEGREE]: 0,
+      [ProjectDegree.MASTER_DEGREE]: 0,
+      [ProjectDegree.DOCTORAL_DEGREE]: 0,
+      [ProjectDegree.BACHELOR_DEGREE]: 0,
+    },
   });
 
   const updateStatistics = () => {
     setViewState(ViewState.LOADING);
     setViewData({
-      projectTypeData: mapProjectToProjectTypeDataDividedByYears(3, stateData.projects),
+      projectTypeData: mapProjectsToProjectsTypeDataDividedByYears(3, stateData.projects),
+      degreeTypeData: mapProjectsToProjectsDegreeData(stateData.projects),
     });
     setViewState(ViewState.OK);
   };
@@ -46,9 +55,9 @@ export const StatisticsPage = () => {
         />
       )}
       {viewState === ViewState.OK && (
-        <ContentWrapper>
+        <ContentWrapper paddingChild>
           <ProjectTypeWidget data={viewData.projectTypeData} />
-          <DegreeTypeWidget data={[]} />
+          <DegreeTypeWidget data={viewData.degreeTypeData} />
         </ContentWrapper>
       )}
     </>

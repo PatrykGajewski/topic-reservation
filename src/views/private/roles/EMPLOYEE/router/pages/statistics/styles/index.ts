@@ -7,6 +7,7 @@ const StyledWidgetContainer = styled.div`
   padding: 8px 12px;
   height: 500px;
   
+  
   & > span {
     height: 2rem;
     display: block;

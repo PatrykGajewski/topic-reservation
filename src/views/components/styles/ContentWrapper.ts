@@ -1,5 +1,6 @@
-import styled, {css} from 'styled-components';
+import styled, { css } from 'styled-components';
 import background from 'img/birdsBg.png';
+import { boolean } from 'yup';
 
 export const contentContainerStyles = css`
   background-image: url(${background});
@@ -11,8 +12,13 @@ export const contentContainerStyles = css`
   overflow-y: scroll;
 `;
 
-export const ContentWrapper = styled.div`
-  ${contentContainerStyles}
+export const paddingChildStyles = css`
+  div + div {
+    margin-top: 30px;
+  }
 `;
 
-
+export const ContentWrapper = styled.div<{paddingChild?: boolean}>`
+  ${contentContainerStyles}
+  ${({ paddingChild }) => (paddingChild ? paddingChildStyles : null)}
+`;

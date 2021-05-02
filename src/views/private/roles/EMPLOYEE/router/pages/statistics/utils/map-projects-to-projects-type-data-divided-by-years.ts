@@ -10,7 +10,7 @@ const emptyData: ProjectTypeData = {
   [ProjectType.RESEARCH_WORK]: 0,
 };
 
-export const mapProjectToProjectTypeDataDividedByYears = (
+export const mapProjectsToProjectsTypeDataDividedByYears = (
   numberOfYears: number,
   projects: Project[],
 ): ProjectTypeDataGroup[] => {

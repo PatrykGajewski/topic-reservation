@@ -1,1 +1,1 @@
-export * from './map-project-type-data-to-presentation';
+export * from './map-projects-type-data-to-presentation';
