@@ -2,6 +2,7 @@ import React from 'react';
 import { SectionWithHeader, SectionRow } from 'views/private/components';
 import { UserAddress, UserDegree, UserGender } from 'models/user';
 import {degreeDescendingSort} from "../../../../../../../../utils";
+import {mapGenderToText} from "../../../../../../../../utils/mappers";
 
 export interface PersonalSectionData {
   firstName: string,
@@ -35,7 +36,7 @@ export const PersonalDataSection = (props: Props) => (
     <SectionRow header="Firstname" content={props.data.firstName} />
     <SectionRow header="Lastname" content={props.data.lastName} />
 
-    <SectionRow header="Gender" content={props.data.gender.toLocaleLowerCase()} />
+    <SectionRow header="Gender" content={mapGenderToText(props.data.gender)} />
 
     <SectionRow header="Date of birth" content={props.data.birthDate ? props.data.birthDate.toLocaleDateString() : ''} />
 

@@ -11,4 +11,5 @@ export interface Props {
   rowsPerPage: number,
   onChangeRowsPerPage: (a: any) => void,
   rowsActions: MenuAction<SimplifiedUserWithOpinions>[]
+  onRowClick: (promoter: SimplifiedUserWithOpinions) => void,
 }

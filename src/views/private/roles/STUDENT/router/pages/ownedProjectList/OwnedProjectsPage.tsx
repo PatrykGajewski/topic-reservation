@@ -125,7 +125,7 @@ const OwnedProjectsPage = () => {
                         content={project.topic}
                       />
                       <SectionRow
-                        header="Description"
+                        header="Content"
                         content={project.description}
                       />
                     </Grid>

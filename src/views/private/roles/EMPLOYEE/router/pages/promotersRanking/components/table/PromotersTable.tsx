@@ -14,7 +14,7 @@ import {
   StyledTr,
 } from '../../../../../../STUDENT/router/pages/ownedProjectList/components';
 import {Opinion, SimplifiedUserWithOpinions} from '../../services';
-import {AvatarBox} from '../../../../../../../../components/AvatarBox';
+import {AvatarBox, AvatarBoxSize} from '../../../../../../../../components/AvatarBox';
 import styled from "styled-components";
 import {getHighestDegree} from "utils/getters";
 import {mapDegreesIdsToDegrees} from "../../../../../../../../../utils/mappers/map-degreesIds-to-degrees";
@@ -102,9 +102,13 @@ export const PromotersTable = (props: Props) => (
           const highestDegree: UserDegree | null = getHighestDegree(promoterDegrees);
 
           return (
-            <StyledTr key={promoter.id} clickable>
+            <StyledTr key={promoter.id} clickable onClick={() => props.onRowClick(promoter)}>
               <StyledTd width={ColumnWidth.Photo}>
-                <AvatarBox avatarId={promoter.profilePhotoId} gender={promoter.gender} />
+                <AvatarBox
+                  avatarId={promoter.profilePhotoId}
+                  gender={promoter.gender}
+                  size={AvatarBoxSize.MINI}
+                />
               </StyledTd>
               <StyledTd width={ColumnWidth.Title}>{highestDegree ? highestDegree.pl.full : '-'}</StyledTd>
               <StyledTd width={ColumnWidth.NameSurname}>{`${promoter.firstName} ${promoter.lastName}`}</StyledTd>

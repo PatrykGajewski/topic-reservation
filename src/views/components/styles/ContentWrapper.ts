@@ -5,7 +5,7 @@ import { boolean } from 'yup';
 export const contentContainerStyles = css`
   background-image: url(${background});
   background-repeat: repeat;
-  position: relative;
+  position: static;
   height: 100%;
   padding: 20px;
   box-sizing: border-box;

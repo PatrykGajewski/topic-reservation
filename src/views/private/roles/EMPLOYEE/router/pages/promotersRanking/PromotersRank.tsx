@@ -18,6 +18,8 @@ import { SelectOption } from '../../../../../../../models/forms';
 import { EmptyStateContainer } from '../../../../../components/initialDataError/styles';
 import { UpdatePromotersListView } from '../../../../../../../store/actions';
 import { PromotersTable } from "./components";
+import {ButtonType, Popup} from "../../../../../../components";
+import {PromoterDetails} from "./components/details";
 
 interface ExtendedPageConfig extends PageConfig {
   order: Order
@@ -45,6 +47,7 @@ export const PromotersRank = () => {
   }));
 
   const [promoters, setPromoters] = useState<SimplifiedUserWithOpinions[]>([]);
+  const [previewedPromoter, setPreviewedPromoter] = useState<SimplifiedUserWithOpinions | null>(null);
   const [viewState, setViewState] = useState<ViewState>(ViewState.LOADING);
   const [pageConfig, setPageConfig] = useState<ExtendedPageConfig>({
     pageIndex: stateData.pageConfig.pageIndex,
@@ -103,6 +106,10 @@ export const PromotersRank = () => {
       rowsPerPage: e.target.value as number,
     }));
   };
+
+  const previewPromoter = (promoter: SimplifiedUserWithOpinions) => {
+    setPreviewedPromoter(promoter);
+  }
 
   const filtersNotSubmitted: boolean = stateData.pageConfig.order !== pageConfig.order;
 
@@ -168,6 +175,7 @@ export const PromotersRank = () => {
                 rowsPerPage={pageConfig.rowsPerPage}
                 onChangeRowsPerPage={handleRowPerPageChange}
                 rowsActions={[]}
+                onRowClick={previewPromoter}
               />
             ) : (
               <EmptyStateContainer>
@@ -176,6 +184,25 @@ export const PromotersRank = () => {
                 </div>
                 <p>It seems that promoters list is empty</p>
               </EmptyStateContainer>
+            )}
+            {previewedPromoter !== null && (
+              <Popup
+                header="Promoter details"
+                handleClose={() => setPreviewedPromoter(null)}
+                buttonsConfig={[
+                  {
+                    label: 'Close',
+                    disabled: false,
+                    onClick: () => setPreviewedPromoter(null),
+                    buttonType: ButtonType.SECONDARY,
+                  },
+                ]}
+              >
+                <PromoterDetails
+                  promoter={previewedPromoter}
+                  degrees={stateData.degrees}
+                />
+              </Popup>
             )}
           </ContentContainer>
         </ContentWrapper>

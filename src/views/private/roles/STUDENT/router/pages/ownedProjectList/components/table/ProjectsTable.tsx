@@ -1,19 +1,20 @@
 import React from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
-import styled, {css} from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Project } from '../../../../../../../../../models/project';
 import { Props } from './models';
 import { TableContainer, TagWrapper } from '../../styles';
 import { DotsMenu } from '../../../../../../../../components/dotsMenu';
-import {SimplifiedUser} from "../../../../../../../../../models/user";
+import { SimplifiedUser } from '../../../../../../../../../models/user';
 
-export const StyledTable = styled.table`
+export const StyledTable = styled.table<{maxHeight?: string}>`
   display: block;
   position: relative;
   border-spacing: 0;
   height: 100%;
   overflow: hidden;
   background-color: #0b3b66;
+  ${({ maxHeight }) => (maxHeight ? `max-height:${maxHeight};` : null)}
 `;
 
 export const StyledTableHead = styled.thead`

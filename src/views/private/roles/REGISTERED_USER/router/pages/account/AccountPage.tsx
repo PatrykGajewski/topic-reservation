@@ -33,7 +33,6 @@ import {
 import { AccountDataSection, ContactDataSection, PersonalDataSection } from './components';
 
 import { ViewState } from '../../../../../../../models/other';
-import { APISecured } from '../../../../../../../API';
 import LoginForm from '../../../../../../public/router/pages/login/components/loginForm/LoginForm';
 import { UpdateUserData } from '../../../../../../../store/actions';
 import { createContactData } from './helpers/create-contact-data';
