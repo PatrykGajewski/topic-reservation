@@ -1,6 +1,6 @@
 export enum ViewState {
   LOADING = 'LOADING',
-  OK = 'ERROR',
+  OK = 'OK',
   EMPTY = 'EMPTY',
   ERROR = 'ERROR',
 }

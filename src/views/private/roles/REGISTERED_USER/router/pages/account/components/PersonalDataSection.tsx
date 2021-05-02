@@ -1,6 +1,7 @@
 import React from 'react';
 import { SectionWithHeader, SectionRow } from 'views/private/components';
 import { UserAddress, UserDegree, UserGender } from 'models/user';
+import {degreeDescendingSort} from "../../../../../../../../utils";
 
 export interface PersonalSectionData {
   firstName: string,
@@ -26,15 +27,7 @@ export const PersonalDataSection = (props: Props) => (
     <SectionRow
       header="Degrees"
       content={props.data.degrees
-        .sort((first, second: UserDegree): number => {
-          if (first.priority > second.priority) {
-            return -1;
-          }
-          if (first.priority < second.priority) {
-            return 1;
-          }
-          return 0;
-        })
+        .sort(degreeDescendingSort)
         .map((degree: UserDegree): string | null => degree.pl.short)
         .filter((degree) => degree !== null)
         .join(',')}
