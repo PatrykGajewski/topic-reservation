@@ -30,7 +30,7 @@ export const PersonalDataSection = (props: Props) => (
         .sort(degreeDescendingSort)
         .map((degree: UserDegree): string | null => degree.pl.short)
         .filter((degree) => degree !== null)
-        .join(',')}
+        .join(', ')}
     />
     <SectionRow header="Firstname" content={props.data.firstName} />
     <SectionRow header="Lastname" content={props.data.lastName} />

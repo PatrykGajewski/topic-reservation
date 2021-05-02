@@ -20,9 +20,9 @@ interface Props {
 const displayUserRole = (userRole: UserRole): string => {
   switch (userRole) {
   case UserRole.REGISTERED_USER:
-    return 'Registered user';
+    return 'Zarejestrowany użytkownik';
   case UserRole.EMPLOYEE:
-    return 'Employee';
+    return 'Pracownik';
   case UserRole.STUDENT:
     return 'Student';
   default:
@@ -64,7 +64,7 @@ export const AccountDataSection = (props: Props) => {
       <SectionRow header="Creation date" content={props.data.creationDate} />
       <SectionRow header="Last update date" content={props.data.updateDate} />
       <Row>
-        <span>Account roles:</span>
+        <span>Roles:</span>
         <ul>
           {props.data.userRoles.map((role: UserRole, index: number) => (
             <li

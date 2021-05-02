@@ -1,2 +1,2 @@
-export * from './current-university-edition-values.model';
-export * from './finished-university-edition-values.model';
+export * from './view-data.model';
+export * from './state-data.model';

@@ -8,54 +8,39 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'react-loader-spinner';
 import { toast } from 'react-toastify';
 
-import {UserDegree, UserModel, UserRole} from 'models/user';
+import { UserModel, UserRole } from 'models/user';
 import { AppState } from 'store/appState';
-import { Popup, ButtonType} from "../../../../../../components";
+import { ButtonType, Popup } from '../../../../../../components';
 import { ErrorWrapper, LoginFormContainer } from '../../../../../../public';
 import {
   ContactDataFormValues, PersonalDataFormValues, UserContactDataForm, UserPersonalDataForm,
 } from './forms';
 import {
-  ContentWrapper, StyledPhotoWrapper, PopupContentWrapper, StyledPhotoForm, StyledIconButton,
-  StyledImagePreviewContainer, SectionsContainer
+  ContentWrapper,
+  PopupContentWrapper,
+  SectionsContainer,
+  StyledIconButton,
+  StyledImagePreviewContainer,
+  StyledPhotoForm,
+  StyledPhotoWrapper,
 } from './styles';
-import { ImageBox } from "../../../../../../components/ImagesBox";
+import { ImageBox } from '../../../../../../components/ImagesBox';
 
 import {
-  createAccountData,
-  createPersonalData,
-  createPersonalDataEditValues,
-  updatePersonalData,
+  createAccountData, createPersonalData, createPersonalDataEditValues,
 } from './helpers';
 
-import {
-  AccountDataSection, AccountSectionData, ContactDataSection, PersonalDataSection, PersonalSectionData,
-} from './components';
+import { AccountDataSection, ContactDataSection, PersonalDataSection } from './components';
 
-import { ViewState } from "../../../../../../../models/other";
+import { ViewState } from '../../../../../../../models/other';
 import { APISecured } from '../../../../../../../API';
 import LoginForm from '../../../../../../public/router/pages/login/components/loginForm/LoginForm';
 import { UpdateUserData } from '../../../../../../../store/actions';
 import { createContactData } from './helpers/create-contact-data';
-import {mapDegreesToOptions} from "../../../../../../../utils/mappers";
-
-interface ViewData {
-  personalData: PersonalSectionData,
-  accountData: AccountSectionData,
-  contactData: ContactDataSection,
-}
-
-interface StateData {
-  user: UserModel,
-  degrees: UserDegree[],
-}
-
-enum ImagesFileExtension {
-  PNG = 'png',
-  JPG = 'jpg',
-  JPEG = 'jpeg',
-  BMP = 'bmp',
-}
+import { mapDegreesToOptions } from '../../../../../../../utils/mappers';
+import { Image, ImagesFileExtension } from '../../../../../../../models/image';
+import { StateData, ViewData } from './models';
+import {_fetchUserPhoto, _updateUserPersonalData, _uploadUserPhoto, UploadedImage} from './services';
 
 const properImageFileExtensions: ImagesFileExtension[] = [ImagesFileExtension.BMP, ImagesFileExtension.JPG, ImagesFileExtension.JPEG, ImagesFileExtension.PNG];
 
@@ -85,13 +70,17 @@ const AccountPage = () => {
   const contactDataFormSubmitBtnRef = useRef<HTMLButtonElement | null>(null);
 
   const fetchProfilePhoto = () => {
-    APISecured.get(`/static/avatars/${stateData.user.profilePhotoId}`)
-      .then((res) => {
-        setProfilePhoto(res.data);
-      })
-      .catch((e) => {
-        setProfilePhoto(null);
-      });
+    if (stateData.user.profilePhotoId) {
+      _fetchUserPhoto(stateData.user.profilePhotoId)
+        .then((image: Image) => {
+          setProfilePhoto(image);
+        })
+        .catch(() => {
+          setProfilePhoto(null);
+        });
+    } else {
+      setProfilePhoto(null);
+    }
   };
 
   useEffect(() => {
@@ -132,7 +121,7 @@ const AccountPage = () => {
       },
     };
 
-    updatePersonalData(dataShape, stateData.user.id)
+    _updateUserPersonalData(dataShape, stateData.user.id)
       .then((user: UserModel) => {
         dispatch({ ...new UpdateUserData(user) });
         toast.success('User personal data updated');
@@ -160,19 +149,19 @@ const AccountPage = () => {
       form.append('size', photoToUpload.size.toString());
       form.append('type', photoToUpload.type);
 
-      APISecured.post('/static/avatars', form)
-        .then((res: {data: { data: string, contentType: string, imageId: string} }) => {
+      _uploadUserPhoto(form)
+        .then((data: UploadedImage) => {
           dispatch({
             ...new UpdateUserData({
               ...stateData.user,
-              profilePhotoId: res.data.imageId,
+              profilePhotoId: data.imageId,
             }),
           });
-          setProfilePhoto({ data: res.data.data, contentType: res.data.contentType });
+          setProfilePhoto({ data: data.data, contentType: data.contentType });
           setPhotoSelectionModalOpen((prev) => !prev);
           toast.success('Cover photo update success');
         })
-        .catch((e: any) => {
+        .catch(() => {
           setPhotoSelectionModalOpen((prev) => !prev);
           toast.error('Cover photo update failure');
         });
@@ -212,7 +201,7 @@ const AccountPage = () => {
       phoneNumber: values.phoneNumber,
     };
 
-    updatePersonalData(dataShape, stateData.user.id)
+    _updateUserPersonalData(dataShape, stateData.user.id)
       .then((user: UserModel) => {
         dispatch({ ...new UpdateUserData(user) });
         toast.success('User personal data updated');
