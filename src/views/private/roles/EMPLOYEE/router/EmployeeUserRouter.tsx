@@ -14,11 +14,11 @@ export const EmployeeUserRouter = (props: Props) => (
     />
     <Route
       path="/statistics"
-      render={() => (<StatisticsPage />)}
+      render={() => <StatisticsPage />}
     />
     <Route
       path="/projects"
-      render={() => (<ProjectListPage />)}
+      render={() => <ProjectListPage />}
     />
     <Route
       path="/promoters"
@@ -27,7 +27,7 @@ export const EmployeeUserRouter = (props: Props) => (
     <Route
       exact
       path="/"
-      render={() => (<AccountPage />)}
+      render={() => <AccountPage />}
     />
   </Switch>
 );

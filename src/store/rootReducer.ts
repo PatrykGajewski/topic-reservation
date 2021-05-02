@@ -17,10 +17,13 @@ const rootReducer = (state = initialState, action: ActionTypes): AppState => {
     return {
       ...state,
       loading: true,
+      success: false,
+      error: false,
     };
   case ACTION_TYPES.INITIAL_DATA_FETCHING_ERROR:
     return {
       ...state,
+      success: false,
       loading: false,
       error: true,
     };
@@ -28,6 +31,7 @@ const rootReducer = (state = initialState, action: ActionTypes): AppState => {
     return {
       ...state,
       loading: false,
+      error: false,
       success: true,
     };
   case ACTION_TYPES.UPDATE_UNIVERSITIES_LIST:

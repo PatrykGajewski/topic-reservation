@@ -119,7 +119,6 @@ const ProjectListPage = () => {
 
   const fetchProjects = () => {
     setViewState(ViewState.LOADING);
-    setViewState(ViewState.ERROR);
     _fetchProjects({
       projectsTypes,
       projectsDegrees,
@@ -340,7 +339,6 @@ const ProjectListPage = () => {
             color="#00BFFF"
             height={100}
             width={100}
-            timeout={3000} // 3 secs
           />
         </StyledContainer>
       )}
