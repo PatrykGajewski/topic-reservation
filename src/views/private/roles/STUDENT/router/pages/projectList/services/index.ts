@@ -24,7 +24,7 @@ interface GetAvailableProjectsParams {
   limit: number,
 }
 
-export const _fetchAvailableProjects = async (params: GetAvailableProjectsParams): Promise<Project[]> => {
+export const _fetchProjects = async (params: GetAvailableProjectsParams): Promise<Project[]> => {
   try {
     const { data, error } = await APISecured.post('/projects', {
       type: params.projectType,

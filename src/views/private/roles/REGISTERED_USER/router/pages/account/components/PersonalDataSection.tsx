@@ -29,8 +29,7 @@ export const PersonalDataSection = (props: Props) => (
       header="Degrees"
       content={props.data.degrees
         .sort(degreeDescendingSort)
-        .map((degree: UserDegree): string | null => degree.pl.short)
-        .filter((degree) => degree !== null)
+        .map((degree: UserDegree): string => degree.pl.short ? degree.pl.short : degree.pl.full)
         .join(', ')}
     />
     <SectionRow header="Firstname" content={props.data.firstName} />

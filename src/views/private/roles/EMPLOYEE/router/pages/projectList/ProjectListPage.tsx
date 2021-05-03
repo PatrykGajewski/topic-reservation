@@ -44,9 +44,9 @@ import {
 import { MultipleSelect } from '../../../../../../components/forms/multiple-select';
 import { SimplifiedUser } from '../../../../../../../models/user';
 
-const projectTypeOptions: SelectOption[] = mapProjectTypeToOptions();
-const projectDegreeOptions: SelectOption[] = mapProjectDegreeToOptions();
-const projectStatusOptions: SelectOption[] = mapProjectStatusToOptions();
+export const projectTypeOptions: SelectOption[] = mapProjectTypeToOptions();
+export const projectDegreeOptions: SelectOption[] = mapProjectDegreeToOptions();
+export const projectStatusOptions: SelectOption[] = mapProjectStatusToOptions();
 const groupProjectOptions: SelectOption[] = [
   {
     label: 'Tak',
@@ -65,7 +65,7 @@ export enum RoleInProject {
   ANY = 'ANY'
 }
 
-const roleInProjectOptions: SelectOption[] = [
+export const roleInProjectOptions: SelectOption[] = [
   { label: 'Promotor', value: RoleInProject.PROMOTER },
   { label: 'Recenzent', value: RoleInProject.REVIEWER },
   { label: 'Wszystkie', value: RoleInProject.ANY },

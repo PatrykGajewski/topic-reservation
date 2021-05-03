@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Project, Tag } from '../../../../../models/project';
 import {
-  _fetchProjectTags, _fetchPromoters, _fetchUniversities, _fetchStudentProjects,
+  _fetchProjectTags, _fetchPromoters, _fetchUniversities, _fetchStudentProjects, _fetchDegrees,
 } from '../services';
 import { University } from '../../../../../models/university';
 import {
   InitialDataFetched,
   InitialDataFetching,
-  InitialDataFetchingError,
+  InitialDataFetchingError, UpdateDegreesList,
   UpdatePromotersList,
   UpdateTagsList,
   UpdateUniversitiesList,
@@ -23,7 +23,7 @@ import { Footer } from '../../../../components/footer';
 import { StudentRouter } from '../router';
 import { InitialDataError } from '../../../components/initialDataError/InitialDataError';
 import { StudentUserTopBar } from './components';
-import {SimplifiedUser} from "../../../../../models/user";
+import {SimplifiedUser, UserDegree} from "../../../../../models/user";
 
 const StudentUserDataWrapper = (props: Props) => {
   const dispatch = useDispatch();
@@ -35,16 +35,18 @@ const StudentUserDataWrapper = (props: Props) => {
 
   const fetchInitialData = () => {
     dispatch({ ...new InitialDataFetching() });
-    Promise.all<Tag[], University[], SimplifiedUser[], Project[]>([
+    Promise.all<Tag[], University[], SimplifiedUser[], Project[], UserDegree[]>([
       _fetchProjectTags(),
       _fetchUniversities(),
       _fetchPromoters(),
       _fetchStudentProjects(),
+      _fetchDegrees()
     ]).then((res) => {
       dispatch({ ...new UpdateTagsList(res[0]) });
       dispatch({ ...new UpdateUniversitiesList(res[1]) });
       dispatch({ ...new UpdatePromotersList(res[2]) });
       dispatch({ ...new UpdateUserProjectsList(res[3]) });
+      dispatch({ ...new UpdateDegreesList(res[4])});
 
       dispatch({ ...new InitialDataFetched() });
     }).catch(() => {

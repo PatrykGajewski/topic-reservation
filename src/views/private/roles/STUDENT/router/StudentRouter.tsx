@@ -5,6 +5,7 @@ import { OwnedProjectsPage } from './pages/ownedProjectList';
 import { ProjectListPage } from './pages/projectList/ProjectListPage';
 import { AccountPage } from '../../REGISTERED_USER';
 import { Props } from './models';
+import {PromotersRank} from "../../EMPLOYEE/router/pages/promotersRanking";
 
 export const StudentRouter = (props: Props) => (
   <Switch>
@@ -21,7 +22,10 @@ export const StudentRouter = (props: Props) => (
         <ProjectListPage />
       )}
     />
-    <Route path="/promoters" render={() => <div />} />
+    <Route
+      path="/promoters"
+      render={() => <PromotersRank />}
+    />
     <Route
       exact
       path="/"
