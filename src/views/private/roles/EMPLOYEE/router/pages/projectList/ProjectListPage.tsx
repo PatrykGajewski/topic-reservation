@@ -1,5 +1,5 @@
 import React, {
-  ChangeEvent, useEffect, useRef, useState,
+  ChangeEvent, MutableRefObject, useEffect, useRef, useState,
 } from 'react';
 import { Button, Grid, TextField } from '@material-ui/core';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
@@ -22,7 +22,9 @@ import {
   Project, ProjectDegree, ProjectStatus, ProjectType, Tag,
 } from '../../../../../../../models/project';
 import { SelectOption } from '../../../../../../../models/forms';
-import { StyledErrorItem, StyledErrorList } from './styles';
+import {
+  StyledErrorItem, StyledErrorList, StyledInput, StyledFileSelectionContainer,
+} from './styles';
 import { _createProject } from './services';
 import { UpdateAvailableProjectsTable, UpdateUserProjectsList } from '../../../../../../../store/actions';
 import { SimpleSelect } from '../../../../../../components/forms';
@@ -40,7 +42,7 @@ import {
   _deleteProject, _fetchProjects, _updateProject, FetchProjectsResponse,
 } from '../../../services';
 import { MultipleSelect } from '../../../../../../components/forms/multiple-select';
-import {SimplifiedUser} from "../../../../../../../models/user";
+import { SimplifiedUser } from '../../../../../../../models/user';
 
 const projectTypeOptions: SelectOption[] = mapProjectTypeToOptions();
 const projectDegreeOptions: SelectOption[] = mapProjectDegreeToOptions();
@@ -116,6 +118,8 @@ const ProjectListPage = () => {
 
   const [editedProject, setEditedProject] = useState<Project | null>(null);
   const [projectEditModalOpen, setProjectEditModalOpen] = useState<boolean>(false);
+
+  const fileInputRef: MutableRefObject<HTMLInputElement | null> = useRef<HTMLInputElement | null>(null);
 
   const fetchProjects = () => {
     setViewState(ViewState.LOADING);
@@ -208,9 +212,9 @@ const ProjectListPage = () => {
       cathedralId: values.cathedral,
     })
       .then((res: Project) => {
-        console.log(res);
         toast.success('Project has been created');
         setProjectFormModalOpen((prev) => !prev);
+        fetchProjects();
       })
       .catch(() => {
         toast.error('Cannot create project');
@@ -219,8 +223,9 @@ const ProjectListPage = () => {
 
   const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fileExtension: string | null = (e.target.files && e.target.files.length && e.target.files[0].type.split('/')[1]) || null;
-
+    console.log(fileExtension);
     if (e.target.files) {
+      console.log(e.target.files);
       if (fileExtension && ['vnd.openxmlformats-officedocument.spreadsheetml.sheet'].includes(fileExtension)) {
         setTemplateToUpload(e.target.files[0]);
         if (invalidTemplate) {
@@ -230,6 +235,9 @@ const ProjectListPage = () => {
         toast.error('You can upload only xlsx file');
       }
     }
+    // @ts-ignore
+    // NOTE below set value is required to catch change when the same file has been attached
+    e.target.value = null;
   };
 
   const handleTemplateUpload = () => {
@@ -246,6 +254,7 @@ const ProjectListPage = () => {
           setTemplateUploadModal((prev) => !prev);
           toast.success(`${res.data.entries.length} thesis have been added`);
           setTemplateErrors([]);
+          fetchProjects();
         })
         .catch((e) => {
           setTemplateErrors((e.response && e.response.data && e.response.data.message) || ['Duplications found']);
@@ -315,6 +324,12 @@ const ProjectListPage = () => {
         .catch((err) => {
           toast.error('Cannot update project');
         });
+    }
+  };
+
+  const fileUploadButtonClick = () => {
+    if (fileInputRef.current !== null) {
+      fileInputRef.current.click();
     }
   };
 
@@ -426,17 +441,17 @@ const ProjectListPage = () => {
               </BarElement>
             </Grid>
             <Grid item container xs={12} alignItems="flex-end">
-              <Grid item xs={4} justify="center">
+              <Grid container item xs={4} justify="center">
                 <StyledIconButton onClick={() => setProjectFormModalOpen((prev) => !prev)}>
                   <AddCircleOutlineIcon />
                 </StyledIconButton>
               </Grid>
-              <Grid item xs={4} justify="center">
+              <Grid container item xs={4} justify="center">
                 <StyledIconButton onClick={() => setTemplateUploadModal((prev) => !prev)}>
                   <CloudUploadIcon />
                 </StyledIconButton>
               </Grid>
-              <Grid item xs={4} justify="center">
+              <Grid container item xs={4} justify="center">
                 <a
                   href={`${process.env.PUBLIC_URL}/templates/en_template.xlsx`}
                   target="_blank"
@@ -569,25 +584,32 @@ const ProjectListPage = () => {
                 <li>you will be assign as thesis promoter</li>
                 <li>reviewers list will be empty</li>
               </ul>
-              <input
-                name="templateInput"
-                type="file"
-                onChange={onFileUploadChange}
-                accept=".xlsx"
-              />
-              {templateErrors.length > 0 && (
-                <div>
-                  <p> Last uploaded template errors: </p>
-                  <StyledErrorList>
-                    {templateErrors.map((error: string, index: number) => (
-                      <StyledErrorItem
-                        key={index}
-                      >{error}
-                      </StyledErrorItem>
-                    ))}
-                  </StyledErrorList>
-                </div>
-              )}
+              <StyledFileSelectionContainer>
+                <Button onClick={fileUploadButtonClick} variant="outlined" color="primary">Upload file</Button>
+                <StyledInput
+                  ref={fileInputRef}
+                  name="templateInput"
+                  type="file"
+                  onChange={onFileUploadChange}
+                  accept=".xlsx"
+                />
+                {templateToUpload && (
+                  <span>{`Selected file: ${templateToUpload.name}`}</span>
+                )}
+                {templateErrors.length > 0 && (
+                  <div>
+                    <p> Last uploaded template errors: </p>
+                    <StyledErrorList>
+                      {templateErrors.map((error: string, index: number) => (
+                        <StyledErrorItem
+                          key={index}
+                        >{error}
+                        </StyledErrorItem>
+                      ))}
+                    </StyledErrorList>
+                  </div>
+                )}
+              </StyledFileSelectionContainer>
             </Popup>
           )}
           {projectEditModalOpen

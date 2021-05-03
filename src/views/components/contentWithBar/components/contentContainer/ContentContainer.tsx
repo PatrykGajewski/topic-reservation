@@ -3,7 +3,7 @@ import { StyledContentContainer } from './styles';
 import { Props } from './models';
 
 export const ContentContainer = (props: Props) => (
-  <StyledContentContainer container xs={9} sm={10}>
+  <StyledContentContainer container item xs={9} sm={10}>
     {props.children}
   </StyledContentContainer>
 );

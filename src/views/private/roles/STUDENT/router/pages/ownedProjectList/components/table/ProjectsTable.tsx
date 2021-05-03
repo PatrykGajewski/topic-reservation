@@ -1,7 +1,7 @@
 import React from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
 import styled, { css } from 'styled-components';
-import { Project } from '../../../../../../../../../models/project';
+import { Project, Tag } from '../../../../../../../../../models/project';
 import { Props } from './models';
 import { TableContainer, TagWrapper } from '../../styles';
 import { DotsMenu } from '../../../../../../../../components/dotsMenu';
@@ -146,7 +146,7 @@ export const ProjectsTable = (props: Props) => (
             <StyledTd width={ColumnWidth.Owners}>{project.owners.map((owner: SimplifiedUser) => `${owner.firstName} ${owner.lastName}`).join(' ,')}</StyledTd>
             <StyledTd width={ColumnWidth.Tags}>
               <StyledTagsContainer>
-                {project.tags.map((tag) => <TagWrapper>{tag.labelPL}</TagWrapper>)}
+                {project.tags.map((tag: Tag) => <TagWrapper key={tag.id}>{tag.labelPL}</TagWrapper>)}
               </StyledTagsContainer>
             </StyledTd>
             <StyledTd width={ColumnWidth.Department}>{project.department.namePL.short}</StyledTd>

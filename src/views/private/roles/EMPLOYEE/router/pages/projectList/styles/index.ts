@@ -10,8 +10,22 @@ const BarRow = styled(Grid)`
   margin: 10px;
 `;
 
+const StyledFileSelectionContainer = styled.div`
+  & > span {
+    display: block;
+    margin: 8px 0;
+  }
+
+`;
+
+const StyledInput = styled.input`
+  display: none;
+`;
+
 export {
   StyledErrorItem,
   StyledErrorList,
   BarRow,
+  StyledInput,
+  StyledFileSelectionContainer
 };

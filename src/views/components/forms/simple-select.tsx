@@ -50,7 +50,7 @@ export const SimpleSelect = (props: Props) => {
           onChange={handleChange}
         >
           {props.options.map((option: SelectOption) => (
-            <MenuItem value={option.value}>{option.label}</MenuItem>
+            <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
           ))}
         </Select>
       </FormControl>
