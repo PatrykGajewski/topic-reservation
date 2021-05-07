@@ -1,11 +1,11 @@
 import React from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
-import styled, { css } from 'styled-components';
-import { Project, Tag } from '../../../../../../../../../models/project';
-import { Props } from './models';
-import { TableContainer, TagWrapper } from '../../styles';
-import { DotsMenu } from '../../../../../../../../components/dotsMenu';
-import { SimplifiedUser } from '../../../../../../../../../models/user';
+import styled, {css} from 'styled-components';
+import {Project, ProjectStatus, Tag} from '../../../../../../../../../models/project';
+import {Props} from './models';
+import {TableContainer, TagWrapper} from '../../styles';
+import {DotsMenu} from '../../../../../../../../components/dotsMenu';
+import {SimplifiedUser} from '../../../../../../../../../models/user';
 
 export const StyledTable = styled.table<{maxHeight?: string}>`
   display: block;
@@ -152,7 +152,9 @@ export const ProjectsTable = (props: Props) => (
             <StyledTd width={ColumnWidth.Department}>{project.department.namePL.short}</StyledTd>
             <StyledTd width={ColumnWidth.Cathedral}>{project.cathedral.namePL}</StyledTd>
             <StyledTd width={ColumnWidth.Actions}>
-              <DotsMenu actions={props.rowActions} element={project} />
+              {project.status === ProjectStatus.AVAILABLE && (
+                <DotsMenu actions={props.rowActions} element={project} />
+              )}
             </StyledTd>
           </StyledTr>
         ))}

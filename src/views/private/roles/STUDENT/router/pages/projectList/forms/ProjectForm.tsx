@@ -7,13 +7,14 @@ import { SelectOption } from '../../../../../../../../models/forms';
 import { ProjectFormValidationSchema } from './ProjectFormValidationSchema';
 import { CathedralModel, DepartmentModel } from '../../../../../../../../models/university';
 import {FieldsRow, FieldWrapper} from "../../../../../../../public/router/pages/register/components/registerForm/styles";
+import {MultipleSelect} from "../../../../../../../components/forms/multiple-select";
 
 export interface ProjectFormValues {
   topic: string,
   description: string,
   type: ProjectType,
   degree: ProjectDegree,
-  tag: string,
+  tags: string[],
   promoter: string,
   department: string,
   university: string,
@@ -112,16 +113,14 @@ export const ProjectForm = (props: ProjectFormProps) => (
             />
           </FieldWrapper>
           <FieldWrapper>
-            <SimpleSelect
+            <MultipleSelect
+              options={props.tagsOptions}
+              selectedOptions={values.tags}
+              handleChange={(value: string[]) => setFieldValue('tags', value)}
               id="tag"
               labelId="tagLabel"
-              label="Select project main tag"
-              selectedOption={props.tagsOptions.find((option: SelectOption) => option.value === values.tag) as SelectOption}
-              handleChange={(value: string) => {
-                setFieldValue('tag', value);
-              }}
-              options={props.tagsOptions}
-            />
+              label="Select project tags"
+              />
           </FieldWrapper>
         </FieldsRow>
         <FieldsRow>

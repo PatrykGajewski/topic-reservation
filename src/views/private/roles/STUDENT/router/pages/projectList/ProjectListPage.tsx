@@ -143,7 +143,7 @@ export const ProjectListPage = () => {
     _createProject({
       topic: values.topic,
       description: values.description,
-      tag: values.tag,
+      tags: values.tags,
       type: values.type,
       degree: values.degree,
       userId: stateData.user.id,
@@ -357,7 +357,7 @@ export const ProjectListPage = () => {
                     topic: '',
                     description: '',
                     type: ProjectType.RESEARCH_WORK,
-                    tag: stateData.tags[0].id,
+                    tags: [],
                     department: university.departments[0].id,
                     university: university.id,
                     cathedral: university.departments[0].cathedrals[0].id,

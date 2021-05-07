@@ -8,8 +8,7 @@ export const ProjectFormValidationSchema = Yup.object().shape({
     .required(),
   type: Yup.mixed()
     .oneOf([ProjectType.RESEARCH_WORK, ProjectType.TECHNOLOGICAL_WORK, ProjectType.CONSTRUCTION_WORK, ProjectType.OVERVIEW_WORK]),
-  tag: Yup.string()
-    .required(),
+  tags: Yup.array(Yup.string()),
   university: Yup.string()
     .required(),
   department: Yup.string()

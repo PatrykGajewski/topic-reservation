@@ -1,8 +1,8 @@
 import { Project, Tag } from '../../../../../models/project';
-import { APISecured } from '../../../../../API';
+import { API, APISecured } from '../../../../../API';
 import { University } from '../../../../../models/university';
 import { SimplifiedUser, UserDegree } from '../../../../../models/user';
-import {Opinion} from "../../EMPLOYEE/router/pages/promotersRanking/services";
+import { Opinion } from '../../EMPLOYEE/router/pages/promotersRanking/services';
 
 export const _fetchUniversities = async (): Promise<University[]> => {
   try {
@@ -82,6 +82,24 @@ interface CreateOpinionParams {
 export const _createOpinion = async (params: CreateOpinionParams): Promise<Opinion> => {
   try {
     const { data, error } = await APISecured.post('/users/add/opinion', params);
+    if (error) {
+      return Promise.reject();
+    }
+    return Promise.resolve(data.entry as Opinion);
+  } catch (e) {
+    return Promise.reject();
+  }
+};
+
+interface UpdateOpinionParams {
+  opinionId: string,
+  content: string,
+  grade: number,
+}
+
+export const _updateOpinion = async (params: UpdateOpinionParams): Promise<Opinion> => {
+  try {
+    const { data, error } = await APISecured.put('/users/modify/opinion', params);
     if (error) {
       return Promise.reject();
     }
