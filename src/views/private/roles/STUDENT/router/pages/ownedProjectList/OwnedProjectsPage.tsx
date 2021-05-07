@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import { Grid } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useRef, useState} from 'react';
+import {Grid} from '@material-ui/core';
+import {useDispatch, useSelector} from 'react-redux';
 import Loader from 'react-loader-spinner';
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { SectionRow, SectionWithHeader } from 'views/private/components';
-import { ProjectReview, ProjectStatus } from '../../../../../../../models/project/models';
-import { ButtonType, Popup } from '../../../../../../components';
-import { AppState } from '../../../../../../../store/appState';
+import {SectionRow, SectionWithHeader} from 'views/private/components';
+import MessageIcon from '@material-ui/icons/Message';
+import {ProjectStatus} from '../../../../../../../models/project/models';
+import {ButtonType, Popup} from '../../../../../../components';
+import {AppState} from '../../../../../../../store/appState';
 
-import { Project } from '../../../../../../../models/project';
-import { ContentWrapper, StyledIconButton } from '../../../../REGISTERED_USER/router/pages/account/styles';
+import {Project} from '../../../../../../../models/project';
+import {ContentWrapper, StyledIconButton} from '../../../../REGISTERED_USER/router/pages/account/styles';
 import {
   ButtonsContainer,
   HighlightedText,
@@ -20,22 +21,35 @@ import {
   StyledContainer,
   TagWrapper,
 } from './styles';
-import { _updateProject } from './services';
-import { UpdateUserProjectsList } from '../../../../../../../store/actions';
-import { mapProjectStatusToColor, mapProjectTypeToText } from '../../../../../../../utils/mappers';
+import {_updateProject} from './services';
+import {UpdateUserProjectsList} from '../../../../../../../store/actions';
+import {mapProjectStatusToColor, mapProjectTypeToText} from '../../../../../../../utils/mappers';
+import {PromoterOpinionForm} from './forms';
+import {PromoterOpinionFormValues} from './forms/promotersOpinion/models/form-values.model';
+import {Opinion} from '../../../../EMPLOYEE/router/pages/promotersRanking/services';
+import {_createOpinion} from '../../../services';
+import {ViewState} from '../../../../../../../models/other';
+
+const getCurrentSubjectOpinion = (subjectId: string, opinions: Opinion[]): Opinion | null => (
+  opinions.find((opinion: Opinion) => opinion.subject.id === subjectId) || null
+);
 
 const OwnedProjectsPage = () => {
+  const dispatch = useDispatch();
+  const [viewState, setViewState] = useState<ViewState>(ViewState.OK);
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
   const [editModelOpen, setEditModalOpen] = useState<boolean>(false);
   // NOTE below project might be deleted or edited
   const [editedProject, setEditedProject] = useState<Project | null>(null);
-  const dispatch = useDispatch();
+
+  const [opinionSubject, setOpinionSubject] = useState<Project | null>(null);
+  const [opinionModal, setOpinionModal] = useState<boolean>(false);
+  const opinionButtonRef = useRef<HTMLButtonElement | null>(null);
+
   const stateData = useSelector((state: AppState) => ({
-    loading: state.loading,
-    success: state.success,
-    error: state.error,
     projects: state.userProjects,
     user: state.user,
+    degrees: state.degrees,
   }));
 
   const updateProject = async (projectId: string, updates: any): Promise<any> => (
@@ -82,12 +96,36 @@ const OwnedProjectsPage = () => {
     }
   };
 
+  const createPromoterOpinion = (values: PromoterOpinionFormValues) => {
+    if (opinionSubject) {
+      setViewState(ViewState.LOADING);
+      _createOpinion({
+        targetId: opinionSubject.promoter.id,
+        content: values.content,
+        projectId: opinionSubject.id,
+        grade: values.grade,
+      })
+        .then((opinion: Opinion) => {
+          console.log(opinion);
+          setOpinionModal((prev) => !prev);
+          toast.success('Opinions has been added');
+          setViewState(ViewState.OK);
+        })
+        .catch(() => {
+        toast.error('Cannot add opinion');
+        });
+    }
+  };
+
+  const updatePromoterOpinion = (values: PromoterOpinionFormValues) => {
+    console.log(values);
+  }
+
+  const currentSubjectOpinion: Opinion | null = opinionSubject ? getCurrentSubjectOpinion(opinionSubject.id, opinionSubject.promoter.opinions) : null;
+
   return (
     <>
-      {stateData.error && (
-        <div>Error message: {stateData.error}</div>
-      )}
-      {stateData.loading && (
+      {viewState === ViewState.LOADING && (
         <StyledContainer>
           <Loader
             type="Puff"
@@ -97,7 +135,7 @@ const OwnedProjectsPage = () => {
           />
         </StyledContainer>
       )}
-      {stateData.success && (
+      {viewState === ViewState.OK && (
         <ContentWrapper>
           <ProjectsContainer>
             {stateData.projects.map((project) => (
@@ -153,7 +191,7 @@ const OwnedProjectsPage = () => {
                     <Grid item xs={12}>
                       {project.status === ProjectStatus.FINISHED && (
                         <>
-{/*                          {project.reviews.map((review: ProjectReview) => (
+                          {/*                          {project.reviews.map((review: ProjectReview) => (
                             <div
                               key={review.id}
                             >
@@ -161,7 +199,7 @@ const OwnedProjectsPage = () => {
                               <p>{review.content}</p>
                               <p>{review.grade}</p>
                             </div>
-                          ))}*/}
+                          ))} */}
                         </>
                       )}
                     </Grid>
@@ -179,18 +217,32 @@ const OwnedProjectsPage = () => {
                       </Grid>
                     )}
                   </Grid>
-                  {project.status !== ProjectStatus.FINISHED && (
-                    <Grid item xs={1}>
-                      <ButtonsContainer>
-                        <StyledIconButton onClick={() => handleDeleteOwnership(project)}>
-                          <DeleteIcon />
-                        </StyledIconButton>
-                        <StyledIconButton onClick={() => handleEdit(project)}>
-                          <EditIcon />
-                        </StyledIconButton>
-                      </ButtonsContainer>
-                    </Grid>
-                  )}
+                  {project.status === ProjectStatus.FINISHED
+                    ? (
+                      <Grid item xs={1}>
+                        <ButtonsContainer>
+                          <StyledIconButton onClick={() => {
+                            setOpinionSubject(project);
+                            setOpinionModal((prev) => !prev);
+                          }}
+                          >
+                            <MessageIcon />
+                          </StyledIconButton>
+                        </ButtonsContainer>
+                      </Grid>
+                    )
+                    : (
+                      <Grid item xs={1}>
+                        <ButtonsContainer>
+                          <StyledIconButton onClick={() => handleDeleteOwnership(project)}>
+                            <DeleteIcon />
+                          </StyledIconButton>
+{/*                          <StyledIconButton onClick={() => handleEdit(project)}>
+                            <EditIcon />
+                          </StyledIconButton>*/}
+                        </ButtonsContainer>
+                      </Grid>
+                    )}
                 </Grid>
               </ProjectWrapper>
             ))}
@@ -242,6 +294,81 @@ const OwnedProjectsPage = () => {
             </Popup>
           )}
         </ContentWrapper>
+      )}
+      {opinionModal
+      && opinionSubject
+      && (
+        currentSubjectOpinion
+          ? (
+            <Popup
+              header="Edit promoter opinion"
+              handleClose={() => setOpinionModal((prev) => !prev)}
+              buttonsConfig={[
+                {
+                  label: 'Cancel',
+                  disabled: false,
+                  onClick: () => setOpinionModal((prev) => !prev),
+                  buttonType: ButtonType.SECONDARY,
+                },
+                {
+                  label: 'Update',
+                  disabled: false,
+                  onClick: () => {
+                    if (opinionButtonRef.current) {
+                      opinionButtonRef.current.click();
+                    }
+                  },
+                  buttonType: ButtonType.PRIMARY,
+                },
+              ]}
+            >
+              <PromoterOpinionForm
+                initialValues={{
+                  content: currentSubjectOpinion.content,
+                  grade: currentSubjectOpinion.grade,
+                }}
+                project={opinionSubject}
+                onSubmit={updatePromoterOpinion}
+                submitBtnRef={opinionButtonRef}
+                degrees={stateData.degrees}
+              />
+            </Popup>
+          )
+          : (
+            <Popup
+              header="Add promoter opinion"
+              handleClose={() => setOpinionModal((prev) => !prev)}
+              buttonsConfig={[
+                {
+                  label: 'Cancel',
+                  disabled: false,
+                  onClick: () => setOpinionModal((prev) => !prev),
+                  buttonType: ButtonType.SECONDARY,
+                },
+                {
+                  label: 'Create',
+                  disabled: false,
+                  onClick: () => {
+                    if (opinionButtonRef.current) {
+                      opinionButtonRef.current.click();
+                    }
+                  },
+                  buttonType: ButtonType.PRIMARY,
+                },
+              ]}
+            >
+              <PromoterOpinionForm
+                initialValues={{
+                  content: '',
+                  grade: 5,
+                }}
+                project={opinionSubject}
+                onSubmit={createPromoterOpinion}
+                submitBtnRef={opinionButtonRef}
+                degrees={stateData.degrees}
+              />
+            </Popup>
+          )
       )}
     </>
   );

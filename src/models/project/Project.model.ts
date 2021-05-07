@@ -1,6 +1,7 @@
 import {ProjectStatus, ProjectDegree, ProjectType, ProjectReview} from "./models";
 import {Tag} from "../tags";
 import {SimplifiedUser} from "../user";
+import {SimplifiedUserWithOpinions} from "../../views/private/roles/EMPLOYEE/router/pages/promotersRanking/services";
 
 export interface Project {
   id: string,
@@ -9,7 +10,7 @@ export interface Project {
   description: string,
   degree: ProjectDegree,
   status: ProjectStatus,
-  promoter: SimplifiedUser,
+  promoter: SimplifiedUserWithOpinions,
   groupProject: boolean,
   university: {
     id: string,

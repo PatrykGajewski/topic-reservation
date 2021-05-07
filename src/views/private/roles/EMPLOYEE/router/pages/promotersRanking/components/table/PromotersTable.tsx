@@ -20,7 +20,7 @@ import {getHighestDegree} from "utils/getters";
 import {mapDegreesIdsToDegrees} from "../../../../../../../../../utils/mappers/map-degreesIds-to-degrees";
 import {UserDegree} from "../../../../../../../../../models/user";
 
-const StyledRatingContainer = styled.div`
+export const StyledRatingContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -44,7 +44,7 @@ enum ColumnWidth {
   Rating = '25%',
 }
 
-const mapRatingToText = (rating: number): string => {
+export const mapRatingToText = (rating: number): string => {
   switch (rating) {
   case 0:
     return 'Nie oceniono';

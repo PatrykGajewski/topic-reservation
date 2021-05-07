@@ -2,6 +2,7 @@ import { Project, Tag } from '../../../../../models/project';
 import { APISecured } from '../../../../../API';
 import { University } from '../../../../../models/university';
 import { SimplifiedUser, UserDegree } from '../../../../../models/user';
+import {Opinion} from "../../EMPLOYEE/router/pages/promotersRanking/services";
 
 export const _fetchUniversities = async (): Promise<University[]> => {
   try {
@@ -67,6 +68,25 @@ export const _fetchDegrees = async (): Promise<UserDegree[]> => {
     return Promise.resolve(data.entries as UserDegree[]);
   } catch (error) {
     console.log(error);
+    return Promise.reject();
+  }
+};
+
+interface CreateOpinionParams {
+  targetId: string,
+  content: string,
+  projectId: string,
+  grade: number,
+}
+
+export const _createOpinion = async (params: CreateOpinionParams): Promise<Opinion> => {
+  try {
+    const { data, error } = await APISecured.post('/users/add/opinion', params);
+    if (error) {
+      return Promise.reject();
+    }
+    return Promise.resolve(data.entry as Opinion);
+  } catch (e) {
     return Promise.reject();
   }
 };
