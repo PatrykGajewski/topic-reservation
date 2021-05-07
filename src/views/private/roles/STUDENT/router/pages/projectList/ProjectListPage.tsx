@@ -33,6 +33,7 @@ import { EmptyStateContainer } from '../../../../../components/initialDataError/
 import { SimplifiedUser } from '../../../../../../../models/user';
 import { _fetchProjects, FetchProjectsResponse } from '../../../../EMPLOYEE/services';
 import { MultipleSelect } from '../../../../../../components/forms/multiple-select';
+import {ProjectDetails} from "../../../../EMPLOYEE/router/pages/projectList/components";
 
 export const ProjectListPage = () => {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ export const ProjectListPage = () => {
     tags: state.tags,
     universities: state.universities,
     promoters: state.promoters,
+    degrees: state.degrees,
   }));
 
   const [university, setUniversity] = useState<University | null>(null);
@@ -61,6 +63,9 @@ export const ProjectListPage = () => {
     total: stateData.tableConfig.total,
     rowsPerPage: stateData.tableConfig.rowsPerPage,
   });
+
+  const [previewedProject, setPreviewedProject] = useState<Project | null>(null);
+  const [projectPreviewModal, setProjectPreviewModal] = useState<boolean>(false);
 
   const [projectFormModalOpen, setProjectFormModalOpen] = useState<boolean>(false);
   const projectSubmitBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -186,6 +191,12 @@ export const ProjectListPage = () => {
     }));
   };
 
+  const openProjectPreview = (project: Project) => {
+    console.log('click');
+    setPreviewedProject(project);
+    setProjectPreviewModal((prev) => !prev);
+  };
+
   const filtersNotSubmitted: boolean = stateData.tableConfig.searchString !== searchString
     || stateData.tableConfig.projectsTypes !== projectsTypes
     || stateData.tableConfig.projectsStatuses !== projectsStatuses
@@ -303,7 +314,7 @@ export const ProjectListPage = () => {
                     action: handleReserveProject,
                   },
                 ]}
-                onRowClick={(project: Project) => {}}
+                onRowClick={openProjectPreview}
               />
             ) : (
               <EmptyStateContainer>
@@ -367,6 +378,27 @@ export const ProjectListPage = () => {
                   submitBtnRef={projectSubmitBtnRef}
                   departments={university.departments}
                 />
+              </Popup>
+            )}
+            {projectPreviewModal
+            && previewedProject && (
+              <Popup
+                header="Project preview"
+                handleClose={() => {
+                  setProjectPreviewModal((prev) => !prev);
+                }}
+                buttonsConfig={[
+                  {
+                    label: 'Close',
+                    disabled: false,
+                    onClick: () => {
+                      setProjectPreviewModal((prev) => !prev);
+                    },
+                    buttonType: ButtonType.SECONDARY,
+                  }
+                ]}
+              >
+                <ProjectDetails project={previewedProject} degrees={stateData.degrees} />
               </Popup>
             )}
           </ContentContainer>

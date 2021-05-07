@@ -31,7 +31,7 @@ export const ProjectDetails = (props: Props) => {
           <SectionRow header="Tags" content={props.project.tags.map((tag: Tag) => tag.labelPL).join(', ')} />
         )}
       </SectionWithHeader>
-      <SectionWithHeader header="Ownership" >
+      <SectionWithHeader header="Ownership">
         {highestPromoterDegree ? (
           highestPromoterDegree.pl.short
             ? (<SectionRow header="Promoter" content={`${highestPromoterDegree.pl.short} ${props.project.promoter.firstName} ${props.project.promoter.lastName}`} />)
