@@ -303,6 +303,7 @@ export const ProjectListPage = () => {
                     action: handleReserveProject,
                   },
                 ]}
+                onRowClick={(project: Project) => {}}
               />
             ) : (
               <EmptyStateContainer>

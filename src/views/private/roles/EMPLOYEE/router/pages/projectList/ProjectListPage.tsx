@@ -36,13 +36,14 @@ import { mapProjectStatusToOptions, mapProjectTypeToOptions } from '../../../../
 import { mapProjectDegreeToOptions } from '../../../../../../../utils/mappers/map-project-degree-to-options';
 import { EmptyStateContainer } from '../../../../../components/initialDataError/styles';
 import { ProjectsTable } from '../../../../STUDENT/router/pages/ownedProjectList/components';
-import { StyledContainer } from '../../../../STUDENT/router/pages/ownedProjectList';
+import {HighlightedText, StyledContainer} from '../../../../STUDENT/router/pages/ownedProjectList';
 import { APISecured, MultiResponse } from '../../../../../../../API';
 import {
   _deleteProject, _fetchProjects, _updateProject, FetchProjectsResponse,
 } from '../../../services';
 import { MultipleSelect } from '../../../../../../components/forms/multiple-select';
 import { SimplifiedUser } from '../../../../../../../models/user';
+import {ProjectDetails} from "./components";
 
 export const projectTypeOptions: SelectOption[] = mapProjectTypeToOptions();
 export const projectDegreeOptions: SelectOption[] = mapProjectDegreeToOptions();
@@ -87,6 +88,7 @@ const ProjectListPage = () => {
     universities: state.universities,
     promoters: state.promoters,
     students: state.students,
+    degrees: state.degrees,
   }));
 
   const [university, setUniversity] = useState<University | null>(null);
@@ -118,6 +120,12 @@ const ProjectListPage = () => {
 
   const [editedProject, setEditedProject] = useState<Project | null>(null);
   const [projectEditModalOpen, setProjectEditModalOpen] = useState<boolean>(false);
+
+  const [deletedProject, setDeletedProject] = useState<Project | null>(null);
+  const [deleteProjectModal, setDeleteProjectModal] = useState<boolean>(false);
+
+  const [previewedProject, setPreviewedProject] = useState<Project | null>(null);
+  const [projectPreviewModal, setProjectPreviewModal] = useState<boolean>(false);
 
   const fileInputRef: MutableRefObject<HTMLInputElement | null> = useRef<HTMLInputElement | null>(null);
 
@@ -180,22 +188,25 @@ const ProjectListPage = () => {
     }));
   };
 
-  const handleDeleteProject = (project: Project) => {
-    setViewState(ViewState.LOADING);
-    _deleteProject(project.id)
-      .then((deletedProject: Project) => {
-        setProjects((prev) => prev.filter((prevProject) => prevProject.id !== project.id));
-        setPageConfig((prev) => ({
-          ...prev,
-          total: prev.total - 1,
-        }));
-        toast.success('Project has been deleted');
-        setViewState(ViewState.OK);
-      })
-      .catch(() => {
-        toast.error('Project reservation error');
-        setViewState(ViewState.ERROR);
-      });
+  const handleDeleteProject = () => {
+    if (deletedProject) {
+      setViewState(ViewState.LOADING);
+      _deleteProject(deletedProject.id)
+        .then(() => {
+          setProjects((prev: Project[]) => prev.filter((prevProject: Project) => prevProject.id !== deletedProject.id));
+          setPageConfig((prev) => ({
+            ...prev,
+            total: prev.total - 1,
+          }));
+          toast.success('Project has been deleted');
+          setViewState(ViewState.OK);
+          setDeleteProjectModal((prev) => !prev);
+        })
+        .catch(() => {
+          toast.error('Project reservation error');
+          setViewState(ViewState.ERROR);
+        });
+    }
   };
 
   const handleSubmitProjectForm = (values: ProjectFormValues): void => {
@@ -301,7 +312,7 @@ const ProjectListPage = () => {
   };
 
   const handleEditProject = (project: Project) => {
-    setEditedProject(cloneDeep(project));
+    setEditedProject(project);
     setProjectEditModalOpen((prev) => !prev);
   };
 
@@ -331,6 +342,11 @@ const ProjectListPage = () => {
     if (fileInputRef.current !== null) {
       fileInputRef.current.click();
     }
+  };
+
+  const openProjectPreview = (project: Project) => {
+    setPreviewedProject(project);
+    setProjectPreviewModal((prev) => !prev);
   };
 
   const filtersNotSubmitted: boolean = stateData.tableConfig.searchString !== searchString
@@ -473,7 +489,10 @@ const ProjectListPage = () => {
                   {
                     id: 'delete',
                     label: 'Delete',
-                    action: handleDeleteProject,
+                    action: (project: Project) => {
+                      setDeletedProject(project);
+                      setDeleteProjectModal((prev) => !prev);
+                    },
                   },
                   {
                     id: 'edit',
@@ -486,6 +505,7 @@ const ProjectListPage = () => {
                 onChangePage={handlePageChange}
                 rowsPerPage={pageConfig.rowsPerPage}
                 onChangeRowsPerPage={handleRowPerPageChange}
+                onRowClick={openProjectPreview}
               />
             ) : (
               <EmptyStateContainer>
@@ -675,6 +695,69 @@ const ProjectListPage = () => {
                 ownerOptions={stateData.students
                   .map((student: SimplifiedUser): SelectOption => ({ label: `${student.firstName} ${student.lastName}`, value: student.id }))}
               />
+            </Popup>
+          )}
+          {deleteProjectModal
+          && deletedProject
+          && (
+            <Popup
+              header="Delete project confirmation"
+              handleClose={() => {
+                setDeleteProjectModal((prev) => !prev);
+                setDeletedProject(null);
+              }}
+              buttonsConfig={[
+                {
+                  label: 'Cancel',
+                  disabled: false,
+                  onClick: () => {
+                    setDeleteProjectModal((prev) => !prev);
+                    setDeletedProject(null);
+                  },
+                  buttonType: ButtonType.SECONDARY,
+                },
+                {
+                  label: 'Delete',
+                  disabled: false,
+                  onClick: () => handleDeleteProject(),
+                  buttonType: ButtonType.DANGER,
+                },
+              ]}
+            >
+              <div>Are you sure you want delete project:
+                <HighlightedText>{`${deletedProject.topic}`}</HighlightedText>?
+              </div>
+            </Popup>
+          )}
+          {projectPreviewModal
+          && previewedProject && (
+            <Popup
+              header="Project preview"
+              handleClose={() => {
+                setProjectPreviewModal((prev) => !prev);
+              }}
+              buttonsConfig={[
+                {
+                  label: 'Close',
+                  disabled: false,
+                  onClick: () => {
+                    setProjectPreviewModal((prev) => !prev);
+                  },
+                  buttonType: ButtonType.SECONDARY,
+                },
+                {
+                  label: 'Edit',
+                  disabled: false,
+                  onClick: () => {
+                    setProjectPreviewModal((prev) => !prev);
+                    setEditedProject(previewedProject);
+                    setProjectEditModalOpen((prev) => !prev);
+                  },
+                  buttonType: ButtonType.PRIMARY,
+                },
+              ]}
+            >
+              <ProjectDetails project={previewedProject} degrees={stateData.degrees} />
             </Popup>
           )}
         </ContentWrapper>

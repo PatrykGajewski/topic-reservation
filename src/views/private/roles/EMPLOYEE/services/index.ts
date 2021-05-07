@@ -55,9 +55,9 @@ export const _fetchProjects = async (params: Params): Promise<FetchProjectsRespo
   }
 };
 
-export const _deleteProject = async (projectId: String): Promise<Project> => (
+export const _deleteProject = async (projectId: String): Promise<any> => (
   APISecured.delete(`/projects/${projectId}`)
-    .then((res: SingleResponse<Project>) => Promise.resolve(res.data.entry))
+    .then((res: any) => Promise.resolve())
     .catch((err) => Promise.reject(err))
 );
 

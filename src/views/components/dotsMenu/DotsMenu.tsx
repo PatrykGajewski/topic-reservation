@@ -14,10 +14,12 @@ export const DotsMenu = (props: Props<Project>) => {
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
     setAnchorEl(null);
   };
 
@@ -36,7 +38,7 @@ export const DotsMenu = (props: Props<Project>) => {
         anchorEl={anchorEl}
         keepMounted
         open={open}
-        onClose={handleClose}
+        onClose={(e) => handleClose(e as React.MouseEvent<HTMLElement>)}
         PaperProps={{
           style: {
             maxHeight: ITEM_HEIGHT * 4.5,
@@ -48,9 +50,9 @@ export const DotsMenu = (props: Props<Project>) => {
           <MenuItem
             key={option.id}
             selected={false}
-            onClick={() => {
+            onClick={(e: React.MouseEvent<HTMLElement>) => {
               option.action(props.element);
-              handleClose();
+              handleClose(e);
             }}
           >
             {option.label}

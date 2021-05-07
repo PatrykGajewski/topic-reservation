@@ -10,3 +10,4 @@ export * from './map-project-status-to-text';
 export * from './map-degreesIds-to-degrees';
 export * from './map-degrees-to-options';
 export * from './map-gender-to-text';
+export * from './present-date';

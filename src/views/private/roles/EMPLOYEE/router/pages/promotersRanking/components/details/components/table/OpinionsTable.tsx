@@ -36,8 +36,8 @@ export const OpinionsTable = (props: Props) => (
       <StyledTableFoot />
       <StyledTableBody>
         {props.opinions.map((opinion: Opinion) => {
-          const promoterDegrees: UserDegree[] = mapDegreesIdsToDegrees(opinion.author.degrees, props.degrees);
-          const highestDegree: UserDegree | null = getHighestDegree(promoterDegrees);
+          const authorDegrees: UserDegree[] = mapDegreesIdsToDegrees(opinion.author.degrees, props.degrees);
+          const highestDegree: UserDegree | null = getHighestDegree(authorDegrees);
 
           return (
             <StyledTr key={opinion.id}>
@@ -48,9 +48,11 @@ export const OpinionsTable = (props: Props) => (
                   size={AvatarBoxSize.MINI}
                 />
               </StyledTd>
-              <StyledTd width={ColumnWidth.Author}>{highestDegree
-                ? `${highestDegree.pl.short} ${opinion.author.firstName} ${opinion.author.lastName}`
-                : `${opinion.author.firstName} ${opinion.author.lastName}`}
+              <StyledTd width={ColumnWidth.Author}>{highestDegree && (
+                highestDegree.pl.short
+                  ? `${highestDegree.pl.short} ${opinion.author.firstName} ${opinion.author.lastName}`
+                  : `${highestDegree.pl.full} ${opinion.author.firstName} ${opinion.author.lastName}`
+              )}
               </StyledTd>
               <StyledTd width={ColumnWidth.ProjectDegree}>{mapProjectDegreeToText(opinion.subject.degree)}</StyledTd>
               <StyledTd width={ColumnWidth.Content}>{opinion.content}</StyledTd>

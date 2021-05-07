@@ -14,4 +14,5 @@ export interface Props {
   rowsPerPage: number,
   onChangeRowsPerPage: (e: any) => void,
   rowActions: MenuAction<Project>[],
+  onRowClick: (project: Project) => void,
 }

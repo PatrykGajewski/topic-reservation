@@ -139,7 +139,7 @@ export const ProjectsTable = (props: Props) => (
       </StyledTableFoot>
       <StyledTableBody>
         {props.projects.map((project: Project) => (
-          <StyledTr key={project.id}>
+          <StyledTr key={project.id} clickable onClick={() => props.onRowClick(project)}>
             <StyledTd width={ColumnWidth.Topic}>{project.topic}</StyledTd>
             <StyledTd width={ColumnWidth.Description}>{project.description}</StyledTd>
             <StyledTd width={ColumnWidth.Promoter}>{`${project.promoter.firstName} ${project.promoter.lastName}`}</StyledTd>

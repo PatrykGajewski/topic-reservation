@@ -42,6 +42,6 @@ export interface Project {
   owners: SimplifiedUser[],
   reviewers: SimplifiedUser[],
   tags: Tag[],
-  createdAt: Date,
-  updatedAt: Date,
+  createdAt: string,
+  updatedAt: string,
 }
