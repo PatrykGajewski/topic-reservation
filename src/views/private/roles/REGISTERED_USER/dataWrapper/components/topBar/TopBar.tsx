@@ -15,10 +15,10 @@ export const RegisteredUserTopBar = () => (
       <Grid container justify="flex-end">
         <Grid item sm={3} xs={12}><StyledLink to="/logout">Logout</StyledLink></Grid>
       </Grid>
-      <Grid container justify="center">
+      <Grid container justify="flex-end">
         <Grid item sm={3} xs={8}><StyledLink to="/">Account</StyledLink></Grid>
-        <Grid item sm={3} xs={8}><StyledLink to="/projects">Projects list</StyledLink></Grid>
-        <Grid item sm={3} xs={8}><StyledLink to="/promoters">Promoters ranking</StyledLink></Grid>
+{/*        <Grid item sm={3} xs={8}><StyledLink to="/projects">Projects list</StyledLink></Grid>
+        <Grid item sm={3} xs={8}><StyledLink to="/promoters">Promoters ranking</StyledLink></Grid>*/}
       </Grid>
     </Grid>
   </TopBarContainer>
