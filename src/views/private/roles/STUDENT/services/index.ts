@@ -1,4 +1,6 @@
-import { Project, Tag } from '../../../../../models/project';
+import {
+  Project, ProjectDegree, ProjectType, Tag,
+} from '../../../../../models/project';
 import { API, APISecured } from '../../../../../API';
 import { University } from '../../../../../models/university';
 import { SimplifiedUser, UserDegree } from '../../../../../models/user';
@@ -104,6 +106,47 @@ export const _updateOpinion = async (params: UpdateOpinionParams): Promise<Opini
       return Promise.reject();
     }
     return Promise.resolve(data.entry as Opinion);
+  } catch (e) {
+    return Promise.reject();
+  }
+};
+
+interface UpdateDraftProjectParams {
+  topic: string,
+  description: string,
+  tags: string[],
+  type: ProjectType,
+  degree: ProjectDegree,
+  promoterId: string,
+  universityId: string,
+  departmentId: string,
+  cathedralId: string,
+}
+
+export const _updateDraftProject = async (
+  params: UpdateDraftProjectParams,
+  projectId: string,
+): Promise<Project> => {
+  try {
+    const { data, error } = await APISecured.put(`/projects/draft/${projectId}`, params);
+    if (error) {
+      return Promise.reject();
+    }
+    return Promise.resolve(data.entry as Project);
+  } catch (e) {
+    return Promise.reject();
+  }
+};
+
+export const _deleteDraftProject = async (
+  projectId: string,
+): Promise<any> => {
+  try {
+    const { error } = await APISecured.delete(`/projects/draft/${projectId}`);
+    if (error) {
+      return Promise.reject();
+    }
+    return Promise.resolve();
   } catch (e) {
     return Promise.reject();
   }

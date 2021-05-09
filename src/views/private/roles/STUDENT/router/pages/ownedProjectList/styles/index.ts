@@ -18,7 +18,7 @@ export const ButtonsContainer = styled.div`
   height: 100%;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   
   button + button {
     margin: 5px 0;

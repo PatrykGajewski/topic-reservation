@@ -12,12 +12,17 @@ import EditIcon from '@material-ui/icons/Edit';
 import { ProjectStatus } from '../../../../../../../models/project/models';
 import { ButtonType, Popup } from '../../../../../../components';
 import { AppState } from '../../../../../../../store/appState';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 import { Project } from '../../../../../../../models/project';
 import { ContentWrapper, StyledIconButton } from '../../../../REGISTERED_USER/router/pages/account/styles';
 import {
-  ButtonsContainer, ProjectsContainer, ProjectWrapper, StyledContainer, TagWrapper,
+  ButtonsContainer,
   HighlightedText,
+  ProjectsContainer,
+  ProjectWrapper,
+  StyledContainer,
+  TagWrapper,
 } from './styles';
 import { _updateProject } from './services';
 import { UpdateUserProjectsList } from '../../../../../../../store/actions';
@@ -30,12 +35,14 @@ import {
 import { PromoterOpinionForm } from './forms';
 import { PromoterOpinionFormValues } from './forms/promotersOpinion/models/form-values.model';
 import { Opinion } from '../../../../EMPLOYEE/router/pages/promotersRanking/services';
-import { _createOpinion, _updateOpinion } from '../../../services';
+import {
+  _createOpinion, _deleteDraftProject, _updateDraftProject, _updateOpinion,
+} from '../../../services';
 import { ViewState } from '../../../../../../../models/other';
-import {ProjectForm, ProjectFormValues} from "../projectList/forms";
-import {SelectOption} from "../../../../../../../models/forms";
-import { projectDegreeOptions, projectTypeOptions } from "../../../../EMPLOYEE/router/pages";
-import {SimplifiedUser} from "../../../../../../../models/user";
+import { ProjectForm, ProjectFormValues } from '../projectList/forms';
+import { SelectOption } from '../../../../../../../models/forms';
+import { projectDegreeOptions, projectTypeOptions } from '../../../../EMPLOYEE/router/pages';
+import { SimplifiedUser } from '../../../../../../../models/user';
 
 const getCurrentSubjectOpinion = (subjectId: string, opinions: Opinion[]): Opinion | null => (
   opinions.find((opinion: Opinion) => opinion.subject.id === subjectId) || null
@@ -44,7 +51,7 @@ const getCurrentSubjectOpinion = (subjectId: string, opinions: Opinion[]): Opini
 const OwnedProjectsPage = () => {
   const dispatch = useDispatch();
   const [viewState, setViewState] = useState<ViewState>(ViewState.OK);
-  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+  const [deleteOwnershipModalOpen, setDeleteOwnershipModalOpen] = useState<boolean>(false);
   const [editModelOpen, setEditModalOpen] = useState<boolean>(false);
   // NOTE below project might be deleted or edited
   const [editedProject, setEditedProject] = useState<Project | null>(null);
@@ -53,6 +60,9 @@ const OwnedProjectsPage = () => {
   const [opinionModal, setOpinionModal] = useState<boolean>(false);
   const opinionButtonRef = useRef<HTMLButtonElement | null>(null);
   const editProjectBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  const [deletedProject, setDeletedProject] = useState<Project | null>(null);
+  const [deleteDraftModalOpen, setDeleteDraftModalOpen] = useState<boolean>(false);
 
   const stateData = useSelector((state: AppState) => ({
     projects: state.userProjects,
@@ -81,7 +91,7 @@ const OwnedProjectsPage = () => {
   );
 
   const handleDeleteOwnership = (project: Project) => {
-    setDeleteModalOpen((prev) => !prev);
+    setDeleteOwnershipModalOpen((prev) => !prev);
     setEditedProject(project);
   };
 
@@ -99,11 +109,11 @@ const OwnedProjectsPage = () => {
       }).catch((e) => {
         toast.error('Cannot delete ownership');
       }).finally(() => {
-        setDeleteModalOpen((prev) => !prev);
+        setDeleteOwnershipModalOpen((prev) => !prev);
       });
     } else {
       console.log('Cannot find edited project');
-      setDeleteModalOpen((prev) => !prev);
+      setDeleteOwnershipModalOpen((prev) => !prev);
     }
   };
 
@@ -171,9 +181,62 @@ const OwnedProjectsPage = () => {
   };
 
   const handleProjectUpdate = (values: ProjectFormValues) => {
-    // TODO finish project update
-    console.log(values);
-    setEditModalOpen((prev) => !prev);
+    if (editedProject) {
+      setViewState(ViewState.LOADING);
+      _updateDraftProject({
+        topic: values.topic,
+        description: values.description,
+        tags: values.tags,
+        type: values.type,
+        degree: values.degree,
+        promoterId: values.promoter,
+        universityId: values.university,
+        departmentId: values.department,
+        cathedralId: values.cathedral,
+      }, editedProject.id)
+        .then((updatedProject: Project) => {
+          const updatedProjectIndex: number = stateData.projects.findIndex((project: Project) => project.id === updatedProject.id);
+          if (updatedProjectIndex !== -1) {
+            const updatedProjectList = cloneDeep(stateData.projects);
+            updatedProjectList[updatedProjectIndex] = updatedProject;
+            dispatch({ ...new UpdateUserProjectsList(updatedProjectList) });
+          } else {
+            console.log('Cannot find project on project list');
+          }
+
+          toast.success('Draft project has been updated');
+          setEditModalOpen((prev) => !prev);
+          setViewState(ViewState.OK);
+        })
+        .catch(() => {
+          toast.error('Cannot update draft project');
+          setViewState(ViewState.OK);
+        });
+    }
+  };
+
+  const handleDeleteDraft = () => {
+    if (deletedProject) {
+      setViewState(ViewState.LOADING);
+      _deleteDraftProject(deletedProject.id)
+        .then(() => {
+          const deletedProjectIndex: number = stateData.projects.findIndex((project: Project) => project.id === deletedProject.id);
+          if (deletedProjectIndex !== -1) {
+            const updatedProjectsList: Project[] = stateData.projects
+              .filter((project: Project) => project.id !== deletedProject.id);
+
+            dispatch({ ...new UpdateUserProjectsList(updatedProjectsList) });
+          }
+
+          setDeleteDraftModalOpen((prev) => !prev);
+          toast.success('Draft project has been deleted');
+          setViewState(ViewState.OK);
+        })
+        .catch(() => {
+          setViewState(ViewState.OK);
+          toast.error('Cannot delete draft project');
+        });
+    }
   };
 
   const currentSubjectOpinion: Opinion | null = opinionSubject ? getCurrentSubjectOpinion(opinionSubject.id, opinionSubject.promoter.opinions) : null;
@@ -277,13 +340,21 @@ const OwnedProjectsPage = () => {
                         </StyledIconButton>
                       )}
                       {project.status === ProjectStatus.DRAFT && (
-                        <StyledIconButton onClick={() => handleEdit(project)}>
-                          <EditIcon />
-                        </StyledIconButton>
+                        <>
+                          <StyledIconButton onClick={() => handleEdit(project)}>
+                            <EditIcon />
+                          </StyledIconButton>
+                          <StyledIconButton onClick={() => {
+                            setDeleteDraftModalOpen((prev) => !prev);
+                            setDeletedProject(project);
+                          }}>
+                            <DeleteIcon />
+                          </StyledIconButton>
+                        </>
                       )}
                       {project.status === ProjectStatus.RESERVED && (
                         <StyledIconButton onClick={() => handleDeleteOwnership(project)}>
-                          <DeleteIcon />
+                          <HighlightOffIcon />
                         </StyledIconButton>
                       )}
                     </ButtonsContainer>
@@ -292,27 +363,51 @@ const OwnedProjectsPage = () => {
               </ProjectWrapper>
             ))}
           </ProjectsContainer>
-          {deleteModalOpen && editedProject && (
+          {deleteOwnershipModalOpen && editedProject && (
             <Popup
               header="Confirm deleting ownership"
-              handleClose={() => setDeleteModalOpen((prev) => !prev)}
+              handleClose={() => setDeleteOwnershipModalOpen((prev) => !prev)}
               buttonsConfig={[
                 {
                   label: 'Cancel',
                   disabled: false,
-                  onClick: () => setDeleteModalOpen((prev) => !prev),
+                  onClick: () => setDeleteOwnershipModalOpen((prev) => !prev),
                   buttonType: ButtonType.SECONDARY,
                 },
                 {
-                  label: 'Confirm',
+                  label: 'Delete',
                   disabled: false,
                   onClick: deleteOwnership,
-                  buttonType: ButtonType.PRIMARY,
+                  buttonType: ButtonType.DANGER,
                 },
               ]}
             >
               <div>Are you sure you want delete ownership from project that topic is:
                 <HighlightedText>{`${editedProject.topic}`}</HighlightedText>?
+              </div>
+            </Popup>
+          )}
+          {deleteDraftModalOpen && deletedProject && (
+            <Popup
+              header="Confirm deleting draft project"
+              handleClose={() => setDeleteDraftModalOpen((prev) => !prev)}
+              buttonsConfig={[
+                {
+                  label: 'Cancel',
+                  disabled: false,
+                  onClick: () => setDeleteDraftModalOpen((prev) => !prev),
+                  buttonType: ButtonType.SECONDARY,
+                },
+                {
+                  label: 'Delete',
+                  disabled: false,
+                  onClick: handleDeleteDraft,
+                  buttonType: ButtonType.DANGER,
+                },
+              ]}
+            >
+              <div>Are you sure you want delete draft project:
+                <HighlightedText>{`${deletedProject.topic}`}</HighlightedText>?
               </div>
             </Popup>
           )}
@@ -366,7 +461,7 @@ const OwnedProjectsPage = () => {
                 departmentsOptions={stateData.university.departments
                   .map((department): SelectOption => ({ label: department.namePL.full, value: department.id }))}
                 universitiesOptions={[{ label: stateData.university.namePL.full, value: stateData.university.id }]}
-               />
+              />
             </Popup>
           )}
         </ContentWrapper>
