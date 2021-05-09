@@ -33,7 +33,7 @@ import { EmptyStateContainer } from '../../../../../components/initialDataError/
 import { SimplifiedUser } from '../../../../../../../models/user';
 import { _fetchProjects, FetchProjectsResponse } from '../../../../EMPLOYEE/services';
 import { MultipleSelect } from '../../../../../../components/forms/multiple-select';
-import {ProjectDetails} from "../../../../EMPLOYEE/router/pages/projectList/components";
+import { ProjectDetails } from '../../../../EMPLOYEE/router/pages/projectList/components';
 
 export const ProjectListPage = () => {
   const dispatch = useDispatch();
@@ -152,8 +152,11 @@ export const ProjectListPage = () => {
       departmentId: values.department,
       cathedralId: values.cathedral,
     })
-      .then((res: Project) => {
-        console.log(res);
+      .then((createdProject: Project) => {
+        console.log(createdProject);
+        const updatedProjectList: Project[] = stateData.userProjects;
+        updatedProjectList.push(createdProject);
+        dispatch({ ...new UpdateUserProjectsList(updatedProjectList) });
         toast.success('Project has been created');
         setProjectFormModalOpen((prev) => !prev);
       })
@@ -395,7 +398,7 @@ export const ProjectListPage = () => {
                       setProjectPreviewModal((prev) => !prev);
                     },
                     buttonType: ButtonType.SECONDARY,
-                  }
+                  },
                 ]}
               >
                 <ProjectDetails project={previewedProject} degrees={stateData.degrees} />

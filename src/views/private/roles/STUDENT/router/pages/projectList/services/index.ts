@@ -79,7 +79,7 @@ export const _createProject = async (params: CreateProjectParams): Promise<Proje
       console.log(error);
       return Promise.reject();
     }
-    return Promise.resolve(data.data as Project);
+    return Promise.resolve(data.entry as Project);
   } catch (e) {
     console.log(e);
     return Promise.reject();
