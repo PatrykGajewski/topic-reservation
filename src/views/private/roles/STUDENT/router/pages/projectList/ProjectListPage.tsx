@@ -17,8 +17,9 @@ import {
 } from '../../../../EMPLOYEE/router/pages';
 
 import {
-  Project, ProjectDegree, ProjectStatus, ProjectType, Tag,
+  Project, ProjectDegree, ProjectStatus, ProjectType,
 } from '../../../../../../../models/project';
+import { Tag } from 'models/tags';
 import { SelectOption } from '../../../../../../../models/forms';
 import { _createProject, _reserveProject } from './services';
 import { ViewState } from '../../../../../../../models/other';

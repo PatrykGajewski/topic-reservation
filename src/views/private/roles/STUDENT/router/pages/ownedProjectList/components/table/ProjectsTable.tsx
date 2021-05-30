@@ -1,7 +1,8 @@
 import React from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
 import styled, {css} from 'styled-components';
-import {Project, ProjectStatus, Tag} from '../../../../../../../../../models/project';
+import {Project, ProjectStatus} from '../../../../../../../../../models/project';
+import { Tag } from 'models/tags';
 import {Props} from './models';
 import {TableContainer, TagWrapper} from '../../styles';
 import {DotsMenu} from '../../../../../../../../components/dotsMenu';

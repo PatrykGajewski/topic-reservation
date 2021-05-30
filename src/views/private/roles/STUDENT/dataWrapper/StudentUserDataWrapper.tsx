@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Project, Tag } from '../../../../../models/project';
+import { Tag } from 'models/tags'
+import { Project } from '../../../../../models/project';
 import {
   _fetchProjectTags, _fetchPromoters, _fetchUniversities, _fetchStudentProjects, _fetchDegrees,
 } from '../services';
