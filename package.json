@@ -27,7 +27,7 @@
     "@types/react-select": "^3.0.13",
     "@types/react-toastify": "^4.1.0",
     "@types/yup": "^0.29.3",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
     "formik": "^2.1.4",
