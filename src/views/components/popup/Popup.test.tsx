@@ -39,4 +39,4 @@ it('should render correct button label', () => {
 
 it('should render correct button state', () => {
   expect(popup.find(FooterButton).getElement().props.disabled).toBe(buttonConfig.disabled);
-})
+});
