@@ -1,5 +1,6 @@
 import { SimplifiedUser, UserDegree, UserModel } from '../models/user';
-import { Project, Tag } from '../models/project';
+import { Project } from '../models/project';
+import { Tag } from '../models/tags'
 import { ProjectsTableConfig, PromotersRankConfig } from './appState';
 import { University } from '../models/university';
 

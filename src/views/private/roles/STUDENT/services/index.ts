@@ -1,6 +1,7 @@
 import {
-  Project, ProjectDegree, ProjectType, Tag,
+  Project, ProjectDegree, ProjectType
 } from '../../../../../models/project';
+import { Tag } from 'models/tags'
 import { API, APISecured } from '../../../../../API';
 import { University } from '../../../../../models/university';
 import { SimplifiedUser, UserDegree } from '../../../../../models/user';

@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import { UserModel, UserRole } from 'models/user';
 import { AppState } from 'store/appState';
 import { ButtonType, Popup } from '../../../../../../components';
-import { ErrorWrapper, LoginFormContainer } from '../../../../../../public';
+import { ErrorWrapper, LoginFormContainer} from "../../../../../../public/router/pages";
 import {
   ContactDataFormValues, PersonalDataFormValues, UserContactDataForm, UserPersonalDataForm,
 } from './forms';
